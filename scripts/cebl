@@ -1,0 +1,6 @@
+#!/usr/bin/env python
+
+import cebl
+import cebl.rt
+
+cebl.rt.main.run()

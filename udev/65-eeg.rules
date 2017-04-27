@@ -1,0 +1,2 @@
+SUBSYSTEM=="scsi_generic", ATTRS{model}=="MINDSET MS-24   ", OWNER="root", GROUP="root", SYMLINK+="mindset", MODE="666"
+SUBSYSTEM=="usb", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", OWNER="root", GROUP="root", SYMLINK+="nautilus", MODE="666"

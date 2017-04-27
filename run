@@ -1,0 +1,17 @@
+#!/bin/bash
+
+max_rt_prio=$(ulimit -r)
+
+if [[ $max_rt_prio -gt 0 ]]
+then
+    cmd="chrt -f $max_rt_prio python"
+else
+    echo "Warning: Unable to set real-time priority. max_rt_prio=${max_rt_prio}"
+    #cmd='/home/anderson/anaconda2/bin/python2'
+    cmd='python'
+fi
+
+eval $cmd <<- EOM
+	import cebl.rt
+	cebl.rt.main.run()
+EOM

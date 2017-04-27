@@ -1,0 +1,4 @@
+include run README
+include *.txt
+recursive-include docs *
+recursive-include scripts *
