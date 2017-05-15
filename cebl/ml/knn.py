@@ -124,9 +124,9 @@ def demoKNN():
     probs = model.probs(z)
 
     # red, green, blue and max probability densities
-    pRed   = np.reshape(probs[:,0,np.newaxis], x.shape)
-    pGreen = np.reshape(probs[:,1,np.newaxis], x.shape)
-    pBlue  = np.reshape(probs[:,2,np.newaxis], x.shape)
+    pRed   = np.reshape(probs[:,0,None], x.shape)
+    pGreen = np.reshape(probs[:,1,None], x.shape)
+    pBlue  = np.reshape(probs[:,2,None], x.shape)
     pMax   = np.reshape(np.max(probs, axis=1), x.shape)
 
     # class intersections

@@ -61,7 +61,7 @@ class ConvolutionalNetwork(Classifier, optim.Optable):
                 ravelLen = int(np.ceil((ravelLen-filtOrder-w+1)/float(self.poolSize)))
 
         self.layerDims.append((ravelLen*self.nConvHiddens[-1]+1, self.nHidden))
-        self.layerDims.append((self.nHidden+1, self.nCls-1))
+        self.layerDims.append((self.nHidden+1, self.nCls))
 
         if self.poolMethod == 'lanczos':
             self.initLanczos(filtOrder)
@@ -306,7 +306,6 @@ class ConvolutionalNetwork(Classifier, optim.Optable):
 
         # error components
         delta = (probs - g) / probs.size
-        delta = delta[:,:-1]
 
         # visible layer gradient
         vg[...] = z1.T.dot(delta)

@@ -183,10 +183,10 @@ class ClassEnsemble(Classifier):
         #    probs[np.arange(labels.shape[0]), labels] += 1.0
         #return probs / len(self.models)
 
-        return util.fullSoftmax(np.sum(allProbs, axis=0))
+        return util.softmax(np.sum(allProbs, axis=0))
 
         #likes = np.log(util.capZero(allProbs))
-        #return util.fullSoftmax(np.sum(likes, axis=0))
+        #return util.softmax(np.sum(likes, axis=0))
 
 def demoClassEnsemble():
     c1 = np.random.normal(loc=-1.0, scale=0.3, size=60)

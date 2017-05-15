@@ -82,7 +82,7 @@ class ForwardNetworkSoftmax(Classifier, optim.Optable):
         self.layerDims = [(self.nIn+1, self.nHiddens[0])]
         for l in xrange(1, self.nHLayers):
             self.layerDims.append((self.nHiddens[l-1]+1, self.nHiddens[l]))
-        self.layerDims.append((self.nHiddens[-1]+1, self.nCls-1))
+        self.layerDims.append((self.nHiddens[-1]+1, self.nCls))
 
         self.transFuncs = transFuncs if util.isiterable(transFuncs) \
                 else (transFuncs,) * self.nHLayers
@@ -223,6 +223,9 @@ class ForwardNetworkSoftmax(Classifier, optim.Optable):
         Returns:
             The scalar negative log likelyhood.
         """
+        x = np.asarray(x)
+        g = np.asarray(g)
+
         # evaluate network
         likes = np.log(util.capZero(self.probs(x)))
 
@@ -276,7 +279,6 @@ class ForwardNetworkSoftmax(Classifier, optim.Optable):
 
         # error components
         delta = util.colmat(probs - g) / probs.size
-        delta = delta[:,:-1]
 
         # visible layer gradient
         vg[...] = z1.T.dot(delta)
@@ -387,9 +389,9 @@ def demoFNS2d():
     probs = model.probs(z)
 
     # red, green, blue and max probability densities
-    pRed   = np.reshape(probs[:,0,np.newaxis], x.shape)
-    pGreen = np.reshape(probs[:,1,np.newaxis], x.shape)
-    pBlue  = np.reshape(probs[:,2,np.newaxis], x.shape)
+    pRed   = np.reshape(probs[:,0,None], x.shape)
+    pGreen = np.reshape(probs[:,1,None], x.shape)
+    pBlue  = np.reshape(probs[:,2,None], x.shape)
     pMax   = np.reshape(np.max(probs, axis=1), x.shape)
 
     # class intersections

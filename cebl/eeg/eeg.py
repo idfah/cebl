@@ -151,14 +151,46 @@ class EEG(EEGBase):
         if None in (vChan1, vChan2, hChan1, hChan2):
             raise Exception('Invalid channel.')
 
-        vEOG = self.data[:,vChan1] - self.data[:,vChan2]
-        hEOG = self.data[:,hChan1] - self.data[:,hChan2]
-        EOG = np.vstack((vEOG,hEOG)).T
+        veog = self.data[:,vChan1] - self.data[:,vChan2]
+        heog = self.data[:,hChan1] - self.data[:,hChan2]
+        eog = np.vstack((veog,heog)).T
 
         if model is None:
-            model = ml.RidgeRegression(EOG, self.data)
+            model = ml.RidgeRegression(eog, self.data)
 
-        self.data -= model.eval(EOG)
+        self.data -= model.eval(eog)
+
+        return self, model
+
+    def EOGRegress2(self, vChan1, vChan2, hChan1, hChan2, model=None):
+        vChan1, vChan2 = self.getChanIndices((vChan1, vChan2))
+        hChan1, hChan2 = self.getChanIndices((hChan1, hChan2))
+
+        # report which chan?  do this elsewhere? XXX - idfah
+        if None in (vChan1, vChan2, hChan1, hChan2):
+            raise Exception('Invalid channel.')
+
+        eog = self.data[:,(vChan1,vChan2,hChan1,hChan2)]
+
+        if model is None:
+            model = ml.RidgeRegression(eog, self.data)
+
+        self.data -= model.eval(eog)
+
+        return self, model
+
+    def EOGRegress3(self, chan, model=None):
+        chan = self.getChanIndices((chan,))[0]
+
+        if chan is None:
+            raise Exception('Invalid channel.')
+
+        eog = self.data[:,chan][:,None]
+
+        if model is None:
+            model = ml.RidgeRegression(eog, self.data)
+
+        self.data -= model.eval(eog)
 
         return self, model
 

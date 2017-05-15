@@ -67,6 +67,9 @@ def accum(x, n, accumf=np.sum, truncate=True, axis=None):
 
                [[3, 3, 3]]])
     """
+    if n < 1:
+        raise ValueError('n must be >= 1')
+
     # make sure we have a numpy array
     x = np.asarray(x)
 
@@ -77,6 +80,9 @@ def accum(x, n, accumf=np.sum, truncate=True, axis=None):
 
         # axis is now zero
         axis = 0
+
+    if n == 1:
+        return x
 
     # length along axis to accumulate
     nObs = x.shape[axis]
@@ -320,19 +326,14 @@ def segdot(x1, x2):
 
     return result
 
-def softmax(x):
+def softmaxM1(x):
     mx = np.max((np.max(x), 0.0))
     emx = capZero(np.exp(-mx))
     terms = capZero(np.exp(x-mx))
     denom = (emx + np.sum(terms, axis=1)).reshape((-1,1))
     return np.hstack((terms/denom, emx/denom))
     
-#def softmax(x):
-#    terms = np.exp(x)
-#    denom = (1.0 + np.sum(terms, axis=1)).reshape((-1,1))
-#    return np.hstack((terms/denom, 1.0/denom))
-
-def logSoftmax(x):
+def logSoftmaxM1(x):
     mx = np.max((np.max(x), 0.0))
     xmx = x - mx
     emx = capZero(np.exp(-mx))
@@ -344,8 +345,19 @@ def logSoftmax(x):
 
     return np.hstack((xmx-logDenom, -mx-logDenom))
 
-def fullSoftmax(x):
+def softmax(x):
     mx = np.max((np.max(x), 0.0))
     terms = capZero(np.exp(x-mx))
     denom = np.sum(terms, axis=1).reshape((-1,1))
     return terms/denom
+
+def logSoftmax(x):
+    mx = np.max((np.max(x), 0.0))
+    xmx = x - mx
+
+    terms = capZero(np.exp(xmx))
+    denom = np.sum(terms, axis=1).reshape((-1,1))
+
+    logDenom = np.log(capZero(denom))
+
+    return xmx - logDenom

@@ -18,7 +18,7 @@ from ddembed import *
 
 class ConvolutionalNetworkAccum(Classifier, optim.Optable):
     def __init__(self, classData, convs=((8,16),(16,8)), nHidden=None,
-                 poolSize=2, poolMethod='stride', filtOrder=8,
+                 poolSize=2, poolMethod='average', filtOrder=8,
                  transFuncs=transfer.lecun, weightInitFuncs=pinit.lecun,
                  penalties=None, elastics=1.0, optimFunc=optim.scg, **kwargs):
         Classifier.__init__(self, util.segmat(classData[0]).shape[2], len(classData))
@@ -37,10 +37,10 @@ class ConvolutionalNetworkAccum(Classifier, optim.Optable):
             self.layerDims.append((ni, no))
 
         if self.nHidden is None:
-            self.layerDims.append((self.nConvHiddens[-1]+1, self.nCls-1))
+            self.layerDims.append((self.nConvHiddens[-1]+1, self.nCls))
         else:
             self.layerDims.append((self.nConvHiddens[-1]+1, self.nHidden))
-            self.layerDims.append((self.nHidden+1, self.nCls-1))
+            self.layerDims.append((self.nHidden+1, self.nCls))
 
         self.poolSize = poolSize if util.isiterable(poolSize) \
                 else (poolSize,) * self.nConvLayers
@@ -170,7 +170,12 @@ class ConvolutionalNetworkAccum(Classifier, optim.Optable):
             phi = self.transFuncs[l]
             poolSize = self.poolSize[l]
 
-            if self.poolMethod == 'stride':
+            if poolSize == 1:
+                c = util.timeEmbed(c, lags=width-1, axis=1)
+                #c = phi(c.dot(cw[:-1]) + cw[-1])
+                c = phi(util.segdot(c, cw[:-1]) + cw[-1])
+
+            elif self.poolMethod == 'stride':
                 c = util.timeEmbed(c, lags=width-1, axis=1, stride=poolSize)
                 #c = phi(c.dot(cw[:-1]) + cw[-1])
                 c = phi(util.segdot(c, cw[:-1]) + cw[-1])
@@ -248,7 +253,7 @@ class ConvolutionalNetworkAccum(Classifier, optim.Optable):
         dv = self.discrim(x, accum=accum)
 
         if squash == 'softmax':
-            return util.fullSoftmax(dv)
+            return util.softmax(dv)
 
         elif squash == 'normsoftmax':
             #dv -= self.normSoftmaxMin
@@ -256,7 +261,7 @@ class ConvolutionalNetworkAccum(Classifier, optim.Optable):
             dv -= self.normSoftmaxMean
             #dv /= 0.5*self.normSoftmaxStd
             dv /= self.normSoftmaxStd
-            return util.fullSoftmax(dv)
+            return util.softmax(dv)
 
         elif squash == 'frac':
             return dv / dv.sum(axis=1)[:,None]
@@ -335,7 +340,10 @@ class ConvolutionalNetworkAccum(Classifier, optim.Optable):
             phi = self.transFuncs[l]
             poolSize = self.poolSize[l]
 
-            if self.poolMethod == 'stride':
+            if poolSize == 1:
+                c = util.timeEmbed(c, lags=width-1, axis=1)
+
+            elif self.poolMethod == 'stride':
                 c = util.timeEmbed(c, lags=width-1, axis=1, stride=poolSize)
 
             elif self.poolMethod in ('average', 'lanczos'):
@@ -350,8 +358,11 @@ class ConvolutionalNetworkAccum(Classifier, optim.Optable):
             cPrimes.append(cPrime)
 
             c = phi(h)
-        
-            if self.poolMethod == 'average':
+       
+            if poolSize == 1:
+                pass
+ 
+            elif self.poolMethod == 'average':
                 c = util.accum(c, poolSize, axis=1) / poolSize
 
             elif self.poolMethod == 'lanczos':
@@ -379,7 +390,6 @@ class ConvolutionalNetworkAccum(Classifier, optim.Optable):
 
         # error components
         delta = (probs - gs) / probs.size
-        delta = delta[:,:,:-1]
 
         if self.nHidden is None:
             # visible layer gradient
@@ -415,7 +425,10 @@ class ConvolutionalNetworkAccum(Classifier, optim.Optable):
             cPrime = cPrimes[l]
             poolSize = self.poolSize[l]
 
-            if self.poolMethod == 'average':
+            if poolSize == 1:
+                pass
+
+            elif self.poolMethod == 'average':
                 deltaPool = np.empty_like(cPrime)
                 deltaPool[:,:delta.shape[1]*poolSize] = \
                     delta.repeat(poolSize, axis=1) / poolSize
@@ -449,7 +462,10 @@ class ConvolutionalNetworkAccum(Classifier, optim.Optable):
                 #delta = delta.dot(self.cws[l][:-1].T)
                 delta = util.segdot(delta, self.cws[l][:-1].T)
 
-                if self.poolMethod == 'stride':
+                if poolSize == 1:
+                    pass
+
+                elif self.poolMethod == 'stride':
                     deltaPoolShape = list(delta.shape)
                     deltaPoolShape[1] *= poolSize
                     deltaPool = np.zeros(deltaPoolShape, dtype=delta.dtype)

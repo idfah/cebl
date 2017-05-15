@@ -48,7 +48,7 @@ class LogisticRegression(Classifier, optim.Optable):
 
         self.dtype = np.result_type(*[cls.dtype for cls in classData])
 
-        self.weights = weightInitFunc((self.nIn+1, self.nCls-1)).astype(self.dtype, copy=False)
+        self.weights = weightInitFunc((self.nIn+1, self.nCls)).astype(self.dtype, copy=False)
 
         self.train(classData, optimFunc, **kwargs)
 
@@ -105,15 +105,20 @@ class LogisticRegression(Classifier, optim.Optable):
         Returns:
             The scalar negative log likelyhood.
         """
+        x = np.asarray(x)
+        g = np.asarray(g)
+
         likes = np.log(util.capZero(self.probs(x)))
 
         return -np.mean(g*likes)
 
     def gradient(self, x, g, returnError=True):
+        x = np.asarray(x)
+        g = np.asarray(g)
+
         probs = self.probs(x)
 
         delta = (probs - g) / probs.size
-        delta = delta[:,:-1]
 
         grad = util.bias(x).T.dot(delta)
 
@@ -222,9 +227,9 @@ def demoLogisticRegression2d():
     probs = model.probs(z)
 
     # red, green, blue and max probability densities
-    pRed   = np.reshape(probs[:,0,np.newaxis], x.shape)
-    pGreen = np.reshape(probs[:,1,np.newaxis], x.shape)
-    pBlue  = np.reshape(probs[:,2,np.newaxis], x.shape)
+    pRed   = np.reshape(probs[:,0,None], x.shape)
+    pGreen = np.reshape(probs[:,1,None], x.shape)
+    pBlue  = np.reshape(probs[:,2,None], x.shape)
     pMax   = np.reshape(np.max(probs, axis=1), x.shape)
 
     # class intersections
@@ -300,6 +305,9 @@ class LogisticRegressionElastic(LogisticRegression):
         LogisticRegression.__init__(self, classData, **kwargs)
 
     def error(self, x, g):
+        x = np.asarray(x)
+        g = np.asarray(g)
+
         likes = np.log(util.capZero(self.probs(x)))
 
         pf = self.weights[:-1,:].ravel()
@@ -308,10 +316,12 @@ class LogisticRegressionElastic(LogisticRegression):
                 (1.0-self.elastic) * self.penalty * np.mean(np.abs(pf))) # L1-norm penalty
 
     def gradient(self, x, g, returnError=True):
+        x = np.asarray(x)
+        g = np.asarray(g)
+
         probs = self.probs(x)
 
         delta = (probs - g) / probs.size
-        delta = delta[:,:-1]
 
         penMask = np.ones_like(self.weights)
         penMask[-1,:] = 0.0

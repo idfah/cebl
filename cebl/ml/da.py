@@ -280,16 +280,16 @@ def demoQDA2d():
     probs = model.probs(z)
 
     # red, green, blue and max probabilities
-    pRed   = np.reshape(probs[:,0,np.newaxis], x.shape)
-    pGreen = np.reshape(probs[:,1,np.newaxis], x.shape)
-    pBlue  = np.reshape(probs[:,2,np.newaxis], x.shape)
+    pRed   = np.reshape(probs[:,0,None], x.shape)
+    pGreen = np.reshape(probs[:,1,None], x.shape)
+    pBlue  = np.reshape(probs[:,2,None], x.shape)
     pMax   = np.reshape(np.max(probs, axis=1), x.shape)
 
     # red, green, blue and max probability densities
     densities = model.dens(z)
-    dRed   = np.reshape(densities[:,0,np.newaxis], x.shape)
-    dGreen = np.reshape(densities[:,1,np.newaxis], x.shape)
-    dBlue  = np.reshape(densities[:,2,np.newaxis], x.shape)
+    dRed   = np.reshape(densities[:,0,None], x.shape)
+    dGreen = np.reshape(densities[:,1,None], x.shape)
+    dBlue  = np.reshape(densities[:,2,None], x.shape)
     dMax   = np.reshape(np.max(densities, axis=1), x.shape)
 
     # class intersections
@@ -619,9 +619,9 @@ def demoLDA2d():
     probs = model.probs(z)
 
     # red, green, blue and max probabilities
-    pRed   = np.reshape(probs[:,0,np.newaxis], x.shape)
-    pGreen = np.reshape(probs[:,1,np.newaxis], x.shape)
-    pBlue  = np.reshape(probs[:,2,np.newaxis], x.shape)
+    pRed   = np.reshape(probs[:,0,None], x.shape)
+    pGreen = np.reshape(probs[:,1,None], x.shape)
+    pBlue  = np.reshape(probs[:,2,None], x.shape)
     pMax   = np.reshape(np.max(probs, axis=1), x.shape)
 
     # class intersections
@@ -634,9 +634,9 @@ def demoLDA2d():
 
     # red, green, blue and max probability densities
     densities = model.dens(z)
-    dRed   = np.reshape(densities[:,0,np.newaxis], x.shape)
-    dGreen = np.reshape(densities[:,1,np.newaxis], x.shape)
-    dBlue  = np.reshape(densities[:,2,np.newaxis], x.shape)
+    dRed   = np.reshape(densities[:,0,None], x.shape)
+    dGreen = np.reshape(densities[:,1,None], x.shape)
+    dBlue  = np.reshape(densities[:,2,None], x.shape)
     dMax   = np.reshape(np.max(densities, axis=1), x.shape)
 
     # second figure shows 3d plots of probability densities

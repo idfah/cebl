@@ -84,7 +84,7 @@ class AutoRegressiveClassifier3(Classifier):
 
     def probs(self, ss, *args, **kwargs):
         errors = self.modelErrors(ss, *args, **kwargs)
-        return util.fullSoftmax(-errors) # softmin
+        return util.softmax(-errors) # softmin
 
 class AutoRegressiveClassifier(Classifier):
     def __init__(self, classData, autoRegClass=AutoRegression, **autoRegKwargs):
@@ -121,7 +121,7 @@ class AutoRegressiveClassifier(Classifier):
 
     def probs(self, ss, *args, **kwargs):
         errors = self.modelErrors(ss, *args, **kwargs)
-        return util.fullSoftmax(-errors) # softmin
+        return util.softmax(-errors) # softmin
 
 class ARC(AutoRegressiveClassifier):
     pass
