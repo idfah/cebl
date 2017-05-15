@@ -10,6 +10,9 @@ sourceList.append(ActiveTwo)
 from erptest import ERPTestConfigPanel, ERPTest
 sourceList.append(ERPTest)
 
+from mttest import MTTestConfigPanel, MTTest
+sourceList.append(MTTest)
+
 from openbci import OpenBCIConfigPanel, OpenBCI
 sourceList.append(OpenBCI)
 

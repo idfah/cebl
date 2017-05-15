@@ -276,7 +276,7 @@ class WaveGen(Source):
             freqs = self.freq.value * (2.0*np.pi*np.power(2.0, np.arange(self.nChan))/2.0)
             freqs = freqs[self.activeChanIndex]
 
-            newData = waveFunc(freqs* (self.t + self.t0.value)).dot(self.mixMat)
+            newData = waveFunc(freqs * (self.t + self.t0.value)).dot(self.mixMat)
             self.t0.value += self.shift
 
         return newData
