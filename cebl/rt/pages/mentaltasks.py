@@ -157,7 +157,7 @@ class ConfigPanel(StandardConfigPanel):
         self.initNTrial()
         self.initTrialSecs()
         self.initTiming()
-        self.initGainLoss()
+        self.initGain()
         self.initMethod()
         self.initLayout()
 
@@ -302,8 +302,8 @@ class ConfigPanel(StandardConfigPanel):
         self.pg.initOverlap()
         self.pg.requireRetrain()
 
-    def initGainLoss(self):
-        gainLossSizer = wx.BoxSizer(orient=wx.VERTICAL)
+    def initGain(self):
+        gainSizer = wx.BoxSizer(orient=wx.VERTICAL)
 
         gainControlBox = widgets.ControlBox(self, label='Gain', orient=wx.HORIZONTAL)
         self.gainText = wx.StaticText(self, label='%0.2f' % self.pg.gain)
@@ -314,30 +314,14 @@ class ConfigPanel(StandardConfigPanel):
         self.Bind(wx.EVT_SLIDER, self.setGain, self.gainSlider)
         gainControlBox.Add(gainTextSizer, proportion=0, flag=wx.ALL | wx.EXPAND, border=10)
         gainControlBox.Add(self.gainSlider, proportion=1, flag=wx.ALL | wx.EXPAND, border=10)
-        gainLossSizer.Add(gainControlBox,
+        gainSizer.Add(gainControlBox,
             flag=wx.LEFT | wx.BOTTOM | wx.RIGHT | wx.EXPAND, border=10)
 
-        lossControlBox = widgets.ControlBox(self, label='Loss', orient=wx.HORIZONTAL)
-        self.lossText = wx.StaticText(self, label='%0.2f' % self.pg.loss)
-        lossTextSizer = wx.BoxSizer(orient=wx.VERTICAL)
-        lossTextSizer.Add(self.lossText, proportion=1, flag=wx.EXPAND)
-        self.lossSlider = wx.Slider(self, style=wx.SL_HORIZONTAL,
-            value=int(self.pg.loss*100.0), minValue=0, maxValue=100)
-        self.Bind(wx.EVT_SLIDER, self.setLoss, self.lossSlider)
-        lossControlBox.Add(lossTextSizer, proportion=0, flag=wx.ALL | wx.EXPAND, border=10)
-        lossControlBox.Add(self.lossSlider, proportion=1, flag=wx.ALL | wx.EXPAND, border=10)
-        gainLossSizer.Add(lossControlBox,
-            flag=wx.LEFT | wx.BOTTOM | wx.RIGHT | wx.EXPAND, border=10)
-
-        self.sizer.Add(gainLossSizer, proportion=0, flag=wx.EXPAND)
+        self.sizer.Add(gainSizer, proportion=0, flag=wx.EXPAND)
 
     def setGain(self, event):
         self.pg.gain = self.gainSlider.GetValue() / 100.0
         self.gainText.SetLabel('%0.2f' % self.pg.gain)
-
-    def setLoss(self, event):
-        self.pg.loss= self.lossSlider.GetValue() / 100.0
-        self.lossText.SetLabel('%0.2f' % self.pg.loss)
 
     def initMethod(self):
         methodControlBox = widgets.ControlBox(self, label='Method', orient=wx.VERTICAL)
@@ -496,8 +480,7 @@ class MentalTasks(StandardBCIPage):
         self.decisionSecs = 2.0
         self.initOverlap()
 
-        self.gain = 0.3
-        self.loss = 0.0
+        self.gain = 0.25
 
         self.method = 'Welch Power'
 
@@ -506,10 +489,10 @@ class MentalTasks(StandardBCIPage):
 
         self.welchConfig = util.Holder(
             classifierKind = 'Linear Discrim',
-            span = 0.5,
+            span = 0.2,
             logTrans = True,
 
-            lowFreq = 0.5,
+            lowFreq = 1.0,
             highFreq = 40.0
         )
 
@@ -542,10 +525,6 @@ class MentalTasks(StandardBCIPage):
 
     def afterStop(self):
         self.configPanel.enable()
-
-    def markToStim(self, mark):
-        index = int(mark%10) - 1
-        return self.choices[index]
 
     #def getCap(self, secs):
     #    cap = self.src.getEEGSecs(secs)
@@ -660,10 +639,10 @@ class MentalTasks(StandardBCIPage):
             raise Exception('No data available for training.')
 
         segmented = self.trainCap.segment(start=0.0, end=self.trainTrialSecs)
-        segs = [segmented.select(matchFunc=lambda mark: self.markToStim(mark) == choice)
-                for choice in self.choices]
+        segs = [segmented.selectNear(i+1.0) for i in range(len(self.choices))]
 
-        assert segs[0].getNSeg() == self.nTrainTrial
+        for cls in segs:
+            assert cls.getNSeg() == self.nTrainTrial
 
         # split segments
         segs = [cls.split(self.width, self.overlap) for cls in segs]
@@ -927,11 +906,13 @@ class MentalTasks(StandardBCIPage):
     def trainConvNet(self, segs):
         trainData = [seg.data for seg in segs]
 
-        convs = ((16,9), (8,9))
-        maxIter = 400 # 49
+        #convs = ((16,9), (8,9))
+        #maxIter = 400 # 49
+        convs = ((8,3), (8,3), (8,3))
+        maxIter = 1000
 
         nHidden = None
-        poolSize = 2
+        poolSize = 1
         poolMethod = 'average'
 
         self.stand = ml.ClassSegStandardizer(trainData)
@@ -1024,37 +1005,14 @@ class MentalTasks(StandardBCIPage):
 
         if self.method == 'Welch Power':
             freqs, testData = self.powerize((seg,))
-            testDataStd = self.stand.apply(testData)[0]
-            probs = self.classifier.probs(testDataStd)[0]
-
-        elif self.method == 'Autoregressive':
-            testData = (seg.data,)
-            testDataStd = self.stand.apply(testData)[0]
-            probs = self.classifier.probs(testDataStd)[0]
-
-        elif self.method == 'Time Embedded Net':
-            testData = (seg.data,)
-            testDataStd = self.stand.apply(testData)[0]
-            probs = self.classifier.probs(testDataStd, squash='normsoftmax', accum='mult')[0]
-
-        elif self.method == 'Convolutional Net':
-            testData = (seg.data,)
-            testDataStd = self.stand.apply(testData)[0]
-
-            #probs = self.classifier.probs(testDataStd, squash='normsoftmax', accum='mult')[0]
-            probs = self.classifier.probs(testDataStd, squash='frac', accum='sum')[0]
 
         else:
-            raise Exception('Invalid method: ' + str(self.method))
+            testData = (seg.data,)
 
-        #label = self.classifier.label(testDataStd)
-        #label = np.argmax(probs)
-        #selection = self.choices[label]
-        #self.pieMenu.growBar(selection, self.gain, refresh=True)
-
-        for i,choice in enumerate(self.choices):
-            self.pieMenu.growBar(choice, self.gain*(probs[i]-self.loss), refresh=False)
-        self.pieMenu.refresh()
+        testDataStd = self.stand.apply(testData)[0]
+        label = self.classifier.label(testDataStd)[0]
+        selection = self.choices[label]
+        self.pieMenu.growBar(selection, self.gain, refresh=True)
 
         self.curDecision += 1
 
