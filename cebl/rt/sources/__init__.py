@@ -13,6 +13,12 @@ sourceList.append(ERPTest)
 from mttest import MTTestConfigPanel, MTTest
 sourceList.append(MTTest)
 
+from gtec import GMobiLabPlusConfigPanel, GMobiLabPlus
+sourceList.append(GMobiLabPlus)
+
+from gtec import GNautilusConfigPanel, GNautilus
+sourceList.append(GNautilus)
+
 from openbci import OpenBCIConfigPanel, OpenBCI
 sourceList.append(OpenBCI)
 

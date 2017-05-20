@@ -783,7 +783,7 @@ class MotorPong(StandardBCIPage):
 
     def trainWelchNN(self, trainData, dialog):
         maxIter = 250
-        nHiddens = 10
+        nHidden = 10
         seed = np.random.randint(0, 1000000)
 
         self.stand = ml.ClassStandardizer(trainData)
@@ -810,7 +810,7 @@ class MotorPong(StandardBCIPage):
 
             np.random.seed(seed)
             classifier = ml.FNS(trnData, accuracy=0.0, precision=0.0,
-                                nHiddens=nHiddens, maxIter=maxIter, optimFunc=ml.optim.scg,
+                                nHidden=nHidden, maxIter=maxIter, optimFunc=ml.optim.scg,
                                 callback=valTraceCB, eTrace=True, verbose=False)
 
         dialog.Update(nFold, 'Training Final Classifier')
@@ -825,7 +825,7 @@ class MotorPong(StandardBCIPage):
 
         np.random.seed(seed)
         self.classifier = ml.FNS(trainDataStd, accuracy=0.0, precision=0.0,
-                                 nHiddens=nHiddens, maxIter=bestIter, optimFunc=ml.optim.scg,
+                                 nHidden=nHidden, maxIter=bestIter, optimFunc=ml.optim.scg,
                                  eTrace=False, verbose=False)
 
         trainCA = self.classifier.ca(trainDataStd)

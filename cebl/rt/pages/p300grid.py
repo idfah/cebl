@@ -940,7 +940,7 @@ class P300Grid(StandardBCIPage):
 
     def trainNN(self, classData, dialog):
         maxIter = 1000
-        nHiddens = 30
+        nHidden = 30
         seed = np.random.randint(0, 1000000)
 
         trainAUC = np.zeros((self.nFold, maxIter+1))
@@ -961,7 +961,7 @@ class P300Grid(StandardBCIPage):
             s = np.random.get_state()
             np.random.seed(seed)
             classifier = ml.FNS(trainData, accuracy=0.0, precision=1.0e-10,
-                                nHiddens=nHiddens, maxIter=maxIter, optimFunc=ml.optim.scg,
+                                nHidden=nHidden, maxIter=maxIter, optimFunc=ml.optim.scg,
                                 callback=validTraceCB, eTrace=False, verbose=False)
             np.random.set_state(s)
 
@@ -976,7 +976,7 @@ class P300Grid(StandardBCIPage):
         s = np.random.get_state()
         np.random.seed(seed)
         self.classifier = ml.FNS(classData, accuracy=0.0, precision=1.0e-10,
-                                 nHiddens=nHiddens, maxIter=bestIter, optimFunc=ml.optim.scg,
+                                 nHidden=nHidden, maxIter=bestIter, optimFunc=ml.optim.scg,
                                  eTrace=False, verbose=False)
         np.random.set_state(s)
 

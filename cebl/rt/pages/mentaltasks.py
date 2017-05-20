@@ -735,7 +735,7 @@ class MentalTasks(StandardBCIPage):
 
     def trainWelchNN(self, trainData):
         maxIter = 250
-        nHiddens = 10
+        nHidden = 10
         seed = np.random.randint(0, 1000000)
 
         self.stand = ml.ClassStandardizer(trainData)
@@ -766,7 +766,7 @@ class MentalTasks(StandardBCIPage):
 
             np.random.seed(seed)
             classifier = ml.FNS(trnData, accuracy=0.0, precision=0.0,
-                                nHiddens=nHiddens, maxIter=maxIter, optimFunc=ml.optim.scg,
+                                nHidden=nHidden, maxIter=maxIter, optimFunc=ml.optim.scg,
                                 callback=valTraceCB, eTrace=True, verbose=False)
 
         dialog.Update(nFold, 'Training Final Classifier')
@@ -781,7 +781,7 @@ class MentalTasks(StandardBCIPage):
 
         np.random.seed(seed)
         self.classifier = ml.FNS(trainDataStd, accuracy=0.0, precision=0.0,
-                                 nHiddens=nHiddens, maxIter=bestIter, optimFunc=ml.optim.scg,
+                                 nHidden=nHidden, maxIter=bestIter, optimFunc=ml.optim.scg,
                                  eTrace=False, verbose=False)
 
         trainCA = self.classifier.ca(trainDataStd)
@@ -885,7 +885,6 @@ class MentalTasks(StandardBCIPage):
         self.classifier = ml.CNA(trainDataStd, convs=convs, nHidden=nHidden, maxIter=maxIter,
                                  optimFunc=ml.optim.scg, accuracy=0.0, precision=0.0,
                                  poolSize=poolSize, poolMethod=poolMethod,
-                                 transFuncs=ml.nnet.transfer.rectifierTwist,
                                  verbose=False, callback=progressCB)
 
         trainCA = self.classifier.ca(trainDataStd)
@@ -928,7 +927,6 @@ class MentalTasks(StandardBCIPage):
         self.classifier = ml.CNA(trainDataStd, convs=convs, nHidden=nHidden, maxIter=maxIter,
                                  optimFunc=ml.optim.scg, accuracy=0.0, precision=0.0,
                                  poolSize=poolSize, poolMethod=poolMethod,
-                                 transFuncs=ml.nnet.transfer.rectifierTwist,
                                  verbose=False, callback=progressCB)
 
         trainCA = self.classifier.ca(trainDataStd)

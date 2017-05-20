@@ -15,8 +15,8 @@ class ForwardNetworkSoftmax(Classifier, optim.Optable):
     """Two-Layer Feedforward Neural Network with softmax visible layer
     for classification.
     """
-    def __init__(self, classData, nHiddens=10, transFuncs=transfer.lecun,
-                 weightInitFuncs=pinit.lecun, penalties=None, elastics=1.0,
+    def __init__(self, classData, nHidden=10, transFunc=transfer.lecun,
+                 weightInitFunc=pinit.lecun, penalties=None, elastics=1.0,
                  optimFunc=optim.scg, **kwargs):
         """Construct a new feedforward neural network.
 
@@ -76,31 +76,31 @@ class ForwardNetworkSoftmax(Classifier, optim.Optable):
 
         self.dtype = np.result_type(*[cls.dtype for cls in classData])
 
-        self.nHiddens = nHiddens if util.isiterable(nHiddens) else (nHiddens,)
-        self.nHLayers = len(self.nHiddens)
+        self.nHidden = nHidden if util.isiterable(nHidden) else (nHidden,)
+        self.nHLayers = len(self.nHidden)
 
-        self.layerDims = [(self.nIn+1, self.nHiddens[0])]
+        self.layerDims = [(self.nIn+1, self.nHidden[0])]
         for l in xrange(1, self.nHLayers):
-            self.layerDims.append((self.nHiddens[l-1]+1, self.nHiddens[l]))
-        self.layerDims.append((self.nHiddens[-1]+1, self.nCls))
+            self.layerDims.append((self.nHidden[l-1]+1, self.nHidden[l]))
+        self.layerDims.append((self.nHidden[-1]+1, self.nCls))
 
-        self.transFuncs = transFuncs if util.isiterable(transFuncs) \
-                else (transFuncs,) * self.nHLayers
-        assert len(self.transFuncs) == self.nHLayers
+        self.transFunc = transFunc if util.isiterable(transFunc) \
+                else (transFunc,) * self.nHLayers
+        assert len(self.transFunc) == self.nHLayers
 
         views = util.packedViews(self.layerDims, dtype=self.dtype)
         self.pw  = views[0]
         self.hws = views[1:-1]
         self.vw  = views[-1]
 
-        if not util.isiterable(weightInitFuncs):
-            weightInitFuncs = (weightInitFuncs,) * (self.nHLayers+1)
-        assert len(weightInitFuncs) == (len(self.hws) + 1)
+        if not util.isiterable(weightInitFunc):
+            weightInitFunc = (weightInitFunc,) * (self.nHLayers+1)
+        assert len(weightInitFunc) == (len(self.hws) + 1)
 
         # initialize weights
-        for hw, wif in zip(self.hws, weightInitFuncs):
+        for hw, wif in zip(self.hws, weightInitFunc):
             hw[...] = wif(hw.shape).astype(self.dtype, copy=False)
-        self.vw[...] = weightInitFuncs[-1](self.vw.shape).astype(self.dtype, copy=False)
+        self.vw[...] = weightInitFunc[-1](self.vw.shape).astype(self.dtype, copy=False)
 
         self.penalties = penalties
         if self.penalties is not None:
@@ -145,7 +145,7 @@ class ForwardNetworkSoftmax(Classifier, optim.Optable):
         return self.pw
 
     def evalHiddens(self, x):
-        """Evaluate the hidden layer for given inputs.
+        """Evaluate the hidden layers for given inputs.
 
         Args:
             x:  Input data.  A numpy array with shape (nObs[,nIn]).
@@ -158,7 +158,7 @@ class ForwardNetworkSoftmax(Classifier, optim.Optable):
 
         z = x
         zs = []
-        for hw, phi in zip(self.hws, self.transFuncs):
+        for hw, phi in zip(self.hws, self.transFunc):
             z = phi(z.dot(hw[:-1]) + hw[-1])
             zs.append(z)
 
@@ -265,7 +265,7 @@ class ForwardNetworkSoftmax(Classifier, optim.Optable):
         z1 = util.bias(x)
         z1s = [z1]
         zPrimes = []
-        for hw, phi in zip(self.hws, self.transFuncs):
+        for hw, phi in zip(self.hws, self.transFunc):
             h = z1.dot(hw)
 
             z1 = util.bias(phi(h))
@@ -331,16 +331,16 @@ def demoFNS2d():
     mx = np.max(np.vstack(classData), axis=0)
 
     # train model
-    model = FNS(classData, nHiddens=(4,8,16), optimFunc=optim.scg,
-                transFuncs=transfer.lecun, precision=1.0e-10,
-                #transFuncs=transfer.exprect, precision=1.0e-10,
-                #transFuncs=transfer.rectifierTwist, precision=1.0e-10,
+    model = FNS(classData, nHidden=(4,8,16), optimFunc=optim.scg,
+                transFunc=transfer.lecun, precision=1.0e-10,
+                #transFunc=transfer.exprect, precision=1.0e-10,
+                #transFunc=transfer.rectifierTwist, precision=1.0e-10,
                 maxIter=1000, verbose=True)
 
-    ##model = FNS(classData, nHiddens=10, optimFunc=optim.minibatch,
+    ##model = FNS(classData, nHidden=10, optimFunc=optim.minibatch,
     ##            penalties=0.01,
     ##            batchSize=15, maxRound=5, maxIter=5,
-    ##            transFuncs=transfer.lecun, precision=1.0e-10,
+    ##            transFunc=transfer.lecun, precision=1.0e-10,
     ##            verbose=1)
     ##print 'ca:', model.ca(classData)
     ##print 'bca:', model.bca(classData)

@@ -496,7 +496,7 @@ class PieERN(StandardBCIPage):
 
     def trainNN(self, trainData, dialog):
         maxIter = 250
-        nHiddens = 10
+        nHidden = 10
         seed = np.random.randint(0, 1000000)
 
         trnCA = np.zeros((self.nFold, maxIter+1))
@@ -518,7 +518,7 @@ class PieERN(StandardBCIPage):
 
             np.random.seed(seed)
             classifier = ml.FNS(trnData, accuracy=0.0, precision=0.0,
-                                nHiddens=nHiddens, maxIter=maxIter, optimFunc=ml.optim.scg,
+                                nHidden=nHidden, maxIter=maxIter, optimFunc=ml.optim.scg,
                                 callback=valTraceCB, eTrace=True, verbose=False)
 
         dialog.Update(self.nFold, 'Training Final Classifier')
@@ -534,7 +534,7 @@ class PieERN(StandardBCIPage):
 
         np.random.seed(seed)
         self.classifier = ml.FNS(trainData, accuracy=0.0, precision=0.0,
-                                 nHiddens=nHiddens, maxIter=bestIter, optimFunc=ml.optim.scg,
+                                 nHidden=nHidden, maxIter=bestIter, optimFunc=ml.optim.scg,
                                  eTrace=False, verbose=False)
 
         trainCA = self.classifier.ca(trainData)

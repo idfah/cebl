@@ -19,7 +19,7 @@ from ddembed import *
 class ConvolutionalNetworkAccum(Classifier, optim.Optable):
     def __init__(self, classData, convs=((8,16),(16,8)), nHidden=None,
                  poolSize=2, poolMethod='average', filtOrder=8,
-                 transFuncs=transfer.lecun, weightInitFuncs=pinit.lecun,
+                 transFunc=transfer.lecun, weightInitFunc=pinit.lecun,
                  penalties=None, elastics=1.0, optimFunc=optim.scg, **kwargs):
         Classifier.__init__(self, util.segmat(classData[0]).shape[2], len(classData))
         optim.Optable.__init__(self)
@@ -53,9 +53,9 @@ class ConvolutionalNetworkAccum(Classifier, optim.Optable):
         elif not self.poolMethod in ('stride', 'average'):
             raise Exception('Invalid poolMethod %s.' % str(self.poolMethod))
 
-        self.transFuncs = transFuncs if util.isiterable(transFuncs) \
-                else (transFuncs,) * (len(self.layerDims)-1)
-        assert len(self.transFuncs) == (len(self.layerDims)-1)
+        self.transFunc = transFunc if util.isiterable(transFunc) \
+                else (transFunc,) * (len(self.layerDims)-1)
+        assert len(self.transFunc) == (len(self.layerDims)-1)
 
         views = util.packedViews(self.layerDims, dtype=self.dtype)
         self.pw  = views[0]
@@ -69,9 +69,9 @@ class ConvolutionalNetworkAccum(Classifier, optim.Optable):
             self.hw  = views[-2]
             self.vw  = views[-1]
 
-        if not util.isiterable(weightInitFuncs):
-            weightInitFuncs = (weightInitFuncs,) * (self.nConvLayers+2)
-        assert len(weightInitFuncs) == (len(self.cws) + 2)
+        if not util.isiterable(weightInitFunc):
+            weightInitFunc = (weightInitFunc,) * (self.nConvLayers+2)
+        assert len(weightInitFunc) == (len(self.cws) + 2)
 
         self.penalties = penalties
         if self.penalties is not None:
@@ -84,13 +84,13 @@ class ConvolutionalNetworkAccum(Classifier, optim.Optable):
         assert (len(self.elastics) == (len(self.cws) + 2))
 
         # initialize weights
-        for cw, wif in zip(self.cws, weightInitFuncs):
+        for cw, wif in zip(self.cws, weightInitFunc):
             cw[...] = wif(cw.shape).astype(self.dtype, copy=False)
 
         if self.nHidden is not None:
-            self.hw[...] = weightInitFuncs[-2](self.hw.shape).astype(self.dtype, copy=False)
+            self.hw[...] = weightInitFunc[-2](self.hw.shape).astype(self.dtype, copy=False)
 
-        self.vw[...] = weightInitFuncs[-1](self.vw.shape).astype(self.dtype, copy=False)
+        self.vw[...] = weightInitFunc[-1](self.vw.shape).astype(self.dtype, copy=False)
 
         # train the network
         if optimFunc is not None:
@@ -167,7 +167,7 @@ class ConvolutionalNetworkAccum(Classifier, optim.Optable):
         #for cw, width, filt in zip(self.cws, self.convWidths, self.filters):
         for l, cw in enumerate(self.cws):
             width = self.convWidths[l]
-            phi = self.transFuncs[l]
+            phi = self.transFunc[l]
             poolSize = self.poolSize[l]
 
             if poolSize == 1:
@@ -206,8 +206,8 @@ class ConvolutionalNetworkAccum(Classifier, optim.Optable):
         c = self.evalConvs(x)[-1]
 
         # evaluate hidden layer
-        #z = self.transFuncs[-1](c.dot(self.hw[:-1]) + self.hw[-1]) if self.nHidden is not None else c
-        z = self.transFuncs[-1](util.segdot(c, self.hw[:-1]) + self.hw[-1]) if self.nHidden is not None else c
+        #z = self.transFunc[-1](c.dot(self.hw[:-1]) + self.hw[-1]) if self.nHidden is not None else c
+        z = self.transFunc[-1](util.segdot(c, self.hw[:-1]) + self.hw[-1]) if self.nHidden is not None else c
 
         # evaluate visible layer
         #v = z.dot(self.vw[:-1]) + self.vw[-1]
@@ -337,7 +337,7 @@ class ConvolutionalNetworkAccum(Classifier, optim.Optable):
         cPrimes = []
         for l, cw in enumerate(self.cws):
             width = self.convWidths[l]
-            phi = self.transFuncs[l]
+            phi = self.transFunc[l]
             poolSize = self.poolSize[l]
 
             if poolSize == 1:
@@ -379,8 +379,8 @@ class ConvolutionalNetworkAccum(Classifier, optim.Optable):
         else:
             #h = c1.dot(self.hw)
             h = util.segdot(c1, self.hw)
-            z1 = util.bias(self.transFuncs[-1](h))
-            zPrime = self.transFuncs[-1](h, 1)
+            z1 = util.bias(self.transFunc[-1](h))
+            zPrime = self.transFunc[-1](h, 1)
             #v = z1.dot(self.vw)
             v = util.segdot(z1, self.vw)
 
@@ -555,7 +555,7 @@ def demoCNA():
     #model = CNA(trainData, convs=((2,11),(4,9),(6,7)), nHidden=2,
     model = CNA(trainData, convs=((4,9),(8,9)), nHidden=None,
                  poolSize=2, poolMethod='average', verbose=True,
-                 optimFunc=optim.scg, maxIter=250, transFuncs=transfer.rectifier,
+                 optimFunc=optim.scg, maxIter=250, transFunc=transfer.rectifier,
                  #optimFunc=optim.rprop, maxIter=1000,
                  #optimFunc=optim.sciopt, method='Powell', maxIter=1000)
                  precision=1.0e-10, accuracy=0.0, pTrace=True, eTrace=True)

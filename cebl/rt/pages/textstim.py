@@ -58,7 +58,10 @@ class TextStim(Page):
                           'motortasks trial1', 'motortasks trial2',
                           'mentaltasks practice',
                           'mentaltasks trial1',
-                          'mentaltasks trial2')
+                          'mentaltasks trial2',
+                          'mentaltasks trial3',
+                          'mentaltasks trial4',
+                          'mentaltasks trial5')
         self.nProtocols = len(self.protocols)
 
         self.setProtocol('3minutes')
@@ -172,14 +175,16 @@ when one of the following cues appears. When the screen is blank, relax and thin
             #    nTrials = 3
             #self.stims = sum([list(np.random.permutation(mtasks)) for i in xrange(nTrials)], [])
 
-            if self.protocol.startswith('mentaltasks practice'):
-                self.stims = ['Count', 'Rotate', 'Song', 'Fist']
-            else:
-                self.stims = ['Count', 'Song', 'Rotate', 'Count',
-                              'Fist', 'Song', 'Rotate', 'Fist',
-                              'Count', 'Fist', 'Rotate', 'Song',
-                              'Rotate', 'Count', 'Song', 'Count',
-                              'Fist', 'Rotate', 'Song', 'Fist']
+            #if self.protocol.startswith('mentaltasks practice'):
+            #    self.stims = ['Count', 'Rotate', 'Song', 'Fist']
+            #else:
+            #    self.stims = ['Count', 'Song', 'Rotate', 'Count',
+            #                  'Fist', 'Song', 'Rotate', 'Fist',
+            #                  'Count', 'Fist', 'Rotate', 'Song',
+            #                  'Rotate', 'Count', 'Song', 'Count',
+            #                  'Fist', 'Rotate', 'Song', 'Fist']
+            self.stims = ['Count', 'Rotate', 'Song', 'Fist']
+            np.random.shuffle(self.stims)
 
             self.si = 10.0
             self.isi = 5.0

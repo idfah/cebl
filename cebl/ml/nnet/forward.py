@@ -12,8 +12,8 @@ import transfer
 
 
 class ForwardNetwork(Regression, optim.Optable):
-    def __init__(self, x, g, nHiddens=10, transFuncs=transfer.lecun,
-                 weightInitFuncs=pinit.lecun, penalties=None, elastics=1.0,
+    def __init__(self, x, g, nHidden=10, transFunc=transfer.lecun,
+                 weightInitFunc=pinit.lecun, penalties=None, elastics=1.0,
                  optimFunc=optim.scg, **kwargs):
         x = np.asarray(x)
         g = np.asarray(g)
@@ -25,31 +25,31 @@ class ForwardNetwork(Regression, optim.Optable):
                             util.colmat(g).shape[1])
         optim.Optable.__init__(self)
 
-        self.nHiddens = nHiddens if util.isiterable(nHiddens) else (nHiddens,)
-        self.nHLayers = len(self.nHiddens)
+        self.nHidden = nHidden if util.isiterable(nHidden) else (nHidden,)
+        self.nHLayers = len(self.nHidden)
 
-        self.layerDims = [(self.nIn+1, self.nHiddens[0])]
+        self.layerDims = [(self.nIn+1, self.nHidden[0])]
         for l in xrange(1, self.nHLayers):
-            self.layerDims.append((self.nHiddens[l-1]+1, self.nHiddens[l]))
-        self.layerDims.append((self.nHiddens[-1]+1, self.nOut))
+            self.layerDims.append((self.nHidden[l-1]+1, self.nHidden[l]))
+        self.layerDims.append((self.nHidden[-1]+1, self.nOut))
 
-        self.transFuncs = transFuncs if util.isiterable(transFuncs) \
-                else (transFuncs,) * self.nHLayers
-        assert len(self.transFuncs) == self.nHLayers
+        self.transFunc = transFunc if util.isiterable(transFunc) \
+                else (transFunc,) * self.nHLayers
+        assert len(self.transFunc) == self.nHLayers
 
         views = util.packedViews(self.layerDims, dtype=self.dtype)
         self.pw  = views[0]
         self.hws = views[1:-1]
         self.vw  = views[-1]
 
-        if not util.isiterable(weightInitFuncs): 
-            weightInitFuncs = (weightInitFuncs,) * (self.nHLayers+1)
-        assert len(weightInitFuncs) == (len(self.hws) + 1)
+        if not util.isiterable(weightInitFunc): 
+            weightInitFunc = (weightInitFunc,) * (self.nHLayers+1)
+        assert len(weightInitFunc) == (len(self.hws) + 1)
 
         # initialize weights
-        for hw, wif in zip(self.hws, weightInitFuncs):
+        for hw, wif in zip(self.hws, weightInitFunc):
             hw[...] = wif(hw.shape).astype(self.dtype, copy=False)
-        self.vw[...] = weightInitFuncs[-1](self.vw.shape).astype(self.dtype, copy=False)
+        self.vw[...] = weightInitFunc[-1](self.vw.shape).astype(self.dtype, copy=False)
 
         self.penalties = penalties
         if self.penalties is not None:
@@ -100,7 +100,7 @@ class ForwardNetwork(Regression, optim.Optable):
 
         z = x
         zs = []
-        for hw, phi in zip(self.hws, self.transFuncs):
+        for hw, phi in zip(self.hws, self.transFunc):
             z = phi(z.dot(hw[:-1]) + hw[-1])
             zs.append(z)
 
@@ -218,7 +218,7 @@ class ForwardNetwork(Regression, optim.Optable):
         z1 = util.bias(x)
         z1s = [z1]
         zPrimes = []
-        for hw, phi in zip(self.hws, self.transFuncs):
+        for hw, phi in zip(self.hws, self.transFunc):
             h = z1.dot(hw)
 
             z1 = util.bias(phi(h))
@@ -288,7 +288,7 @@ class ForwardNetworkL1(ForwardNetwork):
         z1 = util.bias(x)
         z1s = [z1]
         zPrimes = []
-        for hw, phi in zip(self.hws, self.transFuncs):
+        for hw, phi in zip(self.hws, self.transFunc):
             h = z1.dot(hw)
 
             z1 = util.bias(phi(h))
@@ -340,7 +340,7 @@ def demoFN1d():
     x = x.astype(np.float32)
     g = g.astype(np.float32)
 
-    model = FN(x, g, nHiddens=10,
+    model = FN(x, g, nHidden=10,
               optimFunc=optim.scg, maxIter=250, precision=0.0,
               #sTrace=True, pTrace=True, eTrace=True, verbose=True)
               pTrace=True, eTrace=True, verbose=True)
@@ -430,7 +430,7 @@ def demoFN2d():
     gStd = g.std()
     gStand = (g - gMean) / gStd
 
-    model = FN(xStand, gStand, nHiddens=(4,4,4), transFuncs=transfer.gaussian,
+    model = FN(xStand, gStand, nHidden=(4,4,4), transFunc=transfer.gaussian,
             optimFunc=optim.scg, maxIter=1000, precision=0.0, accuracy=0.0,
             eTrace=True, pTrace=True, verbose=True)
     results = model.trainResult

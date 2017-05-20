@@ -18,7 +18,7 @@ from ddembed import *
 
 class ConvolutionalNetworkRegression(Regression, optim.Optable):
     def __init__(self, x, g, convs=((8,16),(16,8)), nHidden=None,
-                 transFuncs=transfer.lecun, weightInitFuncs=pinit.lecun,
+                 transFunc=transfer.lecun, weightInitFunc=pinit.lecun,
                  penalties=None, elastics=1.0, optimFunc=optim.scg, **kwargs):
         x = util.segmat(x)
         g = util.segmat(g)
@@ -43,9 +43,9 @@ class ConvolutionalNetworkRegression(Regression, optim.Optable):
             self.layerDims.append((self.nConvHiddens[-1]+1, self.nHidden))
             self.layerDims.append((self.nHidden+1, self.nOut))
 
-        self.transFuncs = transFuncs if util.isiterable(transFuncs) \
-                else (transFuncs,) * (len(self.layerDims)-1)
-        assert len(self.transFuncs) == (len(self.layerDims)-1)
+        self.transFunc = transFunc if util.isiterable(transFunc) \
+                else (transFunc,) * (len(self.layerDims)-1)
+        assert len(self.transFunc) == (len(self.layerDims)-1)
 
         views = util.packedViews(self.layerDims, dtype=self.dtype)
         self.pw  = views[0]
@@ -59,9 +59,9 @@ class ConvolutionalNetworkRegression(Regression, optim.Optable):
             self.hw  = views[-2]
             self.vw  = views[-1]
 
-        if not util.isiterable(weightInitFuncs):
-            weightInitFuncs = (weightInitFuncs,) * (self.nConvLayers+2)
-        assert len(weightInitFuncs) == (len(self.cws) + 2)
+        if not util.isiterable(weightInitFunc):
+            weightInitFunc = (weightInitFunc,) * (self.nConvLayers+2)
+        assert len(weightInitFunc) == (len(self.cws) + 2)
 
         self.penalties = penalties
         if self.penalties is not None:
@@ -74,13 +74,13 @@ class ConvolutionalNetworkRegression(Regression, optim.Optable):
         assert (len(self.elastics) == (len(self.cws) + 2))
 
         # initialize weights
-        for cw, wif in zip(self.cws, weightInitFuncs):
+        for cw, wif in zip(self.cws, weightInitFunc):
             cw[...] = wif(cw.shape).astype(self.dtype, copy=False)
 
         if self.nHidden is not None:
-            self.hw[...] = weightInitFuncs[-2](self.hw.shape).astype(self.dtype, copy=False)
+            self.hw[...] = weightInitFunc[-2](self.hw.shape).astype(self.dtype, copy=False)
 
-        self.vw[...] = weightInitFuncs[-1](self.vw.shape).astype(self.dtype, copy=False)
+        self.vw[...] = weightInitFunc[-1](self.vw.shape).astype(self.dtype, copy=False)
 
         # train the network
         if optimFunc is not None:
@@ -105,7 +105,7 @@ class ConvolutionalNetworkRegression(Regression, optim.Optable):
         cs = []
         for l, cw in enumerate(self.cws):
             width = self.convWidths[l]
-            phi = self.transFuncs[l]
+            phi = self.transFunc[l]
 
             c = util.timeEmbed(c, lags=width-1, axis=1)
             c = phi(util.segdot(c, cw[:-1]) + cw[-1])
@@ -121,7 +121,7 @@ class ConvolutionalNetworkRegression(Regression, optim.Optable):
         c = self.evalConvs(x)[-1]
 
         # evaluate hidden layer
-        z = self.transFuncs[-1](util.segdot(c, self.hw[:-1]) + self.hw[-1]) if self.nHidden is not None else c
+        z = self.transFunc[-1](util.segdot(c, self.hw[:-1]) + self.hw[-1]) if self.nHidden is not None else c
 
         # evaluate visible layer
         return util.segdot(z, self.vw[:-1]) + self.vw[-1]
@@ -199,7 +199,7 @@ class ConvolutionalNetworkRegression(Regression, optim.Optable):
         cPrimes = []
         for l, cw in enumerate(self.cws):
             width = self.convWidths[l]
-            phi = self.transFuncs[l]
+            phi = self.transFunc[l]
 
             c = util.timeEmbed(c, lags=width-1, axis=1)
 
@@ -219,8 +219,8 @@ class ConvolutionalNetworkRegression(Regression, optim.Optable):
             y = util.segdot(c1, self.vw)
         else:
             h = util.segdot(c1, self.hw)
-            z1 = util.bias(self.transFuncs[-1](h))
-            zPrime = self.transFuncs[-1](h, 1)
+            z1 = util.bias(self.transFunc[-1](h))
+            zPrime = self.transFunc[-1](h, 1)
             y = util.segdot(z1, self.vw)
 
         # error components
@@ -313,10 +313,10 @@ def demoCNR():
     print x.shape, g.shape
 
     #model = CNR(x=xTrain, g=gTrain, convs=((1,11),(1,9),(1,7)), nHidden=None,
-    #            optimFunc=optim.scg, maxIter=100, transFuncs=transfer.linear,
+    #            optimFunc=optim.scg, maxIter=100, transFunc=transfer.linear,
     #            precision=1.0e-7, accuracy=0.0, pTrace=True, eTrace=True, verbose=True)
     model = CNR(x=xTrain, g=gTrain, convs=((2,7),(4,5),(8,3)), nHidden=None,
-                optimFunc=optim.scg, maxIter=200, transFuncs=transfer.lecun,
+                optimFunc=optim.scg, maxIter=200, transFunc=transfer.lecun,
                 precision=1.0e-7, accuracy=0.0, pTrace=True, eTrace=True, verbose=True)
 
     yTest = model.eval(xTest)

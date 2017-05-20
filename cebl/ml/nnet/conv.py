@@ -19,7 +19,7 @@ from ddembed import *
 class ConvolutionalNetwork(Classifier, optim.Optable):
     def __init__(self, classData, convs=((8,16), (16,8)), nHidden=8,
                  poolSize=2, poolMethod='stride', filtOrder=8,
-                 transFuncs=transfer.lecun, weightInitFuncs=pinit.lecun,
+                 transFunc=transfer.lecun, weightInitFunc=pinit.lecun,
                  penalties=None, elastics=1.0, optimFunc=optim.scg, **kwargs):
         seg = util.segmat(classData[0])
         nCls = len(classData)
@@ -69,9 +69,9 @@ class ConvolutionalNetwork(Classifier, optim.Optable):
         elif not self.poolMethod in ('stride', 'average'):
             raise Exception('Invalid poolMethod %s.' % str(self.poolMethod))
 
-        self.transFuncs = transFuncs if util.isiterable(transFuncs) \
-                else (transFuncs,) * (len(self.layerDims)-1)
-        assert len(self.transFuncs) == (len(self.layerDims)-1)
+        self.transFunc = transFunc if util.isiterable(transFunc) \
+                else (transFunc,) * (len(self.layerDims)-1)
+        assert len(self.transFunc) == (len(self.layerDims)-1)
 
         views = util.packedViews(self.layerDims, dtype=self.dtype)
         self.pw  = views[0]
@@ -79,9 +79,9 @@ class ConvolutionalNetwork(Classifier, optim.Optable):
         self.hw  = views[-2]
         self.vw  = views[-1]
 
-        if not util.isiterable(weightInitFuncs):
-            weightInitFuncs = (weightInitFuncs,) * (self.nConvLayers+2)
-        assert len(weightInitFuncs) == (len(self.cws) + 2)
+        if not util.isiterable(weightInitFunc):
+            weightInitFunc = (weightInitFunc,) * (self.nConvLayers+2)
+        assert len(weightInitFunc) == (len(self.cws) + 2)
 
         self.penalties = penalties
         if self.penalties is not None:
@@ -94,10 +94,10 @@ class ConvolutionalNetwork(Classifier, optim.Optable):
         assert (len(self.elastics) == (len(self.cws) + 2))
 
         # initialize weights
-        for cw, wif in zip(self.cws, weightInitFuncs):
+        for cw, wif in zip(self.cws, weightInitFunc):
             cw[...] = wif(cw.shape).astype(self.dtype, copy=False)
-        self.hw[...] = weightInitFuncs[-2](self.hw.shape).astype(self.dtype, copy=False)
-        self.vw[...] = weightInitFuncs[-1](self.vw.shape).astype(self.dtype, copy=False)
+        self.hw[...] = weightInitFunc[-2](self.hw.shape).astype(self.dtype, copy=False)
+        self.vw[...] = weightInitFunc[-1](self.vw.shape).astype(self.dtype, copy=False)
 
         # train the network
         if optimFunc is not None:
@@ -165,7 +165,7 @@ class ConvolutionalNetwork(Classifier, optim.Optable):
         cs = []
         for l, cw in enumerate(self.cws):
             width = self.convWidths[l]
-            phi = self.transFuncs[l]
+            phi = self.transFunc[l]
 
             if self.poolMethod == 'stride':
                 c = util.timeEmbed(c, lags=width-1, axis=1, stride=self.poolSize)
@@ -199,7 +199,7 @@ class ConvolutionalNetwork(Classifier, optim.Optable):
         c = c.reshape((c.shape[0], -1), order='F')
 
         # evaluate hidden layer
-        z = self.transFuncs[-1](c.dot(self.hw[:-1]) + self.hw[-1])
+        z = self.transFunc[-1](c.dot(self.hw[:-1]) + self.hw[-1])
 
         # evaluate visible layer
         v = z.dot(self.vw[:-1]) + self.vw[-1]
@@ -266,7 +266,7 @@ class ConvolutionalNetwork(Classifier, optim.Optable):
         cPrimes = []
         for l, cw in enumerate(self.cws):
             width = self.convWidths[l]
-            phi = self.transFuncs[l]
+            phi = self.transFunc[l]
 
             if self.poolMethod == 'stride':
                 c = util.timeEmbed(c, lags=width-1, axis=1, stride=self.poolSize)
@@ -296,9 +296,9 @@ class ConvolutionalNetwork(Classifier, optim.Optable):
 
         # evaluate hidden layer
         h = c1.dot(self.hw)
-        z = self.transFuncs[-1](h)
+        z = self.transFunc[-1](h)
         z1 = util.bias(z)
-        zPrime = self.transFuncs[-1](h, 1)
+        zPrime = self.transFunc[-1](h, 1)
 
         # evaluate visible layer
         v = z1.dot(self.vw)
@@ -453,7 +453,7 @@ def demoCN():
 
     model = CN(trainData, convs=((2,11),(4,9),(6,7)), nHidden=2,
                poolSize=2, poolMethod='average', filtOrder=6, verbose=True,
-               optimFunc=optim.scg, maxIter=1000, transFuncs=transfer.lecun,
+               optimFunc=optim.scg, maxIter=1000, transFunc=transfer.lecun,
                precision=1.0e-16, accuracy=0.0, pTrace=True, eTrace=True)
 
     #from softmax import FNS
