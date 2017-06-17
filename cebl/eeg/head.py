@@ -105,9 +105,154 @@ def plotHeadOutline(ax=None, radius=1.2):
             'noseLeft': noseLeft, 'noseRight': noseRight,
             'head': head, 'extent': extent}
 
-def plotHeadInterp(chanNames=('Fp1','Fp2','F7','F3','Fz','F4','F8','T7','C3',
+def plotHead(chanNames=('F3','F4','C3','C4','P3','P4','O1','O2'),
+             radius=0.01, fillColor='black', lineColor='black',
+             drawLabels=True, clip=True, fontSize=12, ax=None, **kwargs):
+
+    # plot head outline and save result dict
+    result = plotHeadOutline(ax)
+    ax = result['ax']
+
+    # get chanNames that we have a location for
+    chanNames = [chanName for chanName in chanNames if chanName.lower() in chanLocs3d.keys()]
+    chanNamesLower = [chanName.lower() for chanName in chanNames] # lower case
+
+    # if no valid chanNames then just draw the outline
+    if len(chanNames) == 0:
+        return result
+
+    # get 3d cartesian coordinates for each channel
+    xyz = np.asarray([chanLocs3d[chanName] for chanName in chanNamesLower])
+
+    # make sure coordinates have unit magnitude
+    xyz = xyz / np.sqrt(np.sum(xyz**2, axis=1))[:,None]
+
+    # rotate by pi/2 around z axis
+    cos90 = np.cos(np.pi/2.0)
+    rot = np.asarray(((cos90,-1.0,0.0),(1.0,cos90,0.0),(0.0,0.0,1.0))).T
+    xyz = xyz.dot(rot)
+
+    # stereographic projection
+    x = xyz[:,0]
+    y = xyz[:,1]
+    z = xyz[:,2]
+    xy = np.vstack((x/(1.0+z), y/(1.0+z))).T
+
+    # list of circles and chan labels to store in result
+    circles = []
+    chanLabels = []
+
+    # for each channel
+    for chanName, coord in zip(chanNames, xy):
+        x, y = coord
+
+        c = pltPatches.Circle((x,y), radius, edgecolor=lineColor,
+                              facecolor=fillColor, linewidth=1, fill=True, zorder=100)
+
+        ax.add_patch(c)
+        circles.append(c)
+
+        # draw channel labels
+        if drawLabels:
+            if fontSize is not None:
+                txt = ax.text(x,y+0.081, chanName, size=fontSize,
+                        horizontalalignment='center', verticalalignment='center', zorder=100)
+                chanLabels.append(txt)
+
+    # save labels and circles in result
+    result['chanLabels'] = chanLabels
+    result['circles'] = circles
+
+    return result
+
+def plotHeadLines(magnitudes, chanNames=('F3','F4','C3','C4','P3','P4','O1','O2'),
+                    method='lines', width=0.1, height=0.075, fillColor='black',
+                    lineColor='black', mn=None, mx=None, drawLabels=True, clip=True,
+                    fontSize=11, xlabel=None, ylabel=None, ax=None, **kwargs):
+
+    # plot head outline and save result dict
+    result = plotHeadOutline(ax)
+    ax = result['ax']
+
+    # get chanNames that we have a location for
+    chanNames = [chanName for chanName in chanNames if chanName.lower() in chanLocs3d.keys()]
+    chanNamesLower = [chanName.lower() for chanName in chanNames] # lower case
+
+    mn = np.min(magnitudes) if mn is None else mn
+    mx = np.max(magnitudes) if mx is None else mx
+    result['mn'] = mn
+    result['mx'] = mx
+
+    # if no valid chanNames then just draw the outline
+    if len(chanNames) == 0:
+        return result
+
+    # get 3d cartesian coordinates for each channel
+    xyz = np.asarray([chanLocs3d[chanName] for chanName in chanNamesLower])
+
+    # make sure coordinates have unit magnitude
+    xyz = xyz / np.sqrt(np.sum(xyz**2, axis=1))[:,None]
+
+    # rotate by pi/2 around z axis
+    cos90 = np.cos(np.pi/2.0)
+    rot = np.asarray(((cos90,-1.0,0.0),(1.0,cos90,0.0),(0.0,0.0,1.0))).T
+    xyz = xyz.dot(rot)
+
+    # stereographic projection
+    x = xyz[:,0]
+    y = xyz[:,1]
+    z = xyz[:,2]
+    xy = np.vstack((x/(1.0+z), y/(1.0+z))).T
+
+    # list of circles and chan labels to store in result
+    circles = []
+    chanLabels = []
+
+    # for each channel
+    for chanName, coord, mags in zip(chanNames, xy, magnitudes.T):
+        x, y = coord
+
+        axc = plt.gcf().transFigure.inverted().transform(ax.transData.transform((x,y)))
+        sax = plt.axes([axc[0]-width/2.0, axc[1], width, height])
+        sax.set_ylim(mn, mx)
+
+        sax.set_xticks([])
+        sax.set_yticks([])
+        sax.spines['top'].set_visible(False)
+        sax.spines['right'].set_visible(False)
+
+        if xlabel is not None:
+            sax.set_xlabel(xlabel)
+
+        if ylabel is not None:
+            sax.set_ylabel(ylabel)
+
+        if (xlabel is None) and (ylabel is None):
+            sax.axis('off')
+        else:
+            sax.axis('on')
+
+        if method == 'bars':
+            bars = sax.bar(np.arange(len(mags)), mags, width=1, **kwargs)
+            result['bars'] = bars
+        elif method == 'lines':
+            lines = sax.plot(mags, **kwargs)
+            result['lines'] = lines
+        else:
+            raise Exception('Invalid method: ' + str(method))
+
+        if drawLabels:
+            sax.set_title(chanName, fontsize=fontSize)
+
+    # save labels and circles in result
+    result['chanLabels'] = chanLabels
+    result['circles'] = circles
+
+    return result
+
+def plotHeadInterp(magnitudes, chanNames=('Fp1','Fp2','F7','F3','Fz','F4','F8','T7','C3',
                     'Cz','C4','T8','T5','P3','Pz','P4','T6','O1','O2'),
-                   magnitudes=None, drawLabels=True, method='none', coord='2d', n=512,
+                   drawLabels=True, method='none', coord='2d', n=512,
                    scale='linear', mn=None, mx=None, clip=True, fontSize=12,
                    colorbar=True, cmap=plt.cm.jet, ax=None, cache=False, **kwargs):
     """
@@ -139,10 +284,10 @@ def plotHeadInterp(chanNames=('Fp1','Fp2','F7','F3','Fz','F4','F8','T7','C3',
         return result
 
     # get min and max magnitudes if not provided
-    if mn is None:
-        mn = np.min(magnitudes)
-    if mx is None:
-        mx = np.max(magnitudes)
+    mn = np.min(magnitudes) if mn is None else mn
+    mx = np.max(magnitudes) if mx is None else mx
+    result['mn'] = mn
+    result['mx'] = mx
 
     if scale == 'linear':
         norm = pltColors.Normalize(mn,mx)
@@ -346,6 +491,10 @@ def plotHeadInterp(chanNames=('Fp1','Fp2','F7','F3','Fz','F4','F8','T7','C3',
 
     return result
 
+def demoPlotHeadLines():
+    hp = plotHeadLines(np.random.random((9,19)), linewidth=2, mn=-1, mx=1)
+    for i in range(3):
+        plotHeadLines(np.random.random((9,19)), ax=hp['ax'], linewidth=2, mn=0, mx=1)
 
 def demoPlotHeadInterp():
     chanNames = list(set(chanLocs3d.keys()) - set(('t7','t8','t5','t6')))
@@ -358,32 +507,32 @@ def demoPlotHeadInterp():
     fig = plt.figure(figsize=(18,12))
 
     axNone = fig.add_subplot(2,3, 1)
-    plotHeadInterp(chanNames=chanNames, magnitudes=mags,
+    plotHeadInterp(mags, chanNames=chanNames,
         method='none', coord='2d', cache=True, colorbar=True, ax=axNone)
     axNone.set_title('None')
 
     axNer2d = fig.add_subplot(2,3, 2)
-    plotHeadInterp(chanNames=chanNames, magnitudes=mags,
+    plotHeadInterp(mags, chanNames=chanNames,
         method='nearest', coord='2d', cache=True, colorbar=True, ax=axNer2d)
     axNer2d.set_title('Nearest 2d')
 
     axCub2d = fig.add_subplot(2,3, 3)
-    plotHeadInterp(chanNames=chanNames, magnitudes=mags,
+    plotHeadInterp(mags, chanNames=chanNames,
         method='cubic', coord='2d', cache=True, colorbar=True, ax=axCub2d)
     axCub2d.set_title('Cubic 2d')
 
     axMul2d = fig.add_subplot(2,3, 4)
-    plotHeadInterp(chanNames=chanNames, magnitudes=mags,
+    plotHeadInterp(mags, chanNames=chanNames,
         method='multiquadric', coord='2d', cache=True, colorbar=True, ax=axMul2d)
     axMul2d.set_title('Multiquadric 2d')
 
     axMul3d = fig.add_subplot(2,3, 5)
-    plotHeadInterp(chanNames=chanNames, magnitudes=mags,
+    plotHeadInterp(mags, chanNames=chanNames,
         method='multiquadric', coord='3d', cache=True, colorbar=True, ax=axMul3d)
     axMul3d.set_title('Multiquadric 3d')
 
     axMulSp = fig.add_subplot(2,3, 6)
-    plotHeadInterp(chanNames=chanNames, magnitudes=mags,
+    plotHeadInterp(mags, chanNames=chanNames,
         method='multiquadric', coord='sphere', cache=True, colorbar=True, ax=axMulSp)
     axMulSp.set_title('Multiquadric Sphere')
 
@@ -391,4 +540,5 @@ def demoPlotHeadInterp():
 
 if __name__ == '__main__':
     demoPlotHeadInterp()
+    demoPlotHeadLines()
     plt.show()

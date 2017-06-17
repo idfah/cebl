@@ -548,7 +548,7 @@ class SegmentedEEG(EEGBase):
 
             timeStep = int(t*self.sampRate)
 
-            head.plotHeadInterp(chanNames=chanNames, magnitudes=avgDiff[timeStep,:], ax=ax)
+            head.plotHeadInterp(avgDiff[timeStep,:], chanNames=chanNames, ax=ax)
 
         return {'fig': fig, 'axs': axs}
 
@@ -599,8 +599,8 @@ class SegmentedEEG(EEGBase):
             if mx is None:
                 mx = np.max(avg)
 
-            hp = head.plotHeadInterp(chanNames=self.getChanNames(),
-                    magnitudes=avg[i,:], mn=mn, mx=mx,
+            hp = head.plotHeadInterp(avg[i,:],
+                    chanNames=self.getChanNames(), mn=mn, mx=mx,
                     colorbar=False, ax=axH, **kwargs)
             axH.set_title((fmt + timeUnit) % t)
             headPlots.append(hp)
@@ -691,7 +691,6 @@ class SegmentedEEG(EEGBase):
         #    ax.set_yticks(sep)
         #    ax.set_xlabel('Time (s)')
         #    ax.set_ylim(-scale, sep[-1] + scale)
-
 
 class SegmentedEEGFromEEG(SegmentedEEG):
     def __init__(self, unSegmentedEEG, start=0.0, end=0.8,

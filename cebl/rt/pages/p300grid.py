@@ -460,16 +460,16 @@ class PlotPanel(wx.Panel):
 
         interpMethod = 'multiquadric'
         coord = '3d'
-        h1 = eeg.head.plotHeadInterp(chanNames=targ.getChanNames(), magnitudes=erp1,
+        h1 = eeg.plotHeadInterp(erp1, chanNames=targ.getChanNames(),
             method=interpMethod, coord=coord, mn=mn, mx=mx, ax=self.h1Ax)
         self.h1Ax.set_title('200ms')
-        h2 = eeg.head.plotHeadInterp(chanNames=targ.getChanNames(), magnitudes=erp2,
+        h2 = eeg.plotHeadInterp(erp2, chanNames=targ.getChanNames(),
             method=interpMethod, coord=coord, mn=mn, mx=mx, ax=self.h2Ax)
         self.h2Ax.set_title('300ms')
-        h3 = eeg.head.plotHeadInterp(chanNames=targ.getChanNames(), magnitudes=erp3,
+        h3 = eeg.plotHeadInterp(erp3, chanNames=targ.getChanNames(),
             method=interpMethod, coord=coord, mn=mn, mx=mx, ax=self.h3Ax)
         self.h3Ax.set_title('400ms')
-        h4 = eeg.head.plotHeadInterp(chanNames=targ.getChanNames(), magnitudes=erp4,
+        h4 = eeg.plotHeadInterp(erp4, chanNames=targ.getChanNames(),
             method=interpMethod, coord=coord, mn=mn, mx=mx, ax=self.h4Ax)
         self.h4Ax.set_title('500ms')
 

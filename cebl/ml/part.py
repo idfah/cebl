@@ -3,6 +3,7 @@ import numpy as np
 
 def classStratified(classData, nFold):
     """Partition generator for stratified cross validation
+    for classification problems.
     """
     classData = [np.asarray(cls) for cls in classData]
 
@@ -27,16 +28,7 @@ def classStratified(classData, nFold):
 
 def classRandomSubSample(classData, trainFrac, nFold=1):
     """Partition generator for random sub-sampling validation
-
-    Args:
-        classData:
-
-        trainFrac:
-
-        nFold:
-
-    Returns:
-
+    for classification problems.
     """
     # create a copy of data that we can shuffle in place
     classData = [np.array(cls, copy=True) for cls in classData]
@@ -64,6 +56,9 @@ def classRandomSubSample(classData, trainFrac, nFold=1):
         yield rep, trainData, testData
 
 def classLeaveOneOut(classData):
+    """Partition generator for leave-one-out cross validation
+    for classification problems.
+    """
     # works? XXX - idfah
     classData = [np.asarray(cls) for cls in classData]
     rep = 0
@@ -84,7 +79,34 @@ def classLeaveOneOut(classData):
 
             rep += 1
 
+def stratified(x, g, nFold):
+    """Partition generator for stratified cross validation
+    for regression problems.
+    """
+    x = np.asarray(x)
+    g = np.asarray(g)
+
+    nx = len(x) // nFold
+    ng = len(g) // nFold
+
+    if nx != ng:
+        raise Exception('size of x and g do not match.')
+
+    for fold in xrange(nFold):
+        start = fold * nx
+        if fold < nFold-1:
+            end = (fold+1) * nx
+        else:
+            end = len(x)
+
+        keep = range(start) + range(end,len(x))
+
+        yield fold, x[keep], g[keep], x[start:end], g[start:end]
+
 def randomSubSample(x, g, trainFrac, nFold=1):
+    """Partition generator for random sub-sampling validation
+    for regression problems.
+    """
     x = np.asarray(x)
     g = np.asarray(g)
 

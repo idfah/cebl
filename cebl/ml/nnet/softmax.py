@@ -332,7 +332,7 @@ def demoFNS2d():
 
     # train model
     model = FNS(classData, nHidden=(4,8,16), optimFunc=optim.scg,
-                transFunc=transfer.lecun, precision=1.0e-10,
+                transFunc=transfer.lecun, precision=1.0e-5,
                 #transFunc=transfer.exprect, precision=1.0e-10,
                 #transFunc=transfer.rectifierTwist, precision=1.0e-10,
                 maxIter=1000, verbose=True)

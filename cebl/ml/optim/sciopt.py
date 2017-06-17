@@ -20,19 +20,19 @@ def sciopt(optable,
     errorTrace = []
 
     def errFunc(p):
-        params[...] = p
+        params.flat[...] = p
         return optable.error(*args, **kwargs)
 
     if method in ('CG', 'BFGS', 'Newton-CG', 'dogleg', 'trust-ncg'):
         def gradFunc(p):
-            params[...] = p
+            params.flat[...] = p
             return optable.gradient(*args, returnError=False, **kwargs)
     else:
         gradFunc = None
 
     if method == 'Newton-CG':
         def grad2Func(p):
-            params[...] = p
+            params.flat[...] = p
             return optable.gradient2(*args, returnError=False, **kwargs)
     else:
         grad2Func = None
@@ -72,7 +72,7 @@ def sciopt(optable,
         print optres
         print '\n'
 
-    params[...] = optres['x']
+    params.flat[...] = optres['x']
 
     result = {}
     result['error'] = optres['fun']
@@ -86,7 +86,7 @@ def sciopt(optable,
     return result
 
 def demoScioptPowell():
-    rosen = tests.Rosen(optimFunc=sciopt, method='Powell', verbose=True, options={'maxfev': 100})
+    rosen = tests.Rosen(optimFunc=sciopt, method='Powell', verbose=True, options={'maxfev': 1000})
     rosen.plot()
 
 def demoScioptBFGS():

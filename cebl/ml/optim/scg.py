@@ -1,6 +1,8 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
+from cebl import util
+
 import tests
 
 
@@ -95,7 +97,8 @@ def scg(optable,
     nParam = params.size
 
     # machine precision for parameter data type
-    eps = np.finfo(params.dtype).eps
+    #eps = np.finfo(params.dtype).eps
+    tiny = np.finfo(params.dtype).tiny
 
     error, grad = optable.gradient(*args, returnError=True, **kwargs)
 
@@ -145,10 +148,12 @@ def scg(optable,
                 direction = -grad
                 mu = direction.dot(grad)
 
+            #kappa = util.capZero(direction.dot(direction))
             kappa = direction.dot(direction)
             #if kappa < eps:
-            #    reason = 'kappa'
-            #    break
+            if kappa < tiny:
+                reason = 'kappa'
+                break
 
             sigma = sigma0 / np.sqrt(kappa)
 

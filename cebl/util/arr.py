@@ -311,20 +311,10 @@ def segmat(xs, dtype=None, copy=False):
     return xs
 
 def segdot(x1, x2):
-    #return x1.dot(x2)
-    #return np.array([s.dot(x2) for s in x1])
-
     assert x1.ndim == 3
     assert x2.ndim == 2
 
-    dtype = np.result_type(x1,x2)
-    result = np.empty((x1.shape[0], x1.shape[1], x2.shape[1]), dtype=dtype)
-
-    for i in xrange(x1.shape[0]):
-        #result[i,:,:] = x1[i].dot(x2)
-        x1[i].dot(x2, out=result[i])
-
-    return result
+    return x1.reshape((-1,x1.shape[-1])).dot(x2).reshape((x1.shape[0],-1,x2.shape[-1]))
 
 def softmaxM1(x):
     mx = np.max((np.max(x), 0.0))

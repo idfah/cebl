@@ -155,10 +155,13 @@ class EEG(EEGBase):
         heog = self.data[:,hChan1] - self.data[:,hChan2]
         eog = np.vstack((veog,heog)).T
 
-        if model is None:
-            model = ml.RidgeRegression(eog, self.data)
+        bp = sig.BandpassFilter(0.0, 20.0, order=2, sampRate=self.sampRate)
+        eogFilt = bp.filter(eog);
 
-        self.data -= model.eval(eog)
+        if model is None:
+            model = ml.RidgeRegression(eogFilt, self.data)
+
+        self.data -= model.eval(eogFilt)
 
         return self, model
 
@@ -294,9 +297,6 @@ class EEG(EEGBase):
     def detrend(self):
         pass
 
-    def eogRegress(self, eogChans):
-        eogChans = self.getChanIndices(eogChans)
-
     def ica(self):
         pass
 
@@ -407,10 +407,13 @@ class EEG(EEGBase):
 
     def reference(self, chans):
         chans = self.getChanIndices(chans)
+
         ref = self.data[:,chans]
         if len(chans) > 1:
             ref = ref.mean(axis=1)
-        self.data -= ref.reshape((-1,1))
+
+        self.data -= ref[:,None]
+
         return self
 
     def bipolarReference(self, pairs):
