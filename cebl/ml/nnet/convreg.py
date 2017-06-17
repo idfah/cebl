@@ -19,7 +19,7 @@ from ddembed import *
 class ConvolutionalNetworkRegression(Regression, optim.Optable):
     def __init__(self, x, g, convs=((8,16),(16,8)), nHidden=None,
                  transFunc=transfer.lecun, weightInitFunc=pinit.lecun,
-                 penalties=None, elastics=1.0, optimFunc=optim.scg, **kwargs):
+                 penalty=None, elastic=1.0, optimFunc=optim.scg, **kwargs):
         x = util.segmat(x)
         g = util.segmat(g)
         self.dtype = np.result_type(x.dtype, g.dtype)
@@ -63,15 +63,15 @@ class ConvolutionalNetworkRegression(Regression, optim.Optable):
             weightInitFunc = (weightInitFunc,) * (self.nConvLayers+2)
         assert len(weightInitFunc) == (len(self.cws) + 2)
 
-        self.penalties = penalties
-        if self.penalties is not None:
-            if not util.isiterable(self.penalties):
-                self.penalties = (self.penalties,) * (self.nConvLayers+2)
-        assert (self.penalties is None) or (len(self.penalties) == (len(self.cws) + 2))
+        self.penalty = penalty
+        if self.penalty is not None:
+            if not util.isiterable(self.penalty):
+                self.penalty = (self.penalty,) * (self.nConvLayers+2)
+        assert (self.penalty is None) or (len(self.penalty) == (len(self.cws) + 2))
 
-        self.elastics = elastics if util.isiterable(elastics) \
-                else (elastics,) * (self.nConvLayers+2)
-        assert (len(self.elastics) == (len(self.cws) + 2))
+        self.elastic = elastic if util.isiterable(elastic) \
+                else (elastic,) * (self.nConvLayers+2)
+        assert (len(self.elastic) == (len(self.cws) + 2))
 
         # initialize weights
         for cw, wif in zip(self.cws, weightInitFunc):
@@ -127,7 +127,7 @@ class ConvolutionalNetworkRegression(Regression, optim.Optable):
         return util.segdot(z, self.vw[:-1]) + self.vw[-1]
 
     def penaltyError(self):
-        if self.penalties is None:
+        if self.penalty is None:
             return 0.0
 
         weights = []
@@ -137,14 +137,14 @@ class ConvolutionalNetworkRegression(Regression, optim.Optable):
         weights.append(self.vw[:-1].ravel())
 
         totalPenalty = 0.0
-        for weight, penalty, elastic in zip(weights, self.penalties, self.elastics):
+        for weight, penalty, elastic in zip(weights, self.penalty, self.elastic):
             totalPenalty += ( elastic      * penalty * weight.dot(weight)/weight.size + # L2
                              (1.0-elastic) * penalty * np.mean(np.abs(weight)) ) # L1
 
         return totalPenalty
 
     def penaltyGradient(self, layer):
-        if self.penalties is None:
+        if self.penalty is None:
             return 0.0
 
         if layer == -1:
@@ -154,8 +154,8 @@ class ConvolutionalNetworkRegression(Regression, optim.Optable):
         else:
             weights = self.cws[layer]
 
-        penalty = self.penalties[layer]
-        elastic = self.elastics[layer]
+        penalty = self.penalty[layer]
+        elastic = self.elastic[layer]
 
         penMask = np.ones_like(weights)
         penMask[-1] = 0.0

@@ -16,7 +16,7 @@ class ForwardNetworkSoftmax(Classifier, optim.Optable):
     for classification.
     """
     def __init__(self, classData, nHidden=10, transFunc=transfer.lecun,
-                 weightInitFunc=pinit.lecun, penalties=None, elastics=1.0,
+                 weightInitFunc=pinit.lecun, penalty=None, elastic=1.0,
                  optimFunc=optim.scg, **kwargs):
         """Construct a new feedforward neural network.
 
@@ -38,9 +38,9 @@ class ForwardNetworkSoftmax(Classifier, optim.Optable):
                             paraminit module.  See the paraminit module
                             for more choices.
 
-            penalties:
+            penalty:
 
-            elastics:       Penalty or weight decay.  The cost function is
+            elastic:       Penalty or weight decay.  The cost function is
                             then e + p * ||W||_2 where e is the prediction
                             error, p is the penalty and ||W||_2 denotes the
                             l2 norm of the weight matrix.  This regularizes
@@ -102,15 +102,15 @@ class ForwardNetworkSoftmax(Classifier, optim.Optable):
             hw[...] = wif(hw.shape).astype(self.dtype, copy=False)
         self.vw[...] = weightInitFunc[-1](self.vw.shape).astype(self.dtype, copy=False)
 
-        self.penalties = penalties
-        if self.penalties is not None:
-            if not util.isiterable(self.penalties):
-                self.penalties = (self.penalties,) * (self.nHLayers+1)
-        assert (self.penalties is None) or (len(self.penalties) == (len(self.hws) + 1))
+        self.penalty = penalty
+        if self.penalty is not None:
+            if not util.isiterable(self.penalty):
+                self.penalty = (self.penalty,) * (self.nHLayers+1)
+        assert (self.penalty is None) or (len(self.penalty) == (len(self.hws) + 1))
 
-        self.elastics = elastics if util.isiterable(elastics) \
-                else (elastics,) * (self.nHLayers+1)
-        assert (len(self.elastics) == (len(self.hws) + 1))
+        self.elastic = elastic if util.isiterable(elastic) \
+                else (elastic,) * (self.nHLayers+1)
+        assert (len(self.elastic) == (len(self.hws) + 1))
 
         # train the network
         if optimFunc is not None:
@@ -182,7 +182,7 @@ class ForwardNetworkSoftmax(Classifier, optim.Optable):
         return util.softmax(v)
 
     def penaltyError(self):
-        if self.penalties is None:
+        if self.penalty is None:
             return 0.0
 
         hwsf = [hw[:-1].ravel() for hw in self.hws]
@@ -191,20 +191,20 @@ class ForwardNetworkSoftmax(Classifier, optim.Optable):
         weights = hwsf + [vwf,]
 
         totalPenalty = 0.0
-        for weight, penalty, elastic in zip(weights, self.penalties, self.elastics):
+        for weight, penalty, elastic in zip(weights, self.penalty, self.elastic):
             totalPenalty += ( elastic      * penalty * weight.dot(weight)/weight.size + # L2
                              (1.0-elastic) * penalty * np.mean(np.abs(weight)) ) # L1
 
         return totalPenalty
 
     def penaltyGradient(self, layer):
-        if self.penalties is None:
+        if self.penalty is None:
             return 0.0
 
         weights = self.vw if layer == -1 else self.hws[layer]
 
-        penalty = self.penalties[layer]
-        elastic = self.elastics[layer]
+        penalty = self.penalty[layer]
+        elastic = self.elastic[layer]
 
         penMask = np.ones_like(weights)
         penMask[-1] = 0.0
@@ -338,7 +338,7 @@ def demoFNS2d():
                 maxIter=1000, verbose=True)
 
     ##model = FNS(classData, nHidden=10, optimFunc=optim.minibatch,
-    ##            penalties=0.01,
+    ##            penalty=0.01,
     ##            batchSize=15, maxRound=5, maxIter=5,
     ##            transFunc=transfer.lecun, precision=1.0e-10,
     ##            verbose=1)
