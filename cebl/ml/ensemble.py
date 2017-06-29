@@ -3,12 +3,12 @@ import numpy as np
 
 from cebl import util
 
-from cebl.ml.regression import Regression
-from cebl.ml.classifier import Classifier
-from cebl.ml import stand
+from .regression import Regression
+from .classifier import Classifier
+from . import stand
 
-from cebl.ml.linreg import RidgeRegression
-from cebl.ml.logreg import LogisticRegression
+from .linreg import RidgeRegression
+from .logreg import LogisticRegression
 
 
 class Ensemble(Regression):

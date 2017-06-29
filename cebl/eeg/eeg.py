@@ -1,7 +1,8 @@
 """Module for processing unsegmented eeg.
 """
 
-import cPickle
+#import _pickle as pickle
+import cPickle as pickle
 import json
 import matplotlib.pyplot as plt
 from matplotlib.colors import LogNorm as pltLogNorm
@@ -13,11 +14,11 @@ from cebl import ml
 from cebl import sig
 from cebl import util
 
-from base import EEGBase
-import chanlocs
-import head
-import readbdf
-import seg
+from .base import EEGBase
+from . import chanlocs
+from . import head
+from . import readbdf
+from . import seg
 
 
 class EEG(EEGBase):
@@ -781,14 +782,14 @@ class EEG(EEGBase):
         if fileFormat == 'pkl':
             data = np.hstack((self.data, self.markers[:,None]))
             with util.openCompressedFile(fileName, 'w') as fileHandle:
-                cPickle.dump(data, fileHandle, protocol=cPickle.HIGHEST_PROTOCOL)
+                pickle.dump(data, fileHandle, protocol=pickle.HIGHEST_PROTOCOL)
         else:
             raise Exception('Unknown file format ' + str(fileFormat))
 
 class EEGFromPickledMatrix(EEG):
     def __init__(self, fileName, sampRate, chanNames=None, markers=-1, transpose=False, *args, **kwargs):
         with util.openCompressedFile(fileName, 'r') as fileHandle:
-            data = np.asarray(cPickle.load(fileHandle))
+            data = np.asarray(pickle.load(fileHandle))
 
         if transpose:
             data = data.T

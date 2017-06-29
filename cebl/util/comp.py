@@ -2,6 +2,7 @@ import bz2
 import gzip
 import lzma
 
+
 compressedExtensions = ('xz', 'bz2', 'gz')
 
 def openCompressedFile(fileName, mode='r', *args, **kwargs):

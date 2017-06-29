@@ -7,7 +7,7 @@ import scipy.signal as spsig
 
 from cebl import util
 
-from strans import STrans
+from .strans import STrans
 
 
 class PrincipalComponentsAnalysis(STrans):

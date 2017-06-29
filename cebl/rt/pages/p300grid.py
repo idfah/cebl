@@ -15,7 +15,7 @@ from cebl import ml
 from cebl.rt import widgets
 from cebl.rt.widgets import grid
 
-from standard import StandardConfigPanel, StandardBCIPage
+from .standard import StandardConfigPanel, StandardBCIPage
 
 class ConfigPanel(StandardConfigPanel):
     """Panel containing configuration widgets.  This is intimately

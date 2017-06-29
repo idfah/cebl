@@ -1,1 +1,1 @@
-from gnautilus import *
+from .gnautilus import *

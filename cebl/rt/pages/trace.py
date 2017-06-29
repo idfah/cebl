@@ -6,7 +6,7 @@ from wx.lib.agw import aui
 from cebl.rt import widgets
 from cebl import sig
 
-from standard import StandardConfigPanel, StandardMonitorPage
+from .standard import StandardConfigPanel, StandardMonitorPage
 
 
 class ConfigPanel(StandardConfigPanel):

@@ -6,7 +6,7 @@ import numpy as np
 
 from cebl import util
 
-from strans import STrans
+from .strans import STrans
 
 
 class CommonSpatialPatterns(STrans):

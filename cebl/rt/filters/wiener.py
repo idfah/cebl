@@ -6,7 +6,7 @@ from cebl import sig
 
 from cebl.rt import widgets
 
-from filt import Filter, FilterConfigPanel
+from .filt import Filter, FilterConfigPanel
 
 WienerName = 'Wiener'
 

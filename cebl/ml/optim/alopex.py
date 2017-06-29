@@ -3,7 +3,7 @@ import numpy as np
 
 from cebl import util
 
-import tests
+from . import tests
 
 
 def alopex(optable, stepSize=0.0075, tempInit=10000, tempIter=20,

@@ -4,8 +4,8 @@ import scipy.signal as spsig
 
 from cebl import util
 
-import bandpass
-import windows
+from . import bandpass
+from . import windows
 
 
 def downsample(s, factor):

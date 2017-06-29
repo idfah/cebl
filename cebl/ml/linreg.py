@@ -5,9 +5,9 @@ from scipy import linalg as splinalg
 
 from cebl import util
 
-from cebl.ml import optim
-from cebl.ml import paraminit as pinit
-from cebl.ml.regression import Regression
+from . import optim
+from . import paraminit as pinit
+from .regression import Regression
 
 class RidgeRegression(Regression):
     def __init__(self, x, g, penalty=0.0, pseudoInv=True):

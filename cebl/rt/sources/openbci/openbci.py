@@ -1,3 +1,5 @@
+# from open_bci_v3.py in OpenBCI's python-sdk, as is most of the openbci-specific  code here.
+
 import serial
 import numpy as np
 import struct
@@ -11,7 +13,6 @@ from cebl.rt import widgets
 
 from cebl.rt.sources.source import Source, SourceConfigPanel
 
-# from open_bci_v3.py in OpenBCI's python-sdk, as is most of the openbci-specific  code here.
 
 SAMPLE_RATE = 250.0  # Hz
 START_BYTE = 0xA0  # start of data packet

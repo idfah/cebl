@@ -1,13 +1,15 @@
-# from http://stackoverflow.com/questions/25239423/crc-ccitt-16-bit-python-manual-calculation
+"""Compute CRC checksums.
 
-
-__all__ = ['crc', 'crcb']
+    Refs:
+        Based on code provided by stack overflow:
+        http://stackoverflow.com/questions/25239423/crc-ccitt-16-bit-python-manual-calculation
+"""
 
 
 POLYNOMIAL = 0x1021
 PRESET = 0
 
-def initial(c):
+def _initial(c):
     crc = 0
     c = c << 8
     for j in range(8):
@@ -18,9 +20,9 @@ def initial(c):
         c = c << 1
     return crc
 
-tab = [ initial(i) for i in range(256) ]
+tab = [ _initial(i) for i in range(256) ]
 
-def update_crc(crc, c):
+def _update_crc(crc, c):
     cc = 0xff & c
 
     tmp = (crc >> 8) ^ cc
@@ -32,11 +34,11 @@ def update_crc(crc, c):
 def crc(str):
     crc = PRESET
     for c in str:
-        crc = update_crc(crc, ord(c))
+        crc = _update_crc(crc, ord(c))
     return crc
 
 def crcb(*i):
     crc = PRESET
     for c in i:
-        crc = update_crc(crc, c)
+        crc = _update_crc(crc, c)
     return crc

@@ -8,7 +8,7 @@ from wx.lib.agw import aui
 from cebl import util
 from cebl.rt import widgets
 
-from page import Page
+from .page import Page
 
 
 class TextStim(Page):

@@ -13,7 +13,7 @@ from cebl import sig
 from cebl import util
 from cebl.rt import widgets
 
-from standard import StandardConfigPanel, StandardMonitorPage
+from .standard import StandardConfigPanel, StandardMonitorPage
 
 
 class FourierConfigPanel(wx.Panel):

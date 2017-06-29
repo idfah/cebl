@@ -1,1 +1,1 @@
-from gmobilab import *
+from .gmobilab import *

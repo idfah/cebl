@@ -1,7 +1,7 @@
 import numpy as np
 import numpy.lib.stride_tricks as npst
 
-from arr import colmat
+from .arr import colmat
 
 
 def slidingWindow(s, span, stride=None, axis=0):

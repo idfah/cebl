@@ -1,6 +1,6 @@
 from cebl import ml
 
-from strans import STrans, STransConfigPanel
+from .strans import STrans, STransConfigPanel
 
 MaxSignalFractionName = 'Max Signal Fraction'
 

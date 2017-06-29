@@ -1,6 +1,6 @@
 import numpy as np
 
-from arr import capZero
+from .arr import capZero
 
 
 def roc(classProbs):

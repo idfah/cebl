@@ -1,2 +1,2 @@
-from source import *
-from sourcepanel import *
+from .source import *
+from .sourcepanel import *

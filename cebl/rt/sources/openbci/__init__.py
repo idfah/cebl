@@ -1,1 +1,1 @@
-from openbci import *
+from .openbci import *

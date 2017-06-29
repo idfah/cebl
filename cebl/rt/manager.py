@@ -5,10 +5,10 @@ import wx
 #import warnings
 #warnings.simplefilter('always')
 
-import events
-import logging
-import pages
-import sources
+from . import events
+from . import logging
+from . import pages
+from . import sources
 
 
 def logExceptionHook(etype, e, trace):

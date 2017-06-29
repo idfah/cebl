@@ -3,12 +3,10 @@ import matplotlib.cm as pltcm
 from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
 
-from sciopt import sciopt
-
 
 class Rosen():
-    def __init__(self, a=1.0, b=100.0, initialSolution=None,
-                 optimFunc=sciopt, *args, **kwargs):
+    def __init__(self, optimFunc, a=1.0, b=100.0,
+                 initialSolution=None, *args, **kwargs):
         self.a = a
         self.b = b
 
@@ -78,7 +76,7 @@ class Rosen():
         fig.tight_layout()
 
 class Ackley():
-    def __init__(self, a=1.0, b=100.0, optimFunc=sciopt, *args, **kwargs):
+    def __init__(self, optimFunc, a=1.0, b=100.0, *args, **kwargs):
         self.a = a
         self.b = b
 

@@ -6,7 +6,7 @@ from cebl import util
 
 from cwt import CWT
 
-import windows
+from . import windows
 
 
 class SpectrogramBase(object):

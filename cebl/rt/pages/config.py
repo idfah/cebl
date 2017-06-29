@@ -6,7 +6,7 @@ from wx.lib.scrolledpanel import ScrolledPanel
 from cebl.rt import sources
 from cebl.rt import widgets
 
-from page import Page
+from .page import Page
 
 class Config(Page):
     """Page for making configuration changes.  This includes source, channel

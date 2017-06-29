@@ -1,1 +1,1 @@
-from activetwo import *
+from .activetwo import *

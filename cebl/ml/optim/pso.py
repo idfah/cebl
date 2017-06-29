@@ -3,7 +3,7 @@ import matplotlib.cm as pltcm
 from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
 
-import tests
+from . import tests
 
 
 def pso(optable, nParticles=10, pInit=0.5, vInit=0.01,

@@ -15,7 +15,7 @@ from cebl import eeg
 from cebl import ml
 from cebl.rt import widgets
 
-from standard import StandardConfigPanel, StandardBCIPage
+from .standard import StandardConfigPanel, StandardBCIPage
 
 
 rightArrow = u'\u2192'

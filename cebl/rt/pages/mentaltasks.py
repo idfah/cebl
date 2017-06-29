@@ -11,7 +11,7 @@ from cebl import ml
 from cebl import util
 from cebl.rt import widgets
 
-from standard import StandardConfigPanel, StandardBCIPage
+from .standard import StandardConfigPanel, StandardBCIPage
 
 
 class WelchConfigPanel(wx.Panel):

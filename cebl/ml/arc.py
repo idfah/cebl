@@ -3,15 +3,16 @@ import numpy as np
 
 from cebl import util
 
-from classifier import Classifier
-from autoreg import AutoRegression, RecurrentAutoRegression
-from logreg import LogisticRegression
-import stand
+from .classifier import Classifier
+from .autoreg import AutoRegression, RecurrentAutoRegression
+from .logreg import LogisticRegression
+from . import stand
 
-from nnet import esn
+from .nnet import esn
 
-from logreg import LogisticRegression
-from knn import KNN
+from .logreg import LogisticRegression
+from .knn import KNN
+
 
 class AutoRegressiveClassifierCosine(Classifier):
     def __init__(self, classData, k=5, autoRegClass=AutoRegression, **autoRegKwargs):

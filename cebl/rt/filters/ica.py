@@ -3,7 +3,7 @@ import wx
 from cebl import ml
 from cebl.rt import widgets
 
-from strans import STrans, STransConfigPanel
+from .strans import STrans, STransConfigPanel
 
 IndependentComponentsName = 'Independent Components'
 

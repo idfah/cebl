@@ -1,4 +1,3 @@
-
 # need to check exceptions XXX - idfah
 
 import time
@@ -7,7 +6,7 @@ import wx
 from wx.lib.agw import aui
 from wx.lib.scrolledpanel import ScrolledPanel
 
-from page import Page
+from .page import Page
 
 
 class StandardConfigPanel(ScrolledPanel):

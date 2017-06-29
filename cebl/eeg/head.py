@@ -6,7 +6,7 @@ from scipy import interpolate as spinterp
 
 from cebl import util
 
-from chanlocs import chanLocs3d
+from .chanlocs import chanLocs3d
 
 
 def sphereDist(x1, x2):

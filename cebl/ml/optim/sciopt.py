@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import scipy.optimize as spopt
 
-import tests
+from . import tests
 
 
 def sciopt(optable,

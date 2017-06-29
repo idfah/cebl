@@ -1,7 +1,7 @@
 import wx
 import numpy as np
 
-from wxgraphics import *
+from .wxgraphics import *
 
 
 __all__ = ['Pong',]

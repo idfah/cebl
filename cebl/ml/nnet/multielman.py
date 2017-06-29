@@ -3,12 +3,13 @@ from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
 
 from cebl import util
-from cebl.ml import optim
-from cebl.ml import paraminit as pinit
-from cebl.ml import stand
-from cebl.ml.regression import Regression
 
-import transfer
+from .. import optim
+from .. import paraminit as pinit
+from .. import stand
+from ..regression import Regression
+
+from . import transfer
 
 
 class MultilayerElmanRecurrentNetwork(Regression, optim.Optable):

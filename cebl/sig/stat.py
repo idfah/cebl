@@ -1,5 +1,6 @@
 import numpy as np
 
+
 def autoCorrelation(s):
     def ac1d(x):
         var = x.var()

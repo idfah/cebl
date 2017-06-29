@@ -8,7 +8,7 @@ import wx
 from cebl import sig
 from cebl.rt import widgets
 
-from filt import Filter, FilterConfigPanel
+from .filt import Filter, FilterConfigPanel
 
 IIRBandpassName = 'IIR Bandpass Filter'
 FIRBandpassName = 'FIR Bandpass Filter'

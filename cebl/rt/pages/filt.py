@@ -5,7 +5,7 @@ from cebl.rt import sources
 from cebl.rt import widgets
 from cebl.rt import filters
 
-from page import Page
+from .page import Page
 
 
 # the way filters are managed here is messy.  Needs work. XXX - idfah

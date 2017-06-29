@@ -12,7 +12,7 @@ from cebl import util
 from cebl.rt import widgets
 
 # StandardPage only needed for toolbar setup XXX - idfah
-from standard import StandardConfigPanel, StandardBCIPage, StandardPage
+from .standard import StandardConfigPanel, StandardBCIPage, StandardPage
 
 
 class WelchConfigPanel(wx.Panel):

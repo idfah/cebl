@@ -9,7 +9,7 @@ import wx.lib.agw.floatspin as agwfs
 from cebl import ml
 from cebl.rt import widgets
 
-from standard import StandardConfigPanel, StandardBCIPage
+from .standard import StandardConfigPanel, StandardBCIPage
 
 
 class ConfigPanel(StandardConfigPanel):

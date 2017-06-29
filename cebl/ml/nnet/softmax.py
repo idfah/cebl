@@ -3,12 +3,13 @@ from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
 
 from cebl import util
-from cebl.ml import label
-from cebl.ml import optim
-from cebl.ml import paraminit as pinit
-from cebl.ml.classifier import Classifier
 
-import transfer
+from .. import label
+from .. import optim
+from .. import paraminit as pinit
+from ..classifier import Classifier
+
+from . import transfer
 
 
 class ForwardNetworkSoftmax(Classifier, optim.Optable):

@@ -4,7 +4,7 @@ import scipy.spatial.distance as spdist
 
 from cebl import util
 
-from classifier import Classifier
+from .classifier import Classifier
 
 
 class KNearestNeighbors(Classifier):

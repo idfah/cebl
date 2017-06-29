@@ -3,7 +3,7 @@ import numpy as np
 from cebl import util
 from cebl.util.clsm import *
 
-import label
+from . import label
 
 
 class Classifier(object):

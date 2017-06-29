@@ -9,7 +9,7 @@ from cebl import eeg
 from cebl import util
 from cebl.rt import widgets
 
-from source import Source, SourceConfigPanel
+from .source import Source, SourceConfigPanel
 
 
 class ReplayConfigPanel(SourceConfigPanel):

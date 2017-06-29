@@ -5,7 +5,7 @@ from wx.lib.agw import aui
 from cebl import util
 from cebl.rt import widgets
 
-from standard import StandardConfigPanel, StandardMonitorPage
+from .standard import StandardConfigPanel, StandardMonitorPage
 
 
 class WelchConfigPanel(wx.Panel):

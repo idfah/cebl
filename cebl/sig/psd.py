@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from cebl import util
 from cebl.ml.autoreg import AutoRegression
 
-import windows
+from . import windows
 
 
 class PSDBase(object):

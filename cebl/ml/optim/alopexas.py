@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-import tests
+from . import tests
 
 
 def alopex(optable,

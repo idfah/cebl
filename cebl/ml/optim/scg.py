@@ -3,7 +3,7 @@ import numpy as np
 
 from cebl import util
 
-import tests
+from . import tests
 
 
 def scg(optable,

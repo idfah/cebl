@@ -8,7 +8,7 @@ import wx
 from cebl import util
 from cebl.rt import widgets
 
-from source import Source, SourceConfigPanel
+from .source import Source, SourceConfigPanel
 
 
 chans8 = ('F3', 'F4', 'C3', 'C4', 'P3', 'P4', 'O1', 'O2')

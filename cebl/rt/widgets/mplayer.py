@@ -3,7 +3,7 @@ import wx
 from wx.lib import newevent
 import wx.media as wxm
 
-from control import ControlBox
+from .control import ControlBox
 
 
 MPlayerFinishedEvent, EVT_MPLAYER_FINISHED = newevent.NewCommandEvent()

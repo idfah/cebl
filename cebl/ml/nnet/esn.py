@@ -4,10 +4,11 @@ import scipy.sparse as spsparse
 import scipy.optimize as spopt
 
 from cebl import util
-from cebl.ml.linreg import RidgeRegression
-from cebl.ml.regression import Regression
 
-import transfer
+from ..linreg import RidgeRegression
+from ..regression import Regression
+
+from . import transfer
 
 
 def rayleigh(x, eigVal=None, eigVec=None, precision=1e-16, maxIter=500, verbose=False):

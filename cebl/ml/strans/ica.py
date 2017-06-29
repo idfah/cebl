@@ -9,7 +9,7 @@ import scipy.stats as spstat
 
 from cebl import util
 
-from strans import STrans
+from .strans import STrans
 
 
 class IndependentComponentsAnalysis(STrans):

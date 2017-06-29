@@ -1,2 +1,2 @@
-from gmobilab import *
-from gnautilus import *
+from .gmobilab import *
+from .gnautilus import *

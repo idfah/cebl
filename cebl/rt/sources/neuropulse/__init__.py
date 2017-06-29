@@ -1,1 +1,1 @@
-from mindset24r import *
+from .mindset24r import *

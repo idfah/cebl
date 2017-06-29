@@ -8,7 +8,7 @@ import wx
 
 from cebl import util
 
-from wxgraphics import DrawablePanel
+from .wxgraphics import DrawablePanel
 
 
 class TextStim(DrawablePanel):

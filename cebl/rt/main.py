@@ -5,10 +5,10 @@ import wx
 
 import sys
 
-import events
-import widgets
+from . import events
+from . import widgets
 
-from manager import *
+from .manager import *
 
 
 class CEBLApp(wx.App):

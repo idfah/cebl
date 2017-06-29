@@ -1,6 +1,7 @@
 import wx
 import sys
 
+
 class LogTarget(wx.PyLog):
     def __init__(self, *args, **kwargs):
         wx.PyLog.__init__(self, *args, **kwargs)

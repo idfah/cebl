@@ -9,7 +9,7 @@ from scipy import linalg as splinalg
 
 from cebl import util
 
-from classifier import Classifier
+from .classifier import Classifier
 
 
 log2pi = np.log(2.0*np.pi)

@@ -3,7 +3,7 @@ import wx
 
 from cebl import util
 
-from wxgraphics import GraphicsPanel
+from .wxgraphics import GraphicsPanel
 
 
 # does this need to be a command event? XXX - idfah

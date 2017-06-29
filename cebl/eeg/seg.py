@@ -10,9 +10,9 @@ from cebl import ml
 from cebl import sig
 from cebl import util
 
-from base import EEGBase
-import chanlocs
-import head
+from .base import EEGBase
+from . import chanlocs
+from . import head
 
 
 class SegmentedEEG(EEGBase):

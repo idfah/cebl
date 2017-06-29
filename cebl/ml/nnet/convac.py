@@ -6,14 +6,15 @@ import scipy as sp
 import scipy.signal as spsig
 
 from cebl import util
-from cebl.ml import label
-from cebl.ml import optim
-from cebl.ml import paraminit as pinit
-from cebl.ml import stand
-from cebl.ml.classifier import Classifier
 
-import transfer
-from ddembed import *
+from .. import label
+from .. import optim
+from .. import paraminit as pinit
+from .. import stand
+from ..classifier import Classifier
+
+from . import transfer
+from .ddembed import *
 
 
 class ConvolutionalNetworkAccum(Classifier, optim.Optable):

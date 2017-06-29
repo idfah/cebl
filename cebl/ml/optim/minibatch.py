@@ -1,6 +1,6 @@
 import numpy as np
 
-from scg import scg
+from .scg import scg
 
 
 def minibatch(optable, x, g, batchSize=10, maxRound=10,

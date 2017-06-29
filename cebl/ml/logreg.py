@@ -6,10 +6,10 @@ import numpy as np
 
 from cebl import util
 
-from classifier import Classifier
-import label
-import optim
-import paraminit as pinit
+from .classifier import Classifier
+from . import label
+from . import optim
+from . import paraminit as pinit
 
 
 class LogisticRegression(Classifier, optim.Optable):

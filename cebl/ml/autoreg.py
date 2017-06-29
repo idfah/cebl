@@ -3,10 +3,10 @@ import numpy as np
 
 from cebl import util
 
-import nnet
-from linreg import RidgeRegression
+from . import nnet
+from .linreg import RidgeRegression
 
-#import strans
+#from . import strans
 
 
 class AutoRegressionBase(object):
