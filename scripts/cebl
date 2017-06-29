@@ -13,8 +13,10 @@ fi
 eval $cmd <<- EOM
 	# hack to prevent segfault in wxPython3.x, forces wxAgg backend XXX - idfah
 	# https://github.com/matplotlib/matplotlib/issues/3316
+    # note, cebl.rt.__init__ also tries to change backend in case cebl is
+    # started from the console.  That doesn't play nice with all backends though.
 	import matplotlib
-	matplotlib.use("wxAgg")
+	matplotlib.use('wxAgg')
 
 	import cebl.rt
 	cebl.rt.main.run()
