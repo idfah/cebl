@@ -1,6 +1,21 @@
-#!/usr/bin/env python
+#!/bin/bash
 
-import cebl
-import cebl.rt
+max_rt_prio=$(ulimit -r)
 
-cebl.rt.main.run()
+if [[ $max_rt_prio -gt 0 ]]
+then
+    cmd="chrt -f $max_rt_prio python"
+else
+    echo "Warning: Unable to set real-time priority. max_rt_prio=${max_rt_prio}"
+    cmd='python'
+fi
+
+eval $cmd <<- EOM
+	# hack to prevent segfault in wxPython3.x, forces wxAgg backend XXX - idfah
+	# https://github.com/matplotlib/matplotlib/issues/3316
+	import matplotlib
+	matplotlib.use("wxAgg")
+
+	import cebl.rt
+	cebl.rt.main.run()
+EOM

@@ -1,35 +1,36 @@
 #!/usr/bin/env python
 
-import distutils.core as dc
+#import distutils.core as dc
+import setuptools
 from Cython.Build import cythonize
 import numpy as np
 
 
-cebl_rt_sources_source_ext = dc.Extension('cebl.rt.sources.source.source',
+cebl_rt_sources_source_ext = setuptools.Extension('cebl.rt.sources.source.source',
     sources = ['cebl/rt/sources/source/source.pyx'],
     extra_compile_args = ['-march=core2', '-O3', '-fopenmp'])
 
-cebl_rt_sources_neuropulse_m24rlib_ext = dc.Extension('cebl.rt.sources.neuropulse.libmindset24r',
+cebl_rt_sources_neuropulse_m24rlib_ext = setuptools.Extension('cebl.rt.sources.neuropulse.libmindset24r',
     sources = ['cebl/rt/sources/neuropulse/libmindset24r.c'],
     extra_compile_args = ['-Wall'])
 
-cebl_rt_sources_biosemi_activetwolib_ext = dc.Extension('cebl.rt.sources.biosemi.libactivetwo',
+cebl_rt_sources_biosemi_activetwolib_ext = setuptools.Extension('cebl.rt.sources.biosemi.libactivetwo',
     sources = ['cebl/rt/sources/biosemi/activetwo.c'],
     libraries = ['bsif', 'usb'],
     library_dirs = ['cebl/rt/sources/biosemi/'],
     extra_compile_args = ['-Wall', '-march=core2', '-O3'],
     language='c++')
 
-cebl_rt_widgets_wxlibplot_ext = dc.Extension('cebl.rt.widgets.wxlibplot',
+cebl_rt_widgets_wxlibplot_ext = setuptools.Extension('cebl.rt.widgets.wxlibplot',
     sources = ['cebl/rt/widgets/wxlibplot.pyx'],
     extra_compile_args = ['-march=core2', '-O3', '-fopenmp'])
 
-cebl_sig_cwt_ext = dc.Extension('cebl.sig.cwt',
+cebl_sig_cwt_ext = setuptools.Extension('cebl.sig.cwt',
     sources = ['cebl/sig/cwt.pyx'],
     libraries = ['pthread', 'gomp'],
     extra_compile_args = ['-march=core2', '-O3', '-fopenmp'])
 
-cebl_util_fasttanh_ext = dc.Extension('cebl.util.fasttanh',
+cebl_util_fasttanh_ext = setuptools.Extension('cebl.util.fasttanh',
     sources = ['cebl/util/fasttanh.c'],
     libraries = ['pthread', 'gomp'],
     include_dirs = [np.get_include()],
@@ -44,28 +45,17 @@ ext_modules = [cebl_rt_sources_neuropulse_m24rlib_ext,
                           cebl_sig_cwt_ext])
 
 
-dc.setup(
+setuptools.setup(
     name='CEBL',
-    version='3.0.0a',
-    author='Elliott Forney',
+    version='3.0.0',
+    author='Elliott Forney and Charles Anderson',
     author_email='eeg@cs.colostate.edu',
     url='http://www.cs.colostate.edu/eeg',
-    packages=['cebl',
-              'cebl.eeg',
-              'cebl.ml',
-              'cebl.ml.nnet',
-              'cebl.ml.optim',
-              'cebl.ml.strans',
-              'cebl.rt',
-              'cebl.rt.filters',
-              'cebl.rt.pages',
-              'cebl.rt.sources',
-              'cebl.rt.widgets',
-              'cebl.sig'],
+    packages=setuptools.find_packages(),
     ext_modules = ext_modules,
     scripts=['scripts/cebl'],
-    license='Copyright 2014',
+    license='GPL3, Copyright (2017) Elliott Forney, Charles Anderson, Colorado State University',
     description='Colorado Electroencephalography and Brain-Computer Interfaces Laboratory (CEBL)',
-    long_description=open('README').read(),
-    #install_requires=['matplotlib', 'wxpython', 'scipy', 'numpy', 'pyaudio']
+    include_package_data=True,
+    #install_requires=['matplotlib', 'scipy', 'numpy', 'pylibftdi']
 )

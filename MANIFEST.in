@@ -2,3 +2,8 @@ include run README
 include *.txt
 recursive-include docs *
 recursive-include scripts *
+include cebl/rt/images/*.png
+include cebl/rt/sources/gtec/gmobilab/gmobilab.so
+include cebl/rt/sources/gtec/gnautilus/gnautilus.so
+include cebl/rt/sources/biosemi/libbsif.a
+include cebl/rt/sources/biosemi/bsif.h
