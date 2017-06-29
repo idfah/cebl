@@ -289,7 +289,7 @@ class BandpassFilterIIR(BandpassFilterBase):
 
 class BandpassFilterIIRStateful(BandpassFilterIIR):
     def __init__(self, *args, **kwargs):
-        if kwargs.has_key('zeroPhase') and kwargs['zeroPhase'] == True:
+        if ('zeroPhase' in kwargs) and (kwargs['zeroPhase'] == True):
             raise Exception('Stateful IIR filter cannot have linear phase.')
 
         BandpassFilterIIR.__init__(self, *args, zeroPhase=False, **kwargs)

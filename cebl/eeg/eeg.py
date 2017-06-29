@@ -732,7 +732,7 @@ class EEG(EEGBase):
         #fig.subplots_adjust(hspace=0.15, wspace=0.25,
         #        left=0.05, right=0.92, top=0.97, bottom=0.06)
 
-        if not kwargs.has_key('alpha'):
+        if 'alpha' not in kwargs:
             kwargs['alpha'] = 0.35
 
         nCols = np.ceil(np.sqrt(len(lags)))

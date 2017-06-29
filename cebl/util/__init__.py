@@ -16,3 +16,4 @@ from func import *
 from pack import *
 from parallel import *
 from shuffle import *
+from stats import *
