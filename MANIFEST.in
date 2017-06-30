@@ -1,9 +1,14 @@
-include run README
-include *.txt
-recursive-include docs *
-recursive-include scripts *
-include cebl/rt/images/*.png
+recursive-include cebl *.pyx
+recursive-include cebl *.c
+recursive-include cebl *.h
+
 include cebl/rt/sources/gtec/gmobilab/gmobilab.so
 include cebl/rt/sources/gtec/gnautilus/gnautilus.so
 include cebl/rt/sources/biosemi/libbsif.a
 include cebl/rt/sources/biosemi/bsif.h
+include cebl/rt/images/*.png
+
+include run README
+include *.txt
+recursive-include docs *
+recursive-include scripts *
