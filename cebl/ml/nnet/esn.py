@@ -384,8 +384,9 @@ class EchoStateNetworkReservoir(object):
         if ax is None:
             fig = plt.figure()
             ax = fig.add_subplot(1,1,1)
-            ax.set_xlabel('Density')
-            ax.set_ylabel('Reservoir Activation')
+
+        ax.set_xlabel('Density')
+        ax.set_ylabel('Reservoir Activation')
 
         n, bins, patches = ax.hist(act.ravel(), normed=True,
                         orientation='horizontal', label='Activations')

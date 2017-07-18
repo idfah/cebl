@@ -520,9 +520,10 @@ class EEG(EEGBase):
         if ax is None:
             fig = plt.figure()
             ax = fig.add_subplot(1,1,1)
-            ax.grid()
-            ax.set_xlabel(r'Lag')
-            ax.set_ylabel(r'Correlation')
+
+        ax.grid()
+        ax.set_xlabel(r'Lag')
+        ax.set_ylabel(r'Correlation')
 
         lines = ax.plot(np.arange(ac.shape[0]), ac, **kwargs)
 
@@ -677,7 +678,7 @@ class EEG(EEGBase):
         psd = sig.PSD(self.data[:,chans], sampRate=self.sampRate, **psdKwargs)
         return psd.plotPower(ax=ax, **kwargs)
 
-    def plotTrace(self, start=None, end=None, chans=None, scale=None, ax=None, **kwargs):
+    def plotTrace(self, start=None, end=None, chans=None, drawZero=False, scale=None, ax=None, **kwargs):
         if chans is None:
             chans = self.getChanNames()
         chans = self.getChanIndices(chans)
@@ -695,28 +696,32 @@ class EEG(EEGBase):
             endSamp = int(end*self.sampRate)
 
         s = self.data[startSamp:endSamp, chans].copy()
-        s -= s.mean(axis=0)
+        ##s -= s.mean(axis=0)
         #time = np.linspace(0,end-start,s.shape[0]).astype(self.dtype, copy=False)
         time = np.linspace(start,end,s.shape[0]).astype(self.dtype, copy=False)
 
-        sep = util.colsep(s, scale=scale)
+        sep, scale = util.colsep(s, scale=scale, returnScale=True)
 
         if ax is None:
             #fig = plt.figure(figsize=(14,8.5))
             #fig = plt.figure(figsize=(9,5.5))
             fig = plt.figure()
             ax = fig.add_subplot(1,1,1)
-            ax.set_xlabel(r'Time ($s$)')
-            ax.set_ylabel(r'Signal ($\mu V$)')
-            if len(chans) > 1:
-                ax.set_yticklabels([c for i,c in enumerate(self.chanNames) if i in chans])
-                ax.set_yticks(sep)
-                ##ax.set_ylim(-scale, sep[-1] + scale)
+
+        ax.set_xlabel(r'Time ($s$)')
+        ax.set_ylabel(r'Signal ($\mu V$)')
+        if len(chans) > 1:
+            ax.set_yticklabels([c for i,c in enumerate(self.chanNames) if i in chans])
+            ax.set_yticks(sep)
+            ##ax.set_ylim(-scale, sep[-1] + scale)
 
         if len(chans) > 1:
             s += sep
 
         lines = ax.plot(time, s, **kwargs)
+
+        if drawZero:
+            ax.hlines(sep, time[0], time[-1], linewidth=2, linestyle='--', color='grey')
 
         ax.autoscale(tight=True)
 

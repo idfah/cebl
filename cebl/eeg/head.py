@@ -212,8 +212,8 @@ def plotHeadLines(magnitudes, chanNames=('F3','F4','C3','C4','P3','P4','O1','O2'
     for chanName, coord, mags in zip(chanNames, xy, magnitudes.T):
         x, y = coord
 
-        axc = plt.gcf().transFigure.inverted().transform(ax.transData.transform((x,y)))
-        sax = plt.axes([axc[0]-width/2.0, axc[1], width, height])
+        axc = ax.figure.transFigure.inverted().transform(ax.transData.transform((x,y)))
+        sax = ax.figure.add_axes([axc[0]-width/2.0, axc[1], width, height])
         sax.set_ylim(mn, mx)
 
         sax.set_xticks([])

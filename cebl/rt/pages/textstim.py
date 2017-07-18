@@ -125,7 +125,7 @@ class TextStim(Page):
                         'ecplmunxrxcxxzbexyfztojwmxybxnxhtpwxxwrz'
 
             else:
-                stims = string.lowercase*3
+                stims = string.ascii_lowercase*3
 
             self.stims = list(chars)
                 

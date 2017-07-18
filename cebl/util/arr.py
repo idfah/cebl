@@ -246,7 +246,7 @@ def colmat(x, dtype=None, copy=False):
 
     return x
 
-def colsep(x, scale=None):
+def colsep(x, scale=None, returnScale=False):
     x = colmat(x)
 
     if scale is None or np.isclose(scale, 0.0):
@@ -255,7 +255,12 @@ def colsep(x, scale=None):
         else:
             scale = np.max(np.abs(x))
 
-    return -np.arange(x.shape[1], dtype=x.dtype)*2.0*scale
+    sep = -np.arange(x.shape[1], dtype=x.dtype)*2.0*scale
+
+    if returnScale:
+        return sep, scale
+    else:
+        return sep
 
 def hashArray(x):
     return hashlib.sha1(np.ascontiguousarray(x).view(np.uint8)).hexdigest()

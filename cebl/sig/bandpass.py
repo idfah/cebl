@@ -447,7 +447,7 @@ class BandpassFilterFIR(BandpassFilterBase):
         self.impulseResponse = self.impulseResponse.astype(self.dtype, copy=False)
 
     def frequencyResponse(self, freqs=None):
-        return spsig.freqz(self.impulseResponse)
+        return spsig.freqz(self.impulseResponse, worN=freqs)
 
     def filter(self, s, axis=0, mode='same'):
         return np.apply_along_axis(lambda v:

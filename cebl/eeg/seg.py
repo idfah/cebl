@@ -483,7 +483,7 @@ class SegmentedEEG(EEGBase):
         if timeUnit == 'ms':
             time *= 1000.0
 
-        sep = util.colsep(avg, scale=scale)
+        sep, scale = util.colsep(avg, scale=scale, returnScale=True)
 
         if ax is None:
             #fig = plt.figure(figsize=(9,5.5))
@@ -626,20 +626,22 @@ class SegmentedEEG(EEGBase):
 
         freqs = freqs[freqMask]
 
-        scale = scale.lower()
         if ax is None:
             fig = plt.figure()
             ax = fig.add_subplot(1,1,1)
-            ax.grid()
-            ax.set_title('Power Spectral Density')
-            ax.set_xlabel(r'Freqency ($Hz$)')
-            ax.set_xlim((np.min(freqs), np.max(freqs)))
-            if scale in ('linear', 'log'):
-                ax.set_ylabel(r'Power Density ($\mu V^2 / Hz$)')
-            elif scale in ('db', 'decibels'):
-                ax.set_ylabel(r'Power Density (dB)')
-            if scale == 'log':
-                ax.set_yscale('log')
+
+        ax.grid()
+        ax.set_title('Power Spectral Density')
+        ax.set_xlabel(r'Freqency ($Hz$)')
+        ax.set_xlim((np.min(freqs), np.max(freqs)))
+
+        scale = scale.lower()
+        if scale in ('linear', 'log'):
+            ax.set_ylabel(r'Power Density ($\mu V^2 / Hz$)')
+        elif scale in ('db', 'decibels'):
+            ax.set_ylabel(r'Power Density (dB)')
+        if scale == 'log':
+            ax.set_yscale('log')
 
         if scale in ('linear', 'log'):
             pass
@@ -687,10 +689,10 @@ class SegmentedEEG(EEGBase):
         ##    fig = plt.figure(figsize=(14,8.5))
         #    fig = plt.figure(figsize=(9,5.5))
         #    ax = fig.add_subplot(1,1,1)
-        #    ax.set_yticklabels([c for i,c in enumerate(self.chanNames) if i in chans])
-        #    ax.set_yticks(sep)
-        #    ax.set_xlabel('Time (s)')
-        #    ax.set_ylim(-scale, sep[-1] + scale)
+        #ax.set_yticklabels([c for i,c in enumerate(self.chanNames) if i in chans])
+        #ax.set_yticks(sep)
+        #ax.set_xlabel('Time (s)')
+        #ax.set_ylim(-scale, sep[-1] + scale)
 
 class SegmentedEEGFromEEG(SegmentedEEG):
     def __init__(self, unSegmentedEEG, start=0.0, end=0.8,

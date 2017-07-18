@@ -49,17 +49,18 @@ class PSDBase(object):
             fig = plt.figure()
             result['fig'] = fig
             ax = fig.add_subplot(1,1,1)
-            ax.grid()
-            ax.set_title('Power Spectral Density')
-            ax.set_xlabel(r'Freqency ($Hz$)')
-            ax.set_xlim((np.min(self.freqs), np.max(self.freqs)))
-            if scale in ('linear', 'log'):
-                ax.set_ylabel(r'Power Density ($\mu V^2 / Hz$)')
-            elif scale in ('db', 'decibels'):
-                ax.set_ylabel(r'Power Density (dB)')
-            if scale == 'log':
-                ax.set_yscale('log')
         result['ax'] = ax
+
+        ax.grid()
+        ax.set_title('Power Spectral Density')
+        ax.set_xlabel(r'Freqency ($Hz$)')
+        ax.set_xlim((np.min(self.freqs), np.max(self.freqs)))
+        if scale in ('linear', 'log'):
+            ax.set_ylabel(r'Power Density ($\mu V^2 / Hz$)')
+        elif scale in ('db', 'decibels'):
+            ax.set_ylabel(r'Power Density (dB)')
+        if scale == 'log':
+            ax.set_yscale('log')
 
         if scale in ('linear', 'log'):
             scaledPowers = self.powers
