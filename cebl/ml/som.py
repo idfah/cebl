@@ -13,7 +13,7 @@ class SelfOrganizingMap(object):
     """Self-Organizing Map (SOM).
     """
     def __init__(self, x, latticeSize=(64,64), maxIter=5000,
-                 distMetric='euclidean', learningRate=0.08, learningRateFinal=0.02,
+                 distMetric='euclidean', learningRate=0.02, learningRateFinal=None,
                  radius=None, radiusFinal=None, weightRange=(0.0,1.0),
                  callback=None, verbose=False):
         """Construct a new Self-Organizing Map (SOM).
@@ -141,7 +141,7 @@ def demoSOM():
     #     (0.0,0.0,0.0)))
 
     n = 1000
-    v = np.random.uniform(0.8, 1.0, size=(12,n))
+    v = np.random.uniform(0.85, 1.0, size=(12,n))
     z = np.zeros(n)
 
     data = np.vstack((
@@ -158,23 +158,30 @@ def demoSOM():
         if iteration == 0:
             animFunc.fig = plt.figure(figsize=(10,10))
             animFunc.ax = animFunc.fig.add_subplot(1,1,1)
-            animFunc.wimg = animFunc.ax.imshow(weights, interpolation=None, origin='lower', animated=True)
+            animFunc.wimg = animFunc.ax.imshow(weights,
+                    interpolation='none', origin='lower', animated=True)
 
+            animFunc.fig.tight_layout()
             animFunc.fig.show()
             animFunc.fig.canvas.draw()
 
             animFunc.background = animFunc.fig.canvas.copy_from_bbox(animFunc.ax.bbox)
 
+            animFunc.frame = 0
+
             time.sleep(1)
 
-        if (iteration % 50) == 0:
+        if (iteration % 20) == 0:
             animFunc.fig.canvas.restore_region(animFunc.background)
             animFunc.wimg.set_array(weights)
             animFunc.ax.draw_artist(animFunc.wimg)
             animFunc.fig.canvas.blit(animFunc.ax.bbox)
 
-    som = SOM(data, latticeSize=(16,16), maxIter=10000,
-              radius=16, radiusFinal=1, learningRate=0.02, learningRateFinal=0.01,
+            plt.savefig('frame-%04d.png' % animFunc.frame, dpi=200)
+            animFunc.frame += 1
+
+    som = SOM(data, latticeSize=(32,32), maxIter=20000,
+              radius=16, radiusFinal=0.05, learningRate=0.05, learningRateFinal=0.005,
               callback=animFunc, verbose=True)
 
     rgb = np.vstack((

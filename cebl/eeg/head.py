@@ -68,12 +68,17 @@ def cacheDist(x1, x2, coord):
 
 
 def plotHeadOutline(ax=None, radius=1.2):
+    result = {}
+
     # if new axis not given, create one
     if ax is None:
         fig = plt.figure(figsize=(11,8))
+        result['fig'] = fig
         ax = fig.add_subplot(1,1,1, aspect='equal')
+    result['ax'] = ax
 
     extent = (-0.16-radius,0.16+radius,-0.01-radius,0.20+radius)
+    result['extent'] = extent
 
     ax.set_aspect('equal')
     ax.set_xlim(extent[0], extent[1])
@@ -85,25 +90,30 @@ def plotHeadOutline(ax=None, radius=1.2):
     rightEar = pltPatches.Ellipse((0.075+radius,0.0), width=0.15, height=0.4, angle=0.0, edgecolor='dimgrey', facecolor='white', linewidth=3, zorder=10, fill=False)
     ax.add_patch(rightEar)
 
+    result['leftEar'] = leftEar
+    result['rightEar'] = rightEar
+
     noseLength = 0.18
     noseWidth = 0.12
     noseIntersect = 2.0*radius-np.sqrt(noseWidth**2+radius**2)
 
-    noseLeft, = ax.plot((0.0,-noseWidth), (radius+noseLength,noseIntersect), color='dimgrey', linewidth=3, zorder=10)
-    noseRight, = ax.plot((0.0,noseWidth), (radius+noseLength,noseIntersect), color='dimgrey', linewidth=3, zorder=10)
+    leftNose, = ax.plot((0.0,-noseWidth), (radius+noseLength,noseIntersect), color='dimgrey', linewidth=3, zorder=10)
+    rightNose, = ax.plot((0.0,noseWidth), (radius+noseLength,noseIntersect), color='dimgrey', linewidth=3, zorder=10)
 
-    noseLeft.set_solid_capstyle('round')
-    noseRight.set_solid_capstyle('round')
+    leftNose.set_solid_capstyle('round')
+    rightNose.set_solid_capstyle('round')
+
+    result['leftNose'] = leftNose
+    result['rightNose'] = rightNose
 
     head = pltPatches.Circle((0.0,0.0), radius, edgecolor='dimgrey', facecolor='white', linewidth=3, zorder=10, fill=False)
+    result['head'] = head
     ax.add_patch(head)
 
     ax.set_xticks([])
     ax.set_yticks([])
 
-    return {'ax': ax, 'leftEar': leftEar, 'rightEar': rightEar,
-            'noseLeft': noseLeft, 'noseRight': noseRight,
-            'head': head, 'extent': extent}
+    return result
 
 def plotHead(chanNames=('F3','F4','C3','C4','P3','P4','O1','O2'),
              radius=0.01, fillColor='black', lineColor='black',

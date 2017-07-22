@@ -151,11 +151,11 @@ class ConvolutionalNetworkAccum(Classifier, optim.Optable):
         x = np.require(x, requirements=['O', 'C'])
         self.trainResult = optimFunc(self, x=x, g=g, **kwargs)
 
-        dv = self.discrim(x, accum='mult')
-        self.normSoftmaxMean = dv.mean()
-        self.normSoftmaxStd = dv.std()
-        self.normSoftmaxMin = dv.min()
-        self.normSoftmaxMax = (dv-self.normSoftmaxMin).max()
+        #dv = self.discrim(x, accum='mult')
+        #self.normSoftmaxMean = dv.mean()
+        #self.normSoftmaxStd = dv.std()
+        #self.normSoftmaxMin = dv.min()
+        #self.normSoftmaxMax = (dv-self.normSoftmaxMin).max()
 
     def parameters(self):
         return self.pw
@@ -256,13 +256,13 @@ class ConvolutionalNetworkAccum(Classifier, optim.Optable):
         if squash == 'softmax':
             return util.softmax(dv)
 
-        elif squash == 'normsoftmax':
-            #dv -= self.normSoftmaxMin
-            #dv /= self.normSoftmaxMax
-            dv -= self.normSoftmaxMean
-            #dv /= 0.5*self.normSoftmaxStd
-            dv /= self.normSoftmaxStd
-            return util.softmax(dv)
+        #elif squash == 'normsoftmax':
+        #    #dv -= self.normSoftmaxMin
+        #    #dv /= self.normSoftmaxMax
+        #    dv -= self.normSoftmaxMean
+        #    #dv /= 0.5*self.normSoftmaxStd
+        #    dv /= self.normSoftmaxStd
+        #    return util.softmax(dv)
 
         elif squash == 'frac':
             return dv / dv.sum(axis=1)[:,None]
@@ -409,10 +409,11 @@ class ConvolutionalNetworkAccum(Classifier, optim.Optable):
             vg[...] = z1f.T.dot(deltaf)
             vg += self.penaltyGradient(-1)
 
-            # hidden layer gradient
-            c1f = c1.reshape((-1, c1.shape[-1]))
             #delta = delta.dot(self.vw[:-1].T) * zPrime
             delta = util.segdot(delta, self.vw[:-1].T) * zPrime
+
+            # hidden layer gradient
+            c1f = c1.reshape((-1, c1.shape[-1]))
             deltaf = delta.reshape((-1, delta.shape[-1]))
             hg[...] = c1f.T.dot(deltaf)
             hg += self.penaltyGradient(-2)
@@ -564,8 +565,8 @@ def demoCNA():
     print 'Training Performance:'
     print '======='
     print 'Labels: ', model.labelKnown(trainData)
-    print 'ProbsA: ', model.probs(trainData[0], squash='normSoftmax', accum='prod')
-    print 'ProbsB: ', model.probs(trainData[1], squash='normSoftmax', accum='prod')
+    print 'ProbsA: ', model.probs(trainData[0])
+    print 'ProbsB: ', model.probs(trainData[1])
     print 'CA:     ', model.ca(trainData)
     print 'BCA:    ', model.bca(trainData)
     print 'AUC:    ', model.auc(trainData)
@@ -573,8 +574,8 @@ def demoCNA():
     print 'Test Performance:'
     print '======='
     print 'Labels: ', model.labelKnown(testData)
-    print 'ProbsA: ', model.probs(testData[0], squash='normSoftmax', accum='prod')
-    print 'ProbsB: ', model.probs(testData[1], squash='normSoftmax', accum='prod')
+    print 'ProbsA: ', model.probs(testData[0])
+    print 'ProbsB: ', model.probs(testData[1])
     print 'CA:     ', model.ca(testData)
     print 'BCA:    ', model.bca(testData)
     print 'AUC:    ', model.auc(testData)

@@ -19,17 +19,10 @@ from .ddembed import *
 
 class ConvolutionalNetwork(Classifier, optim.Optable):
     def __init__(self, classData, convs=((8,16), (16,8)), nHidden=8,
-                 poolSize=2, poolMethod='stride', filtOrder=8,
+                 poolSize=2, poolMethod='average',
                  transFunc=transfer.lecun, weightInitFunc=pinit.lecun,
                  penalty=None, elastic=1.0, optimFunc=optim.scg, **kwargs):
-        seg = util.segmat(classData[0])
-        nCls = len(classData)
-        nSeg = seg.shape[0]
-        nObs = seg.shape[1]
-        nIn = seg.shape[2]
-
-        Classifier.__init__(self, nIn, nCls)
-
+        Classifier.__init__(self, util.segmat(classData[0]).shape[2], len(classData))
         optim.Optable.__init__(self)
 
         self.dtype = np.result_type(*[cls.dtype for cls in classData])
@@ -37,8 +30,14 @@ class ConvolutionalNetwork(Classifier, optim.Optable):
         self.nConvHiddens, self.convWidths = zip(*convs)
         self.nConvLayers = len(convs)
         self.nHidden = nHidden
-        self.poolSize = poolSize
+
         self.poolMethod = poolMethod.lower()
+        if not self.poolMethod in ('stride', 'average'):
+            raise Exception('Invalid poolMethod %s.' % str(self.poolMethod))
+
+        self.poolSize = poolSize if util.isiterable(poolSize) \
+                else (poolSize,) * self.nConvLayers
+        assert len(self.poolSize) == self.nConvLayers
 
         self.layerDims = [(self.nIn*self.convWidths[0]+1, self.nConvHiddens[0]),]
         for l in xrange(1, self.nConvLayers):
@@ -48,27 +47,20 @@ class ConvolutionalNetwork(Classifier, optim.Optable):
 
         # figure length of inputs to final hidden layer
         # probably a more elegant way to do this XXX - idfah
-        ravelLen = nObs
-        if self.poolMethod == 'stride':
-            for w in self.convWidths:
-                ravelLen = int(np.ceil((ravelLen-w+1)/float(self.poolSize)))
+        ravelLen = util.segmat(classData[0]).shape[1] # nObs in first seg
 
-        elif self.poolMethod == 'average':
-            for w in self.convWidths:
-                ravelLen = (ravelLen-w+1)//self.poolSize
+        for width, poolSize in zip(self.convWidths, self.poolSize):
+            if self.poolMethod == 'stride':
+                ravelLen = int(np.ceil((ravelLen - width + 1) / float(poolSize)))
 
-        elif self.poolMethod == 'lanczos':
-            for w in self.convWidths:
-                ravelLen = int(np.ceil((ravelLen-filtOrder-w+1)/float(self.poolSize)))
+            elif self.poolMethod == 'average':
+                ravelLen = (ravelLen - width + 1) // poolSize
 
-        self.layerDims.append((ravelLen*self.nConvHiddens[-1]+1, self.nHidden))
-        self.layerDims.append((self.nHidden+1, self.nCls))
-
-        if self.poolMethod == 'lanczos':
-            self.initLanczos(filtOrder)
-
-        elif not self.poolMethod in ('stride', 'average'):
-            raise Exception('Invalid poolMethod %s.' % str(self.poolMethod))
+        if self.nHidden is None:
+            self.layerDims.append((ravelLen*self.nConvHiddens[-1]+1, self.nCls))
+        else:
+            self.layerDims.append((ravelLen*self.nConvHiddens[-1]+1, self.nHidden))
+            self.layerDims.append((self.nHidden+1, self.nCls))
 
         self.transFunc = transFunc if util.isiterable(transFunc) \
                 else (transFunc,) * (len(self.layerDims)-1)
@@ -76,9 +68,15 @@ class ConvolutionalNetwork(Classifier, optim.Optable):
 
         views = util.packedViews(self.layerDims, dtype=self.dtype)
         self.pw  = views[0]
-        self.cws = views[1:-2]
-        self.hw  = views[-2]
-        self.vw  = views[-1]
+        if self.nHidden is None:
+            self.cws = views[1:-1]
+            self.hw = None
+            self.vw = views[-1]
+
+        else:
+            self.cws = views[1:-2]
+            self.hw  = views[-2]
+            self.vw  = views[-1]
 
         if not util.isiterable(weightInitFunc):
             weightInitFunc = (weightInitFunc,) * (self.nConvLayers+2)
@@ -97,59 +95,15 @@ class ConvolutionalNetwork(Classifier, optim.Optable):
         # initialize weights
         for cw, wif in zip(self.cws, weightInitFunc):
             cw[...] = wif(cw.shape).astype(self.dtype, copy=False)
-        self.hw[...] = weightInitFunc[-2](self.hw.shape).astype(self.dtype, copy=False)
+
+        if self.nHidden is not None:
+            self.hw[...] = weightInitFunc[-2](self.hw.shape).astype(self.dtype, copy=False)
+
         self.vw[...] = weightInitFunc[-1](self.vw.shape).astype(self.dtype, copy=False)
 
         # train the network
         if optimFunc is not None:
             self.train(classData, optimFunc, **kwargs)
-
-    def initLanczos(self, filtOrder):
-        self.filtOrder = filtOrder
-
-        if self.filtOrder % 2 != 0:
-             raise Exception('Invalid filtOrder: ' + str(self.filtOrder) +
-                 ' Must be an even integer.')
-
-        radius = self.filtOrder // 2
-        win = np.sinc(np.linspace(-radius, radius, self.filtOrder+1) / float(radius)) # lanczos
-        #win = spsig.hamming(self.filtOrder+1) # sinc-hamming
-
-        # this should be automated somehow XXX - idfah
-        if self.filtOrder <= 6:
-            cutoff = 2*0.570
-
-        elif self.filtOrder <= 8:
-            cutoff = 2*0.676
-
-        elif self.filtOrder <= 12:
-            cutoff = 2*0.781
-
-        elif self.filtOrder <= 16:
-            cutoff = 2*0.836
-
-        elif self.filtOrder <= 32:
-            cutoff = 2*0.918
-
-        elif self.filtOrder <= 64:
-            cutoff = 2*0.959
-
-        cutoff /= float(self.poolSize)
-
-        taps = cutoff * np.linspace(-radius, radius, self.filtOrder+1, dtype=self.dtype)
-        impulseResponse = cutoff * np.sinc(taps) * win
-
-        self.filters = []
-        for ni, no in self.layerDims[:-2]:
-            noEmb = no*(self.filtOrder+1) # no outs after filter embedding
-
-            filtMat = np.zeros(noEmb*2, dtype=self.dtype)
-            filtMat[noEmb-1::-no] = impulseResponse
-
-            # filters strided for embedding
-            sz = filtMat.itemsize
-            filtMat = npst.as_strided(filtMat, (no,noEmb), strides=(sz,sz))[::-1].T
-            self.filters.append(filtMat.copy())
 
     def train(self, classData, optimFunc, **kwargs):
         x, g = label.indicatorsFromList(classData)
@@ -167,27 +121,23 @@ class ConvolutionalNetwork(Classifier, optim.Optable):
         for l, cw in enumerate(self.cws):
             width = self.convWidths[l]
             phi = self.transFunc[l]
+            poolSize = self.poolSize[l]
+
+            if poolSize == 1:
+                c = util.timeEmbed(c, lags=width-1, axis=1)
+                c = phi(util.segdot(c, cw[:-1]) + cw[-1])
 
             if self.poolMethod == 'stride':
-                c = util.timeEmbed(c, lags=width-1, axis=1, stride=self.poolSize)
-                c = phi(c.dot(cw[:-1]) + cw[-1])
+                c = util.timeEmbed(c, lags=width-1, axis=1, stride=poolSize)
+                c = util.segdot(c, cw[:-1]) + cw[-1]
 
             elif self.poolMethod == 'average':
                 c = util.timeEmbed(c, lags=width-1, axis=1)
-                c = phi(c.dot(cw[:-1]) + cw[-1])
-                c = util.accum(c, self.poolSize, axis=1) / self.poolSize
-
-            elif self.poolMethod == 'lanczos':
-                c = util.timeEmbed(c, lags=width-1, axis=1)
-                c = phi(c.dot(cw[:-1]) + cw[-1])
-
-                c = util.timeEmbed(c, lags=self.filtOrder, axis=1, stride=self.poolSize)
-                c = c.dot(self.filters[l])
+                c = phi(util.segdot(c, cw[:-1]) + cw[-1])
+                c = util.accum(c, poolSize, axis=1) / poolSize
 
             cs.append(c)
 
-        #print x.shape
-        #print [c.shape for c in cs]
         return cs
 
     def probs(self, x):
@@ -199,11 +149,12 @@ class ConvolutionalNetwork(Classifier, optim.Optable):
         # flatten to fully-connected
         c = c.reshape((c.shape[0], -1), order='F')
 
-        # evaluate hidden layer
-        z = self.transFunc[-1](c.dot(self.hw[:-1]) + self.hw[-1])
-
-        # evaluate visible layer
-        v = z.dot(self.vw[:-1]) + self.vw[-1]
+        # evaluate hidden and visible layers
+        if self.nHidden is not None:
+            z = self.transFunc[-1](c.dot(self.hw[:-1]) + self.hw[-1])
+            v = z.dot(self.vw[:-1]) + self.vw[-1]
+        else:
+            v = c.dot(self.vw[:-1]) + self.vw[-1]
 
         # softmax to get probabilities
         return util.softmax(v)
@@ -245,6 +196,9 @@ class ConvolutionalNetwork(Classifier, optim.Optable):
                 (1.0-elastic)  * penalty * penMask * np.sign(weights)/weights.size ) # L1
 
     def error(self, x, g):
+        x = util.segmat(x)
+        g = util.colmat(g)
+
         # evaluate network
         likes = np.log(util.capZero(self.probs(x)))
 
@@ -257,9 +211,15 @@ class ConvolutionalNetwork(Classifier, optim.Optable):
         # packed views of the hidden and visible gradient matrices
         views = util.packedViews(self.layerDims, dtype=self.dtype)
         pg  = views[0]
-        cgs = views[1:-2]
-        hg  = views[-2]
-        vg  = views[-1]
+
+        if self.nHidden is None:
+            cgs = views[1:-1]
+            hg  = None
+            vg  = views[-1]
+        else:
+            cgs = views[1:-2]
+            hg  = views[-2]
+            vg  = views[-1]
 
         # forward pass
         c = x
@@ -268,56 +228,70 @@ class ConvolutionalNetwork(Classifier, optim.Optable):
         for l, cw in enumerate(self.cws):
             width = self.convWidths[l]
             phi = self.transFunc[l]
+            poolSize = self.poolSize[l]
 
-            if self.poolMethod == 'stride':
-                c = util.timeEmbed(c, lags=width-1, axis=1, stride=self.poolSize)
+            if poolSize == 1:
+                c = util.timeEmbed(c, lags=width-1, axis=1)
 
-            elif self.poolMethod in ('average', 'lanczos'):
+            elif self.poolMethod == 'stride':
+                c = util.timeEmbed(c, lags=width-1, axis=1, stride=poolSize)
+
+            elif self.poolMethod == 'average':
                 c = util.timeEmbed(c, lags=width-1, axis=1)
 
             c1 = util.bias(c)
             c1s.append(c1)
 
-            h = c1.dot(cw)
+            h = util.segdot(c1, cw)
             cPrime = phi(h, 1)
             cPrimes.append(cPrime)
 
             c = phi(h)
 
-            if self.poolMethod == 'average':
-                c = util.accum(c, self.poolSize, axis=1) / self.poolSize
+            if poolSize == 1:
+                pass
 
-            elif self.poolMethod == 'lanczos':
-                c = util.timeEmbed(c, lags=self.filtOrder, axis=1, stride=self.poolSize)
-                c = c.dot(self.filters[l])
+            elif self.poolMethod == 'average':
+                c = util.accum(c, poolSize, axis=1) / poolSize
 
         # flatten to fully-connected
         c = c.reshape((c.shape[0], -1), order='F')
         c1 = util.bias(c)
 
-        # evaluate hidden layer
-        h = c1.dot(self.hw)
-        z = self.transFunc[-1](h)
-        z1 = util.bias(z)
-        zPrime = self.transFunc[-1](h, 1)
+        # evaluate hidden and visible layers
+        if self.nHidden is None:
+            v = c1.dot(self.vw)
 
-        # evaluate visible layer
-        v = z1.dot(self.vw)
+        else:
+            h = c1.dot(self.hw)
+            z = self.transFunc[-1](h)
+            z1 = util.bias(z)
+            zPrime = self.transFunc[-1](h, 1)
+            v = z1.dot(self.vw)
+
         probs = util.softmax(v)
 
         # error components
         delta = (probs - g) / probs.size
 
-        # visible layer gradient
-        vg[...] = z1.T.dot(delta)
-        vg += self.penaltyGradient(-1)
+        if self.nHidden is None:
+            vg[...] = c1.T.dot(delta)
+            vg += self.penaltyGradient(-1)
 
-        # hidden layer gradient
-        delta = delta.dot(self.vw[:-1].T) * zPrime
-        hg[...] = c1.T.dot(delta)
-        hg += self.penaltyGradient(-2)
+            delta = delta.dot(self.vw[:-1].T)
 
-        delta = delta.dot(self.hw[:-1].T)
+        else:
+            # visible layer gradient
+            vg[...] = z1.T.dot(delta)
+            vg += self.penaltyGradient(-1)
+
+            delta = delta.dot(self.vw[:-1].T) * zPrime
+
+            # hidden layer gradient
+            hg[...] = c1.T.dot(delta)
+            hg += self.penaltyGradient(-2)
+
+            delta = delta.dot(self.hw[:-1].T)
 
         # unflatten deltas back to convolution
         delta = delta.reshape((delta.shape[0], -1, self.nConvHiddens[-1]), order='F')
@@ -328,29 +302,20 @@ class ConvolutionalNetwork(Classifier, optim.Optable):
         for l in xrange(self.nConvLayers-1, -1, -1):
             c1 = c1s[l]
             cPrime = cPrimes[l]
+            poolSize = self.poolSize[l]
 
-            if self.poolMethod == 'average':
+            if poolSize == 1:
+                pass
+
+            elif self.poolMethod == 'average':
                 deltaPool = np.empty_like(cPrime)
-                deltaPool[:,:delta.shape[1]*self.poolSize] = \
-                    delta.repeat(self.poolSize, axis=1) / self.poolSize
-                deltaPool[:,delta.shape[1]*self.poolSize:] = 0.0
+                deltaPool[:,:delta.shape[1]*poolSize] = \
+                    delta.repeat(poolSize, axis=1) / poolSize
+                deltaPool[:,delta.shape[1]*poolSize:] = 0.0
 
                 delta = deltaPool
 
-            elif self.poolMethod == 'lanczos':
-                filt = self.filters[l]
-
-                delta = delta.dot(filt.T)
-
-                deltaPoolShape = list(delta.shape)
-                deltaPoolShape[1] *= self.poolSize
-                deltaPool = np.zeros(deltaPoolShape, dtype=delta.dtype)
-                deltaPool[:,::self.poolSize] = delta
-                delta = deltaPool
-
-                delta = deltaDeEmbedSum(delta, self.filtOrder+1)
-
-            assert abs(delta.shape[1] - cPrime.shape[1]) < self.poolSize
+            assert abs(delta.shape[1] - cPrime.shape[1]) <= poolSize
             delta = delta[:,:cPrime.shape[1]] * cPrime
 
             c1f = c1.reshape((-1, c1.shape[-1]))
@@ -359,13 +324,16 @@ class ConvolutionalNetwork(Classifier, optim.Optable):
             cgs[l] += self.penaltyGradient(l)
 
             if l > 0: # won't propigate back to inputs
-                delta = delta.dot(self.cws[l][:-1].T)
+                delta = util.segdot(delta, self.cws[l][:-1].T)
 
-                if self.poolMethod == 'stride':
+                if poolSize == 1:
+                    pass
+
+                elif self.poolMethod == 'stride':
                     deltaPoolShape = list(delta.shape)
-                    deltaPoolShape[1] *= self.poolSize
+                    deltaPoolShape[1] *= poolSize
                     deltaPool = np.zeros(deltaPoolShape, dtype=delta.dtype)
-                    deltaPool[:,::self.poolSize] = delta
+                    deltaPool[:,::poolSize] = delta
                     delta = deltaPool
 
                 delta = deltaDeEmbedSum(delta, widths[l-1])
@@ -452,22 +420,10 @@ def demoCN():
     trainData = standardizer.apply(trainData)
     testData = standardizer.apply(testData)
 
-    model = CN(trainData, convs=((2,11),(4,9),(6,7)), nHidden=2,
-               poolSize=2, poolMethod='average', filtOrder=6, verbose=True,
+    model = CN(trainData, convs=((2,11),(4,9),(6,7)), nHidden=None,
+               poolSize=2, poolMethod='average', verbose=True,
                optimFunc=optim.scg, maxIter=1000, transFunc=transfer.lecun,
                precision=1.0e-16, accuracy=0.0, pTrace=True, eTrace=True)
-
-    #from softmax import FNS
-    #model = FNS(trainData, nHidden=20, optimFunc=optim.scg, maxIter=500, precision=1.0e-10, accuracy=1.0e-10, pTrace=True, eTrace=True, verbose=True)
-
-    #from softmax import FSMN
-    #trainData = [cls.reshape((cls.shape[0], -1)) for cls in trainData]
-    #testData = [cls.reshape((cls.shape[0], -1)) for cls in testData]
-    #model = FSMN(trainData, maxIter=500, nHidden=20,
-    #             precision=0.0, accuracy=0.0, eTrace=True, pTrace=True, verbose=True)
-
-    #from cebl.ml import ARC
-    #model = ARC(trainData, order=20)
 
     print 'Training Performance:'
     print '======='
@@ -522,6 +478,8 @@ def demoCN():
         freqs = np.array(freqs)
         responses = np.array(responses)
         axRespon.plot(freqs.T, np.abs(responses).T)
+
+    print 'nParams: ', model.parameters().size
 
     #for l,cw in enumerate(model.cws):
     #    plt.figure()
