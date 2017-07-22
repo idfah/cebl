@@ -127,7 +127,7 @@ class ConvolutionalNetwork(Classifier, optim.Optable):
                 c = util.timeEmbed(c, lags=width-1, axis=1)
                 c = phi(util.segdot(c, cw[:-1]) + cw[-1])
 
-            if self.poolMethod == 'stride':
+            elif self.poolMethod == 'stride':
                 c = util.timeEmbed(c, lags=width-1, axis=1, stride=poolSize)
                 c = util.segdot(c, cw[:-1]) + cw[-1]
 
