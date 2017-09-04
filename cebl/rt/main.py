@@ -2,6 +2,7 @@
 """
 import os
 import wx
+#import wx.adv # wxpython3
 
 import sys
 
@@ -26,6 +27,7 @@ class CEBLApp(wx.App):
         This should go in final release XXX - idfah
         """
         print 'Gracefull exit.'
+        return True
 
 class CEBLMain(wx.Frame):
     """Top-level CEBL frame.  Holds the notebook and source manager and maintains the general state of CEBL.
@@ -129,11 +131,14 @@ class CEBLMain(wx.Frame):
         self.statusBar.SetStatusText('Sampling Rate: %.2fHz' % sampRate, 3)
         self.statusBar.SetStatusText('Version: 3.0.0a', 4)
 
+#class Splash(wx.adv.SplashScreen): # wxpython3
 class Splash(wx.SplashScreen):
     def __init__(self, parent):
         logo = wx.Image(os.path.dirname(__file__) + '/images/CEBL3_splash.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap()
+        #wx.adv.SplashScreen.__init__(self, # wxpython3
         wx.SplashScreen.__init__(self,
             parent=parent, milliseconds=2000, bitmap=logo,
+            #splashStyle=wx.adv.SPLASH_CENTER_ON_SCREEN | wx.adv.SPLASH_TIMEOUT) # wxpython3
             splashStyle=wx.SPLASH_CENTER_ON_SCREEN | wx.SPLASH_TIMEOUT)
 
 def run():

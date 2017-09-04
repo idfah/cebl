@@ -145,12 +145,13 @@ def confusion(classLabels, normalize=True):
     return confMat
 
 def itrSimple(accuracy, nCls, decisionRate):
-    if accuracy >= 1.0:
-        return np.inf
+    left = np.log2(nCls)
+    middle = accuracy*np.log2(accuracy)
 
-    return (decisionRate*(np.log2(nCls) + 
-            accuracy*np.log2(accuracy) + 
-            (1.0-accuracy)*np.log2((1.0-accuracy)/(nCls-1.0))))
+    right = 0.0 if np.isclose(accuracy, 1.0) else \
+                (1.0-accuracy)*np.log2((1.0-accuracy)/(nCls-1.0))
+
+    return decisionRate * (left + middle + right)
 
 def itr(classLabels, decisionRate=60.0):
     """Information transfer rate in bits per minute

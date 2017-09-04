@@ -22,28 +22,48 @@ class CommonSpatialPatterns(STrans):
         s1 = self.prep(s1)
         s2 = self.prep(s2)
 
-        u, d, v = np.linalg.svd(np.vstack((s1,s2)), full_matrices=False)
-        #dInv = np.diag(1.0 / d)
-        #dInv = 1.0 / d[:,None]
-        # numerator rescales variances, think about this XXX - idfah
-        dInv = np.sqrt(0.5*(s1.shape[0]+s2.shape[0]-2)) / d[:,None]
+        if False: # maybe faster and more stable?
+            u, d, v = np.linalg.svd(np.vstack((s1,s2)), full_matrices=False)
+            #dInv = np.sqrt(0.5*(s1.shape[0]+s2.shape[0]-2)) / d[:,None]
+            dInv = 1.0 / d[:,None] # think about this XXX - idfah
 
-        c1 = s1.T.dot(s1)
-        c2 = s2.T.dot(s2)
-        z = (c1 - c2)
+            c1 = s1.T.dot(s1)
+            c2 = s2.T.dot(s2)
+            z = (c1 - c2)
 
-        #zHat = dInv.dot(v.dot(z.dot(v.T.dot(dInv))))
-        zHat = dInv * (v.dot(z.dot(v.T * dInv.T)))
-        e, wHat = np.linalg.eig(zHat)
+            zHat = dInv * (v.dot(z.dot(v.T * dInv.T)))
+            e, wHat = np.linalg.eig(zHat)
 
-        # sort eigenvalues
-        idx = e.argsort()[::-1]
-        e = e[idx]
-        wHat = wHat[:,idx]
+            # sort eigenvalues
+            idx = e.argsort()[::-1]
+            e = e[idx]
+            wHat = wHat[:,idx]
 
-        #self.w = v.T.dot(dInv.dot(wHat))
-        self.w = v.T.dot(dInv * wHat)
-        self.wInv = np.linalg.pinv(self.w)
+            self.w = v.T.dot(dInv * wHat)
+            self.wInv[...] = (d * wHat.T).dot(v)
+
+        else: # commonly accepted approach in the literature
+            c1 = s1.T.dot(s1)
+            c2 = s2.T.dot(s2)
+            cc = c1 + c2
+
+            l, u = np.linalg.eig(cc)
+            idx = l.argsort()[::-1] # sort
+            l = l[idx]
+            u = u[:,idx]
+
+            p = np.diag(1.0/np.sqrt(l)).dot(u.T)
+
+            ra = p.dot(c1).dot(p.T)
+            #rb = p.dot(c2).dot(p.T)
+
+            f, q = np.linalg.eig(ra) # q should be same for ra and rb
+            idx = f.argsort()[::-1] # sort
+            f = f[idx]
+            q = q[:,idx]
+
+            self.w = p.T.dot(q)
+            self.wInv = np.linalg.pinv(self.w)
 
 class CSP(CommonSpatialPatterns):
     pass

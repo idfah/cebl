@@ -47,7 +47,6 @@ class MaximumSignalFraction(STrans):
         s = self.prep(s)
 
         u, d, v = np.linalg.svd(s, full_matrices=False)
-        #dInv = np.diag(1.0 / d)
         dInv = 1.0 / d[:,None]
 
         # estimated covariance of noise
@@ -55,7 +54,6 @@ class MaximumSignalFraction(STrans):
         s2 = s[:-1]
         z = 0.5 * (s1 - s2).T.dot(s1 - s2)
 
-        #zHat = dInv.dot(v.dot(z.dot(v.T.dot(dInv))))
         zHat = dInv * (v.dot(z.dot(v.T * dInv.T)))
         e, wHat = np.linalg.eig(zHat)
 
@@ -64,9 +62,10 @@ class MaximumSignalFraction(STrans):
         e = e[idx]
         wHat = wHat[:,idx]
 
-        #self.w[...] = v.T.dot(dInv.dot(wHat))
         self.w = v.T.dot(dInv * wHat)
-        self.wInv[...] = np.linalg.pinv(self.w)
+        self.wInv[...] = (d * wHat.T).dot(v)
+
+        #print np.isclose(np.linalg.pinv(self.w), self.wInv)
 
 class MSF(MaximumSignalFraction):
     pass

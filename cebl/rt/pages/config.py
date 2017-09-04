@@ -148,10 +148,10 @@ class Config(Page):
         ## # add to sizer
         ## chanControlBox.Add(rightChanSizer)
 
-        self.chanSizer = wx.GridSizer(20, 2, 10, 10)
+        self.chanSizer = wx.GridSizer(40, 2, 10, 10)
         #self.chanSizer = wx.BoxSizer(orient=wx.VERTICAL)
 
-        self.chanTextCtrls = [wx.TextCtrl(self.scrolledPanel) for i in xrange(36*2)]
+        self.chanTextCtrls = [wx.TextCtrl(self.scrolledPanel) for i in xrange(40*2)]
         self.chanSizer.AddMany(self.chanTextCtrls)
         #for ctc in self.chanTextCtrls:
         #    self.chanSizer.Add(ctc, proportion=0, flag=wx.TOP | wx.LEFT | wx.RIGHT, border=2)
@@ -185,11 +185,13 @@ class Config(Page):
 
         # intro message
         self.messageArea.SetDefaultStyle(
-                wx.TextAttr(font=helloFont, alignment=wx.TEXT_ALIGNMENT_LEFT))
+                #wx.TextAttr(colText=wx.Colour('black'), font=helloFont)) # wxpython3
+                wx.TextAttr(font=helloFont))
         self.messageArea.AppendText('Welcome to CEBL!\n\n')
 
         # setup message style
         self.messageArea.SetDefaultStyle(wx.TextAttr())
+        #self.messageArea.SetDefaultStyle(wx.TextAttr(colText=wx.Colour('black'), font=msgFont)) # wxpython3
         self.messageArea.SetDefaultStyle(wx.TextAttr(font=msgFont))
 
         # add the message area text ctrl widget as a log target

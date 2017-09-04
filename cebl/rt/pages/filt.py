@@ -1,5 +1,4 @@
 import wx
-import wx.gizmos
 
 from cebl.rt import sources
 from cebl.rt import widgets

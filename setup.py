@@ -8,7 +8,7 @@ import numpy as np
 
 cebl_rt_sources_source_ext = setuptools.Extension('cebl.rt.sources.source.source',
     sources = ['cebl/rt/sources/source/source.pyx'],
-    extra_compile_args = ['-march=core2', '-O3', '-fopenmp'])
+    extra_compile_args = ['-march=core2', '-O3'])
 
 cebl_rt_sources_neuropulse_m24rlib_ext = setuptools.Extension('cebl.rt.sources.neuropulse.libmindset24r',
     sources = ['cebl/rt/sources/neuropulse/libmindset24r.c'],
@@ -23,12 +23,12 @@ cebl_rt_sources_biosemi_activetwolib_ext = setuptools.Extension('cebl.rt.sources
 
 cebl_rt_widgets_wxlibplot_ext = setuptools.Extension('cebl.rt.widgets.wxlibplot',
     sources = ['cebl/rt/widgets/wxlibplot.pyx'],
-    extra_compile_args = ['-march=core2', '-O3', '-fopenmp'])
+    extra_compile_args = ['-march=core2', '-O3'])
 
 cebl_sig_cwt_ext = setuptools.Extension('cebl.sig.cwt',
     sources = ['cebl/sig/cwt.pyx'],
     libraries = ['pthread', 'gomp'],
-    extra_compile_args = ['-march=core2', '-O3', '-fopenmp'])
+    extra_compile_args = ['-march=core2', '-O3'])
 
 cebl_util_fasttanh_ext = setuptools.Extension('cebl.util.fasttanh',
     sources = ['cebl/util/fasttanh.c'],

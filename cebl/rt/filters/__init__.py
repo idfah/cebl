@@ -49,3 +49,6 @@ filterChoices[GNautilusMTTDEName] = GNautilusMTTDE
 
 from .gnp3 import GNautilusP3, GNautilusP3Name
 filterChoices[GNautilusP3Name] = GNautilusP3
+
+from .test import Test, TestName
+filterChoices[TestName] = Test

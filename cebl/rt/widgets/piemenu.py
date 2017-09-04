@@ -78,7 +78,8 @@ class PieMenu(GraphicsPanel):
             self.font = \
                 wx.Font(pointSize=12, family=wx.FONTFAMILY_SWISS,
                         style=wx.FONTSTYLE_NORMAL, weight=wx.FONTWEIGHT_BOLD,
-                        underline=False)#, face='Utopia')
+                        #underline=False)#, faceName='Utopia') # wxpython3
+                        underline=False)#, face='Utopia') # wxpython3
 
         # otherwise, use given font
         else:
@@ -316,6 +317,7 @@ class PieMenu(GraphicsPanel):
         radius = 0.8 * self.winRadius
         textCenters = radius * np.array((np.cos(self.midAngles), np.sin(self.midAngles))).T
 
+        #gc.SetFont(self.font, wx.Colour('black')) # wxpython3
         gc.SetFont(self.font)
 
         # for each cell

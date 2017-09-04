@@ -4,7 +4,7 @@ import numpy as np
 
 from cebl import util
 
-from cwt import CWT
+from .cwt import CWT
 
 from . import windows
 

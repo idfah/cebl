@@ -46,7 +46,7 @@ class WaveGenConfigPanel(SourceConfigPanel):
 
         waveformControlBox = widgets.ControlBox(self, label='Waveform', orient=wx.VERTICAL)
 
-        self.waveformComboBox = wx.ComboBox(self, id=wx.ID_ANY, choices=waveforms.keys(),
+        self.waveformComboBox = wx.ComboBox(self, id=wx.ID_ANY, choices=list(waveforms.keys()),
             value='sinusoid', style=wx.CB_SORT | wx.CB_READONLY)
         self.waveformComboBox.Bind(wx.EVT_COMBOBOX, self.setWaveform)
 
@@ -227,7 +227,7 @@ class WaveGen(Source):
         with self.lock:
             try:
                 # index into keys gives us an integer id
-                self.waveform.value = waveforms.keys().index(waveform)
+                self.waveform.value = list(waveforms.keys()).index(waveform)
             except ValueError:
                 raise ValueError('Invalid waveform %s.' % str(waveform))
 

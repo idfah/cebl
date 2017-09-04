@@ -29,8 +29,8 @@ class PrincipalComponentsAnalysis(STrans):
         self.mags = d**2 / (s.shape[0]-1)
         #self.mags /= np.sum(self.mags)
 
-        self.wInv[...] = np.diag(d).dot(v)
-        self.w[...] = np.linalg.pinv(self.wInv)
+        self.w[...] = v.T * (1.0/d[:,None])
+        self.wInv[...] = v * d
 
     def getMags(self):
         return self.mags

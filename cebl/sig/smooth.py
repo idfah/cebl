@@ -4,7 +4,7 @@ import scipy.signal as spsig
 
 from cebl import util
 
-import windows
+from . import windows
 
 
 def movingAverage(s, width=2, kernelFunc=windows.boxcar, *args, **kwargs):

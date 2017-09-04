@@ -1,7 +1,8 @@
 import numpy as np
 import wx
 #import wx.lib.plot as wxplt
-import wxlibplot as wxplt # cython rebuild
+
+from . import wxlibplot as wxplt # cython rebuild
 
 from cebl import util
 
@@ -30,8 +31,8 @@ class wxPlot(wx.Panel):
         self.yLabel = yLabel
 
         self.initCanvas()
-        self.initCanvasSettings()
         self.initLayout()
+        self.initCanvasSettings()
 
     def initCanvas(self):
         self.canvas = wxPlotCanvas(self)

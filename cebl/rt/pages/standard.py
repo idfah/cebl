@@ -86,9 +86,13 @@ class StandardPage(Page):
         if configPanelSizer is not None:
             minSize = configPanelSizer.GetMinSize()
 
+            #systemSettings = wx.SystemSettings() # wxpython3
+            #bestSize = (minSize[0]+systemSettings.GetMetric(wx.SYS_VSCROLL_X), # wxpython3
+            #            minSize[1]+systemSettings.GetMetric(wx.SYS_HSCROLL_Y)) # wxpython3
             bestSize = (minSize[0]+wx.SystemSettings_GetMetric(wx.SYS_VSCROLL_X),
                         minSize[1]+wx.SystemSettings_GetMetric(wx.SYS_HSCROLL_Y))
             configPaneAuiInfo.BestSize(bestSize)
+
 
         # add config pane to aui manager
         self.auiManager.AddPane(self.configPanel, configPaneAuiInfo)

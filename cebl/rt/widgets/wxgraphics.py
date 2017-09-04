@@ -68,10 +68,11 @@ class DrawablePanel(wx.Panel):
             in order to initialize the panel or reset the drawing
             buffer.
         """
-        size = self.winWidth, self.winHeight = self.GetSizeTuple()
+        size = self.winWidth, self.winHeight = self.GetSize()
         if size != self.lastSize: # hack to mitigate multiple consecutive resize events
             self.winRadius = min((self.winWidth/2.0, self.winHeight/2.0))
-            self.drawingBuffer = wx.EmptyBitmap(self.winWidth, self.winHeight)
+            #self.drawingBuffer = wx.Bitmap(self.winWidth, self.winHeight) # wxpython3
+            self.drawingBuffer = wx.EmptyBitmap(self.winWidth, self.winHeight) # wxpython3
             self.lastSize = size
             self.refresh()
 
@@ -94,15 +95,6 @@ class DrawablePanel(wx.Panel):
         self.Refresh(eraseBackground=False)
         self.Update()
 
-    def getDC(self):
-        dc = wx.MemoryDC(self.drawingBuffer)
-        #dc.SelectObject(self.drawingBuffer)
-
-        dc.SetBackground(wx.Brush(self.background, style=wx.SOLID))
-        dc.Clear()
-
-        return dc
-
     def refresh(self):
         """Refresh the drawing area after a change has been made.
         This method sets up a drawing context, calls self.draw
@@ -112,17 +104,22 @@ class DrawablePanel(wx.Panel):
         This method should be called each time a change is
         made that requires the drawing area to be updated.
         """
-        dc = self.getDC()
+        dc = wx.MemoryDC(self.drawingBuffer)
+        dc.SelectObject(self.drawingBuffer)
+
+        dc.SetBackground(wx.Brush(self.background, style=wx.SOLID))
+        dc.Clear()
 
         # do not draw if window is very small, right solution? XXX - idfah
         if self.winRadius < 1.0e-3:
             return
 
-        dc.BeginDrawing()
+        #dc.BeginDrawing()
         self.draw(dc)
-        dc.EndDrawing()
+        #dc.EndDrawing()
 
         #del dc
+        dc.SelectObject(wx.NullBitmap)
         self.triggerRepaint()
 
     def draw(self, dc):
@@ -156,7 +153,11 @@ class DrawablePanel(wx.Panel):
 
 class GraphicsPanel(DrawablePanel):
     def refresh(self):
-        dc = self.getDC()
+        dc = wx.MemoryDC(self.drawingBuffer)
+        dc.SelectObject(self.drawingBuffer)
+
+        dc.SetBackground(wx.Brush(self.background, style=wx.SOLID))
+        dc.Clear()
 
         gc = wx.GraphicsContext.Create(dc)
 
@@ -165,6 +166,8 @@ class GraphicsPanel(DrawablePanel):
             return
 
         self.draw(gc)
+
+        dc.SelectObject(wx.NullBitmap)
         self.triggerRepaint()
 
     def draw(self, gc):

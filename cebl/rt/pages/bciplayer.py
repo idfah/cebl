@@ -231,6 +231,7 @@ class PlotPanel(wx.Panel):
         font = wx.Font(pointSize=10, family=wx.FONTFAMILY_SWISS,
                        style=wx.FONTSTYLE_NORMAL, weight=wx.FONTWEIGHT_BOLD,
                        #underline=False, face='DejaVu Serif')
+                       #underline=False, faceName='Utopia') #wxpython3
                        underline=False, face='Utopia')
 
         self.pieMenu = widgets.PieMenu(self,

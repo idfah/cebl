@@ -111,10 +111,11 @@ class GridSpeller(DrawablePanel):
         if 'Utopia' in faceList:
             self.defaultStimFont = wx.Font(pointSize=50, family=wx.FONTFAMILY_ROMAN,
                 style=wx.FONTSTYLE_NORMAL, weight=wx.FONTWEIGHT_NORMAL,
+                #underline=False, faceName='Utopia') # wxpython3
                 underline=False, face='Utopia')
             #self.defaultFeedFont = wx.Font(pointSize=36, family=wx.FONTFAMILY_ROMAN,
             #    style=wx.FONTSTYLE_NORMAL, weight=wx.FONTWEIGHT_NORMAL,
-            #    underline=True, face='Utopia')
+            #    underline=True, faceName='Utopia')
         else:
             self.defaultStimFont = wx.Font(pointSize=50, family=wx.FONTFAMILY_ROMAN,
                 style=wx.FONTSTYLE_NORMAL, weight=wx.FONTWEIGHT_NORMAL, underline=False)
