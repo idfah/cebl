@@ -85,7 +85,7 @@ class EEGBase(object):
                         then the channel names are set to '1', '2', ... 'nChan'.
         """
         if chanNames is None:
-            chanNames = [str(i) for i in xrange(self.nChan)]
+            chanNames = [str(i) for i in range(self.nChan)]
 
         if len(chanNames) != self.nChan:
             raise Exception('Length of chanNames ' + str(len(chanNames)) + \

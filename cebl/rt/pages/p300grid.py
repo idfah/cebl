@@ -550,34 +550,34 @@ class P300Grid(StandardBCIPage):
         # permute individually and then append
         ind = np.arange(self.nRows + self.nCols) + 1
         self.curStimList = sum([list(np.random.permutation(ind))
-                               for trial in xrange(self.nTrials)], [])
+                               for trial in range(self.nTrials)], [])
 
         #self.curStimList = sum([list(np.random.permutation(ind[::2])) +
         #                        list(np.random.permutation(ind[1::2]))
-        #                            for trial in xrange(self.nTrials)], [])
+        #                            for trial in range(self.nTrials)], [])
 
         #rind = list(range(1,self.nRows+1))
         #cind = list(range(self.nRows+1,self.nCols+self.nRows+1))
 
         #self.curStimList = sum([list(np.random.permutation(rind)) +
         #                        list(np.random.permutation(cind))
-        #                            for trial in xrange(self.nTrials)], [])
+        #                            for trial in range(self.nTrials)], [])
 
         #self.curStimList = sum([list(np.random.permutation(rind[::2] + cind[1::2])) +
         #                        list(np.random.permutation(cind[::2] + rind[1::2]))
-        #                            for trial in xrange(self.nTrials)], [])
+        #                            for trial in range(self.nTrials)], [])
 
         #self.curStimList = sum([list(np.random.permutation(rind[::2])) +
         #                        list(np.random.permutation(cind[1::2])) +
         #                        list(np.random.permutation(rind[1::2])) +
         #                        list(np.random.permutation(cind[::2]))
-        #                            for trial in xrange(self.nTrials)], [])
+        #                            for trial in range(self.nTrials)], [])
 
         #self.curStimList = sum([list(np.random.permutation(rind[::2])) +
         #                        list(np.random.permutation(rind[1::2])) +
         #                        list(np.random.permutation(cind[1::2])) +
         #                        list(np.random.permutation(cind[::2]))
-        #                            for trial in xrange(self.nTrials)], [])
+        #                            for trial in range(self.nTrials)], [])
 
     def initPlots(self):
         """Initialize PieMenu and ERP plots.
@@ -752,17 +752,17 @@ class P300Grid(StandardBCIPage):
         cap = self.bandpass(self.trainCap)
         seg = cap.segment(start=self.windowStart, end=self.windowEnd)
         seg = self.downsample(seg)
-        print 'nSeg: ', seg.getNSeg()
+        print('nSeg: ', seg.getNSeg())
 
-        ##print 'markers: ', seg.markers
+        ##print('markers: ', seg.markers)
 
         targ = seg.select(matchFunc=lambda mark: mark > 0.0)
         nTarg = targ.getNSeg()
-        print 'nTarg: ', nTarg
+        print('nTarg: ', nTarg)
 
         nonTarg = seg.select(matchFunc=lambda mark: mark < 0.0)
         nNonTarg = nonTarg.getNSeg()
-        print 'nNonTarg: ', nNonTarg
+        print('nNonTarg: ', nNonTarg)
 
         classData = [targ.chanEmbed(), nonTarg.chanEmbed()]
 
@@ -798,10 +798,10 @@ class P300Grid(StandardBCIPage):
 
         for fold, trainData, validData in partitionGenerator:
             dialog.Update(fold, 'Validation Fold: %d' % fold)
-            #print 'fold: ', fold
+            #print('fold: ', fold)
 
             for i, sh in enumerate(shrinkages):
-                #print 'shrinkage: ', sh
+                #print('shrinkage: ', sh)
                 classifier = ml.LDA(trainData, shrinkage=sh)
 
                 trainAUC[i] += classifier.auc(trainData)
@@ -812,11 +812,11 @@ class P300Grid(StandardBCIPage):
         trainAUC /= self.nFold
         validAUC /= self.nFold
 
-        print 'train AUC: ', trainAUC
-        print 'valid AUC: ', validAUC
+        print('train AUC: ', trainAUC)
+        print('valid AUC: ', validAUC)
 
         bestShrinkage = shrinkages[np.argmax(validAUC)]
-        print 'best shrinkage: ', bestShrinkage
+        print('best shrinkage: ', bestShrinkage)
 
         self.classifier = ml.LDA(classData, shrinkage=bestShrinkage)
 
@@ -857,11 +857,11 @@ class P300Grid(StandardBCIPage):
         trainAUC /= self.nFold
         validAUC /= self.nFold
 
-        print 'train AUC: ', trainAUC
-        print 'valid AUC: ', validAUC
+        print('train AUC: ', trainAUC)
+        print('valid AUC: ', validAUC)
 
         bestK = ks[np.argmax(validAUC)]
-        print 'best K: ', bestK
+        print('best K: ', bestK)
 
         self.classifier = ml.KNN(classData, k=bestK, distMetric=metric)
 
@@ -890,9 +890,9 @@ class P300Grid(StandardBCIPage):
         partitionGenerator = ml.part.classStratified(classData, self.nFold)
 
         for fold, trainData, validData in partitionGenerator:
-            #print 'trainData shape: ', [cls.shape for cls in trainData]
-            #print 'validData shape: ', [cls.shape for cls in validData]
-            #print 'validData shape: ', [cls.shape for cls in validData]
+            #print('trainData shape: ', [cls.shape for cls in trainData])
+            #print('validData shape: ', [cls.shape for cls in validData])
+            #print('validData shape: ', [cls.shape for cls in validData])
             dialog.Update(fold, 'Validation Fold: %d' % fold)
 
             for i, pen in enumerate(penalties):
@@ -910,11 +910,11 @@ class P300Grid(StandardBCIPage):
         trainAUC /= self.nFold
         validAUC /= self.nFold
 
-        print 'train AUC: ', trainAUC
-        print 'valid AUC: ', validAUC
+        print('train AUC: ', trainAUC)
+        print('valid AUC: ', validAUC)
 
         bestPenalty = penalties[np.argmax(validAUC)]
-        print 'best penalty: ', bestPenalty
+        print('best penalty: ', bestPenalty)
 
         s = np.random.get_state()
         np.random.seed(seed)
@@ -1084,7 +1084,7 @@ class P300Grid(StandardBCIPage):
         seg = cap.segment(start=self.windowStart, end=self.windowEnd)
         seg = self.downsample(seg)
 
-        print 'nSeg: ', seg.getNSeg()
+        print('nSeg: ', seg.getNSeg())
 
         #x = self.standardizer.apply([seg.chanEmbed(),])
         x = self.standardizer.apply(seg.chanEmbed())
@@ -1100,7 +1100,7 @@ class P300Grid(StandardBCIPage):
             else:
                 probabilities[:,m-self.nRows-1] += d[0]
 
-        print 'probabilities: \n', probabilities
+        print('probabilities: \n', probabilities)
 
         resultRow, resultCol = np.unravel_index(probabilities.argmax(), probabilities.shape)
 

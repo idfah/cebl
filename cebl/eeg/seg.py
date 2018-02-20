@@ -259,7 +259,7 @@ class SegmentedEEG(EEGBase):
 
     def keepChans(self, chans):
         chans = self.getChanIndices(chans)
-        delChan = [c for c in xrange(self.nChan) if c not in chans]
+        delChan = [c for c in range(self.nChan) if c not in chans]
         self.deleteChans(delChan)
         return self
 
@@ -296,7 +296,7 @@ class SegmentedEEG(EEGBase):
         #self.data[...] = np.array([sig.commonAverageReference(seg, *args, **kwargs)
         #                           for seg in self.data])
 
-        for i in xrange(self.data.shape[0]):
+        for i in range(self.data.shape[0]):
             self.data[i,...] = sig.commonAverageReference(self.data[i,...], *args, **kwargs)
 
         return self
@@ -305,7 +305,7 @@ class SegmentedEEG(EEGBase):
         return self.commonAverageReference(*args, **kwargs)
 
     def meanSeparate(self, recover=False):
-        for i in xrange(self.data.shape[0]):
+        for i in range(self.data.shape[0]):
             self.data[i,...] = sig.meanSeparate(self.data[i,...], recover=recover)
 
         if recover:
@@ -566,7 +566,7 @@ class SegmentedEEG(EEGBase):
 
         gs = pltgs.GridSpec(2,nHead)
         axAvg = fig.add_subplot(gs[0,:])
-        axHead = [fig.add_subplot(gs[1,i]) for i in xrange(nHead)]
+        axHead = [fig.add_subplot(gs[1,i]) for i in range(nHead)]
         axCBar = fig.add_axes((0.05, 0.08, 0.9, 0.05))
 
         avgPlot = self.plotAvg(chans=(chan,), ax=axAvg, timeUnit=timeUnit, **avgKwargs)
@@ -714,17 +714,17 @@ class SegmentedEEGFromEEG(SegmentedEEG):
         #segStarts = np.where(np.diff(np.abs(markers)) > 0.0)[0]
         segStarts = startsFunc(markers)
 
-        #print np.diff(segStarts)
+        #print(np.diff(segStarts))
 
         # if first segment is too short, ditch it
         # this feels hacky ? XXX - idfah
         while segStarts[0] + startSamp < 0:
-            ##print 'ditching first segment'
+            ##print('ditching first segment')
             segStarts = segStarts[1:]
 
         # if last segment is too short, ditch it
         while segStarts[-1] + endSamp >= unSegmentedData.shape[0]:
-            ##print 'ditching last segment'
+            ##print('ditching last segment')
             segStarts = segStarts[:-1]
 
         indices = np.asarray([range(s+startSamp, s+endSamp) for s in segStarts],

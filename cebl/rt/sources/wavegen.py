@@ -271,7 +271,7 @@ class WaveGen(Source):
         time.sleep(sleepTime)
 
         with self.lock:
-            waveFunc = waveforms[waveforms.keys()[self.waveform.value]]
+            waveFunc = waveforms[list(waveforms.keys())[self.waveform.value]]
 
             freqs = self.freq.value * (2.0*np.pi*np.power(2.0, np.arange(self.nChan))/2.0)
             freqs = freqs[self.activeChanIndex]

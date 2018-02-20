@@ -9,7 +9,7 @@ def classStratified(classData, nFold):
 
     ns = [len(cls) // nFold for cls in classData]
 
-    for fold in xrange(nFold):
+    for fold in range(nFold):
         trainData = list()
         testData = list()
 
@@ -34,7 +34,7 @@ def classRandomSubSample(classData, trainFrac, nFold=1):
     classData = [np.array(cls, copy=True) for cls in classData]
 
     # for each repetition
-    for rep in xrange(nFold):
+    for rep in range(nFold):
         # create new lists to hold training and 
         # validation partitions for each class
         trainData = list()
@@ -92,7 +92,7 @@ def stratified(x, g, nFold):
     if nx != ng:
         raise Exception('size of x and g do not match.')
 
-    for fold in xrange(nFold):
+    for fold in range(nFold):
         start = fold * nx
         if fold < nFold-1:
             end = (fold+1) * nx
@@ -110,7 +110,7 @@ def randomSubSample(x, g, trainFrac, nFold=1):
     x = np.asarray(x)
     g = np.asarray(g)
 
-    for rep in xrange(nFold):
+    for rep in range(nFold):
         nTrain = int(len(x) * trainFrac)
 
         ind = np.arange(len(x))

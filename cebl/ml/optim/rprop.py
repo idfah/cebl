@@ -120,7 +120,7 @@ def rprop(optable,
         error, grad = optable.gradient(*args, returnError=True, **kwargs)
 
         if verbose:
-            print '%d %6f' % (iteration, error)
+            print('%d %6f' % (iteration, error))
 
         if callback is not None:
             callback(optable, iteration, paramTrace, errorTrace)
@@ -175,7 +175,7 @@ def rprop(optable,
         iteration += 1
 
     if verbose:
-        print reason
+        print(reason)
 
     # save result into a dictionary
     result = {}
@@ -321,7 +321,7 @@ def irprop(optable,
         error, grad = optable.gradient(*args, returnError=True, **kwargs)
 
         if verbose:
-            print '%d %6f' % (iteration, error)
+            print('%d %6f' % (iteration, error))
 
         if callback is not None:
             callback(optable, iteration, paramTrace, errorTrace)
@@ -364,7 +364,7 @@ def irprop(optable,
 
         if error > errorPrev:
             if verbose:
-                print 'No success.'
+                print('No success.')
 
             # backtrack flipped steps
             params[flipsNeg] += steps[flipsNeg] * np.sign(grad[flipsNeg])
@@ -391,7 +391,7 @@ def irprop(optable,
         iteration += 1
 
     if verbose:
-        print reason
+        print(reason)
 
     # save result into a dictionary
     result = {}
@@ -461,10 +461,10 @@ def srprop(optable, x, g, batchSize=10, maxRound=np.inf,
     done = False
     while not done:
         if verbose:
-            print '======='
-            print 'round: %d' % curRound
-            print 'error: %.5f' % optable.error(x=x, g=g)
-            print '======='
+            print('=======')
+            print('round: %d' % curRound)
+            print('error: %.5f' % optable.error(x=x, g=g))
+            print('=======')
 
         # start index into current minibatch
         start = 0
@@ -495,7 +495,7 @@ def srprop(optable, x, g, batchSize=10, maxRound=np.inf,
             error, grad = optable.gradient(*args, x=x, g=g, returnError=True, **kwargs)
 
             if verbose:
-                print '%d %d %d %6f' % (iteration, curRound, curBatch, error)
+                print('%d %d %d %6f' % (iteration, curRound, curBatch, error))
 
             if callback is not None:
                 callback(optable, iteration, paramTrace, errorTrace)
@@ -568,7 +568,7 @@ def srprop(optable, x, g, batchSize=10, maxRound=np.inf,
             break
 
     if verbose:
-        print reason
+        print(reason)
 
     # save result into a dictionary
     result = {}

@@ -354,7 +354,7 @@ class Random(Source):
         time.sleep(sleepTime)
 
         with self.lock:
-            distFunc = distributions[distributions.keys()[self.dist.value]]
+            distFunc = distributions[list(distributions.keys())[self.dist.value]]
 
             # generate some random data
             data = distFunc(self.scale.value, (self.pollSize,self.nChan))

@@ -32,7 +32,7 @@ class IIRBandpassConfigPanel(FilterConfigPanel):
     def initOptions(self):
         optionsSizer = wx.BoxSizer(wx.HORIZONTAL)
 
-        self.filtTypeComboBox = wx.ComboBox(self, choices=self.flt.filtMap.keys(),
+        self.filtTypeComboBox = wx.ComboBox(self, choices=list(self.flt.filtMap.keys()),
             value=self.flt.filtType, style=wx.CB_DROPDOWN)
         self.Bind(wx.EVT_COMBOBOX, self.setFiltType, self.filtTypeComboBox)
         optionsSizer.Add(self.filtTypeComboBox, proportion=1,
@@ -283,7 +283,7 @@ class FIRBandpassConfigPanel(FilterConfigPanel):
     def initOptions(self):
         optionsSizer = wx.BoxSizer(wx.HORIZONTAL)
 
-        self.filtTypeComboBox = wx.ComboBox(self, choices=self.flt.filtMap.keys(),
+        self.filtTypeComboBox = wx.ComboBox(self, choices=list(self.flt.filtMap.keys()),
             value=self.flt.filtType, style=wx.CB_DROPDOWN)
         self.Bind(wx.EVT_COMBOBOX, self.setFiltType, self.filtTypeComboBox)
         optionsSizer.Add(self.filtTypeComboBox, proportion=1,

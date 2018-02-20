@@ -91,6 +91,7 @@ class StandardPage(Page):
                         minSize[1]+systemSettings.GetMetric(wx.SYS_HSCROLL_Y))
             configPaneAuiInfo.BestSize(bestSize)
 
+
         # add config pane to aui manager
         self.auiManager.AddPane(self.configPanel, configPaneAuiInfo)
 

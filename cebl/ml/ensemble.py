@@ -44,7 +44,7 @@ class Ensemble(Regression):
         self.models = []
         self.dimInds = []
 
-        for m in xrange(self.nModels):
+        for m in range(self.nModels):
             if obsPerModel is not None:
                 if self.replacement:
                     obsInd = np.random.random_integers(0,len(x)-1, size=obsPerModel)
@@ -126,7 +126,7 @@ class ClassEnsemble(Classifier):
         self.models = []
         self.dimInds = []
 
-        for m in xrange(self.nModels):
+        for m in range(self.nModels):
             classDataSub = []
             if self.obsFrac is not None:
                 for cls in classData:
@@ -200,14 +200,14 @@ def demoClassEnsemble():
     c2Probs = model.probs(c2)
     c3Probs = model.probs(c3)
 
-    print 'c1:'
-    print model.label(c1)
-    print 'c2:'
-    print model.label(c2)
-    print model.probs(c1)
-    print 'c3:'
-    print model.label(c3)
-    print model.probs(c1)
+    print('c1:')
+    print(model.label(c1))
+    print('c2:')
+    print(model.label(c2))
+    print(model.probs(c1))
+    print('c3:')
+    print(model.label(c3))
+    print(model.probs(c1))
 
     x = np.linspace(-2.0, 4.0, 500)
     xProbs = model.probs(x)

@@ -647,7 +647,7 @@ class MentalTasks(StandardBCIPage):
         # split segments
         segs = [cls.split(self.width, self.overlap) for cls in segs]
 
-        ##print 'nSplit segs: ', segs[0].getNSeg()
+        ##print('nSplit segs: ', segs[0].getNSeg())
 
         if self.method == 'Welch Power':
             self.trainWelch(segs)

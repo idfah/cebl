@@ -193,8 +193,8 @@ def bias(x, value=1, axis=-1):
 
     xb = np.empty(xbShape, dtype=dtype)
 
-    xSlices = [slice(None) if i != axis else slice(None,-1) for i in xrange(xb.ndim)]
-    bSlices = [slice(-1,None) if i == axis else slice(None) for i in xrange(xb.ndim)]
+    xSlices = [slice(None) if i != axis else slice(None,-1) for i in range(xb.ndim)]
+    bSlices = [slice(-1,None) if i == axis else slice(None) for i in range(xb.ndim)]
 
     xb[xSlices] = x
     xb[bSlices] = value

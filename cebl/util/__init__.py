@@ -12,6 +12,7 @@ from .crc import *
 from .ds import *
 from .embed import *
 from .errm import *
+#from .fasttanh import *
 #from .fastmult import *
 from .func import *
 from .pack import *

@@ -24,7 +24,7 @@ class MovingAverageConfigPanel(FilterConfigPanel):
         optionsSizer = wx.BoxSizer(wx.HORIZONTAL)
 
         kernTypeControlBox = widgets.ControlBox(self, label='Kernel Type', orient=wx.HORIZONTAL)
-        self.kernTypeComboBox = wx.ComboBox(self, choices=self.flt.kernMap.keys(),
+        self.kernTypeComboBox = wx.ComboBox(self, choices=list(self.flt.kernMap.keys()),
             value=self.flt.kernType, style=wx.CB_DROPDOWN)
         self.Bind(wx.EVT_COMBOBOX, self.setKernType, self.kernTypeComboBox)
         kernTypeControlBox.Add(self.kernTypeComboBox, proportion=1, flag=wx.ALL, border=8)

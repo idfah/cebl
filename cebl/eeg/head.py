@@ -59,7 +59,7 @@ def cacheDist(x1, x2, coord):
         cacheDist.cache = util.Cache(10)
 
     if hx in cacheDist.cache:
-        print 'cache hit'
+        print('cache hit')
         return cacheDist.cache[hx]
 
     result = distFunc(x1, x2)

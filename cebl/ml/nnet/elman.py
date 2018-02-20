@@ -68,7 +68,7 @@ class ElmanRecurrentNetwork(Regression, optim.Optable):
 
         x1c = np.empty((nSeg, nIn1+self.nHidden), dtype=self.dtype)
 
-        for t in xrange(nObs):
+        for t in range(nObs):
             x1c[:,:nIn1] = x1[:,t]
             x1c[:,nIn1:] = context
 
@@ -120,7 +120,7 @@ class ElmanRecurrentNetwork(Regression, optim.Optable):
         x1c = np.empty((nSeg, nObs, nIn1+self.nHidden), dtype=self.dtype)
         context = np.zeros((nSeg, self.nHidden), dtype=self.dtype)
 
-        for t in xrange(nObs):
+        for t in range(nObs):
             x1c[:,t,:nIn1] = x1[:,t]
             x1c[:,t,nIn1:] = context
 
@@ -151,8 +151,8 @@ class ElmanRecurrentNetwork(Regression, optim.Optable):
         ##hg[...] = 0.0
 
         # backward pass for hidden layer, unrolled through time
-        #for t in xrange(nObs-self.transient-1, 0, -1):
-        for t in xrange(nObs-1, 0, -1):
+        #for t in range(nObs-self.transient-1, 0, -1):
+        for t in range(nObs-1, 0, -1):
             rPrimet = rPrime[:,t][:,None,:]
             #x1ct = x1c[:,t][:,None,:]
             ##x1ct = x1c[:,t]
@@ -204,7 +204,7 @@ def demoERNTXOR():
 
     x = np.random.randint(0,2, size=n).astype(np.float32)
     g = np.array([int(xor(x[i-horizon], x[i-horizon-1])) if i > horizon
-            else 0 for i in xrange(len(x))], dtype=np.float32)
+            else 0 for i in range(len(x))], dtype=np.float32)
 
     #options = {'maxfev': 1000}
     #net = ERN(x[None,...], g[None,...], nHidden=10,
@@ -220,7 +220,7 @@ def demoERNTXOR():
     # redo for test data
     x = np.random.randint(0,2, size=n).astype(np.float32)
     g = np.array([int(xor(x[i-horizon], x[i-horizon-1])) if i > horizon
-            else 0 for i in xrange(len(x))], dtype=np.float32)
+            else 0 for i in range(len(x))], dtype=np.float32)
 
     out = net.eval(x[None,...], returnTransient=True)[0]
 
@@ -252,7 +252,7 @@ def demoERNTXORPSO():
 
     xTrain = np.random.randint(0,2, size=n).astype(np.float32)
     gTrain = np.array([int(xor(xTrain[i-horizon], xTrain[i-horizon-1])) if i > horizon
-            else 0 for i in xrange(len(xTrain))], dtype=np.float32)
+            else 0 for i in range(len(xTrain))], dtype=np.float32)
 
     #momentums = np.array((0.3, 0.6, 0.8, 0.9))#np.arange(0.2, 1.0, 0.2)
     momentums = np.array((0.7,))#np.arange(0.2, 1.0, 0.2)
@@ -265,9 +265,9 @@ def demoERNTXORPSO():
     for i,momentum in enumerate(momentums):
         for j,pAttract in enumerate(pAttracts):
             for k,gAttract in enumerate(gAttracts):
-                print 'momentum: ', momentum
-                print 'pAttract: ', pAttract
-                print 'gAttract: ', gAttract
+                print('momentum: ', momentum)
+                print('pAttract: ', pAttract)
+                print('gAttract: ', gAttract)
 
                 net = ERN(xTrain[None,...], gTrain[None,...], nHidden=32,
                            unrollSteps=unrollSteps, transient=transient,
@@ -277,13 +277,13 @@ def demoERNTXORPSO():
 
                 its[i,j,k] = net.trainResult['iteration']
                 ers[i,j,k] = net.trainResult['error']
-                print 'Error: ', ers[i,j,k]
-                print '======='
+                print('Error: ', ers[i,j,k])
+                print('=======')
 
     bi, bj, bk = np.unravel_index(np.argmin(ers), ers.shape)
-    print '======='
-    print 'Best: ', ers[bi,bj,bk], momentums[bi], pAttracts[bj], gAttracts[bk]
-    print '======='
+    print('=======')
+    print('Best: ', ers[bi,bj,bk], momentums[bi], pAttracts[bj], gAttracts[bk])
+    print('=======')
 
     for i,momentum in enumerate(momentums):
         fig = plt.figure()

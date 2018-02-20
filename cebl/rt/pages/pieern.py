@@ -424,19 +424,19 @@ class PieERN(StandardBCIPage):
 
         assert segs[0].getNSeg() == self.nTrainTrial
 
-        ##print 'nSegs:'
+        ##print('nSegs:')
         ##for sg in segs:
-        ##    print sg.getNSeg(), sg.data.shape
+        ##    print(sg.getNSeg(), sg.data.shape)
 
         freqs, trainData = self.powerize(segs)
 
         self.plotPanel.plotFeatures(trainData, freqs, self.choices,
                                     self.trainCap.getChanNames())
 
-        ##print trainData[0].mean(axis=0)
-        ##print trainData[0].mean(axis=0).shape
-        ##print trainData[1].mean(axis=0)
-        ##print trainData[1].mean(axis=0).shape
+        ##print(trainData[0].mean(axis=0))
+        ##print(trainData[0].mean(axis=0).shape)
+        ##print(trainData[1].mean(axis=0))
+        ##print(trainData[1].mean(axis=0).shape)
 
         if self.classifierKind == 'lda':
             self.trainLDA(trainData, dialog)
@@ -583,9 +583,9 @@ class PieERN(StandardBCIPage):
 
         assert segs.getNSeg() == 1
 
-        ##print 'test nSeg: ', segs.nSeg
-        ##print segs.data.shape
-        ##print ''
+        ##print('test nSeg: ', segs.nSeg)
+        ##print(segs.data.shape)
+        ##print('')
 
         freqs, testData = self.powerize((segs,))
 

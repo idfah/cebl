@@ -146,12 +146,12 @@ def demoLogisticRegression1d():
     c2Probs = model.probs(c2)
     c3Probs = model.probs(c3)
 
-    print 'c1:'
-    print model.label(c1)
-    print 'c2:'
-    print model.label(c2)
-    print 'c3:'
-    print model.label(c3)
+    print('c1:')
+    print(model.label(c1))
+    print('c2:')
+    print(model.label(c2))
+    print('c3:')
+    print(model.label(c3))
 
     x = np.linspace(-2.0, 4.0, 500)
     xProbs = model.probs(x)
@@ -187,7 +187,7 @@ def demoLogisticRegression2d():
     # train model
     model = LogisticRegression(classData=classData, verbose=True)
         #optimFunc=optim.rprop, accuracy=0.0, precision=0.0, maxIter=100, penalty=0.3)
-    #print model.weights
+    #print(model.weights)
     #plt.imshow(np.abs(model.weights), interpolation='none')
     #plt.colorbar()
 
@@ -196,16 +196,16 @@ def demoLogisticRegression2d():
     greenLabel = model.label(green)
     blueLabel  = model.label(blue)
 
-    print 'red labels\n-------'
-    print redLabel
-    print '\ngreen labels\n-------'
-    print greenLabel
-    print '\nblue labels\n-------'
-    print blueLabel
+    print('red labels\n-------')
+    print(redLabel)
+    print('\ngreen labels\n-------')
+    print(greenLabel)
+    print('\nblue labels\n-------')
+    print(blueLabel)
 
-    print 'ca:', model.ca(classData)
-    print 'bca:', model.bca(classData)
-    print 'confusion:\n', model.confusion(classData)
+    print('ca:', model.ca(classData))
+    print('bca:', model.bca(classData))
+    print('confusion:\n', model.confusion(classData))
 
     # first figure shows training data and class intersections
     fig = plt.figure()

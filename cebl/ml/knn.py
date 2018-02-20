@@ -88,20 +88,20 @@ def demoKNN():
     greenLabel = model.label(green)
     blueLabel  = model.label(blue)
 
-    print model.probs(classData[0]).dtype
-    print model.probs(classData[1]).dtype
-    print model.probs(classData[2]).dtype
+    print(model.probs(classData[0]).dtype)
+    print(model.probs(classData[1]).dtype)
+    print(model.probs(classData[2]).dtype)
 
-    print 'red labels\n-------'
-    print redLabel
-    print '\ngreen labels\n-------'
-    print greenLabel
-    print '\nblue labels\n-------'
-    print blueLabel
+    print('red labels\n-------')
+    print(redLabel)
+    print('\ngreen labels\n-------')
+    print(greenLabel)
+    print('\nblue labels\n-------')
+    print(blueLabel)
 
-    print 'ca:', model.ca(classData)
-    print 'bca:', model.bca(classData)
-    print 'confusion:\n', model.confusion(classData)
+    print('ca:', model.ca(classData))
+    print('bca:', model.bca(classData))
+    print('confusion:\n', model.confusion(classData))
 
     # first figure shows training data and class intersections
     fig = plt.figure()

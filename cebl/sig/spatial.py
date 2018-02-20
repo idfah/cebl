@@ -13,7 +13,7 @@ def commonAverageReference(s, m1=False):
     if m1:
         nDim = s.shape[1]
         colSum = s.sum(axis=1)
-        s -= np.hstack([(colSum-s[:,i])[:,None] for i in xrange(nDim)])/(nDim-1)
+        s -= np.hstack([(colSum-s[:,i])[:,None] for i in range(nDim)])/(nDim-1)
         return s
     else:
         s -= s.mean(axis=1)[:,None]
@@ -48,7 +48,7 @@ def sharpenOld(s, kernelFunc, dist=None, scale=None,
         dist = np.abs(dist[None,:]-dist[:,None])
 
         #dist = np.insert(spsig.triang(s.shape[1]-1, sym=False), 0, 0.0)
-        #dist = np.vstack([np.roll(dist, i) for i in xrange(dist.size)])
+        #dist = np.vstack([np.roll(dist, i) for i in range(dist.size)])
 
     if scale is None:
         # minimum off-diagonal distance
@@ -71,7 +71,7 @@ def sharpen(s, radius=0.3, mix=1.0, dist=None):
         dist = np.arange(s.shape[1])+1.0
         dist = np.abs(dist[None,:]-dist[:,None])
         #dist = np.insert(spsig.triang(s.shape[1]-1, sym=False), 0, 0.0)
-        #dist = np.vstack([np.roll(dist, i) for i in xrange(dist.size)])
+        #dist = np.vstack([np.roll(dist, i) for i in range(dist.size)])
 
     kernel = util.gaussian(dist.T, radius=radius)
     kernel /= kernel.sum(axis=0)

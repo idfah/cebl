@@ -102,7 +102,7 @@ def steepest(optable,
         #curLearningRate = learningRate + learningRateDecay * iteration
 
         if verbose:
-            print '%d %3f %6f' % (iteration, curLearningRate, error)
+            print('%d %3f %6f' % (iteration, curLearningRate, error))
 
         if callback is not None:
             callback(optable, iteration, paramTrace, errorTrace)
@@ -145,7 +145,7 @@ def steepest(optable,
         iteration += 1
 
     if verbose:
-        print reason
+        print(reason)
 
     # save result into a dictionary
     result = dict()

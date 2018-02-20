@@ -386,21 +386,21 @@ def demoPSD():
     noise2 = np.random.normal(loc=0.0, scale=0.2, size=s.shape)
 
     y = np.vstack((np.sin(2*f1*np.pi*s)+noise1,10.0*np.sin(2*f2*np.pi*s)+noise2)).T
-    print 'True max power: ', np.mean(y**2, axis=0)
+    print('True max power: ', np.mean(y**2, axis=0))
 
     scale = 'log'
 
     raw = RawPSD(y, sampRate)
     ax = raw.plotPower(scale=scale, label='raw')['ax']
-    print 'Raw max power: ', np.max(raw.getPowers()*sampRate, axis=0)
+    print('Raw max power: ', np.max(raw.getPowers()*sampRate, axis=0))
 
     welch = WelchPSD(y, sampRate, span=4)
     welch.plotPower(scale=scale, ax=ax, label='welch')
-    print 'Welch max power: ', np.max(welch.getPowers()*sampRate, axis=0)
+    print('Welch max power: ', np.max(welch.getPowers()*sampRate, axis=0))
 
     autoreg = AutoRegPSD(y, sampRate, order=10)
     autoreg.plotPower(scale=scale, ax=ax, label='autoreg')
-    print 'AR max power: ', np.max(autoreg.getPowers()*sampRate, axis=0)
+    print('AR max power: ', np.max(autoreg.getPowers()*sampRate, axis=0))
 
     ax.legend()
 

@@ -32,7 +32,7 @@ class MultilayerElmanRecurrentNetwork(Regression, optim.Optable):
         self.nRecLayers = len(self.nRecHiddens)
 
         self.layerDims = [(self.nIn+self.nRecHiddens[0]+1, self.nRecHiddens[0])]
-        for l in xrange(1, self.nRecLayers):
+        for l in range(1, self.nRecLayers):
             self.layerDims.append((self.nRecHiddens[l-1]+self.nRecHiddens[l]+1, self.nRecHiddens[l]))
         self.layerDims.append((self.nRecHiddens[-1]+1, self.nOut))
 
@@ -44,7 +44,7 @@ class MultilayerElmanRecurrentNetwork(Regression, optim.Optable):
         self.iws = []
         self.rws = []
         nIn = self.nIn
-        for l in xrange(self.nRecLayers):
+        for l in range(self.nRecLayers):
             iw = self.hws[l][:(nIn+1)]
             rw = self.hws[l][(nIn+1):]
             self.iws.append(iw)
@@ -82,16 +82,16 @@ class MultilayerElmanRecurrentNetwork(Regression, optim.Optable):
 
         if contexts is None:
             contexts = [np.zeros((nSeg, self.nRecHiddens[l]), dtype=self.dtype)
-                        for l in xrange(self.nRecLayers)]
+                        for l in range(self.nRecLayers)]
 
-        for l in xrange(self.nRecLayers):
+        for l in range(self.nRecLayers):
             nIn1 = r1Prev.shape[2]
 
             r = np.empty((nSeg, nObs, self.nRecHiddens[l]), dtype=self.dtype)
             r1c = np.empty((nSeg, nIn1+self.nRecHiddens[l]), dtype=self.dtype)
             context = contexts[l]
 
-            for t in xrange(nObs):
+            for t in range(nObs):
                 r1c[:,:nIn1] = r1Prev[:,t]
                 r1c[:,nIn1:] = context
 
@@ -148,7 +148,7 @@ class MultilayerElmanRecurrentNetwork(Regression, optim.Optable):
         r1cs = []
         rPrimes = []
 
-        for l in xrange(self.nRecLayers):
+        for l in range(self.nRecLayers):
             nIn1 = r1Prev.shape[2]
 
             r = np.empty((nSeg, nObs, self.nRecHiddens[l]), dtype=self.dtype)
@@ -156,7 +156,7 @@ class MultilayerElmanRecurrentNetwork(Regression, optim.Optable):
             r1c = np.empty((nSeg, nObs, nIn1+self.nRecHiddens[l]), dtype=self.dtype)
             context = np.zeros((nSeg, self.nRecHiddens[l]), dtype=self.dtype)
 
-            for t in xrange(nObs):
+            for t in range(nObs):
                 r1c[:,t,:nIn1] = r1Prev[:,t]
                 r1c[:,t,nIn1:] = context
 
@@ -186,7 +186,7 @@ class MultilayerElmanRecurrentNetwork(Regression, optim.Optable):
 
         # backward pass through each layer
         w = self.vw
-        for l in xrange(self.nRecLayers-1, -1, -1):
+        for l in range(self.nRecLayers-1, -1, -1):
             r1c = r1cs[l]
             rwsTrans = self.rws[l].T
             rPrime = rPrimes[l]
@@ -198,8 +198,8 @@ class MultilayerElmanRecurrentNetwork(Regression, optim.Optable):
             delta = np.zeros((nSeg, nObs, self.nRecHiddens[l]), dtype=self.dtype)
 
             # unrolled through time
-            #for t in xrange(nObs-self.transient-1, 0, -1):
-            for t in xrange(nObs-1, 0, -1):
+            #for t in range(nObs-self.transient-1, 0, -1):
+            for t in range(nObs-1, 0, -1):
                 rPrimet = rPrime[:,t][:,None,:]
 
                 beta = gamma[:,:-1]
@@ -215,7 +215,7 @@ class MultilayerElmanRecurrentNetwork(Regression, optim.Optable):
             deltaf = delta.reshape((-1, delta.shape[-1]))
             hgs[l][...] = r1cf.T.dot(deltaf)
 
-            #print 'hg %d: %f' % (l, np.sqrt(np.mean(hgs[l]**2)))
+            #print('hg %d: %f' % (l, np.sqrt(np.mean(hgs[l]**2))))
 
             w = self.iws[l]
 
@@ -245,7 +245,7 @@ def demoMERNTXOR():
 
     x = np.random.randint(0,2, size=n).astype(np.float32)
     g = np.array([int(xor(x[i-horizon], x[i-horizon-1])) if i > horizon
-            else 0 for i in xrange(len(x))], dtype=np.float32)
+            else 0 for i in range(len(x))], dtype=np.float32)
 
     std = stand.Standardizer(x)
     x = std.apply(x)
@@ -270,7 +270,7 @@ def demoMERNTXOR():
     # redo for test data
     x = np.random.randint(0,2, size=n).astype(np.float32)
     g = np.array([int(xor(x[i-horizon], x[i-horizon-1])) if i > horizon
-            else 0 for i in xrange(len(x))], dtype=np.float32)
+            else 0 for i in range(len(x))], dtype=np.float32)
 
     x = std.apply(x)
     g = std.apply(g)

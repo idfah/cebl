@@ -81,7 +81,7 @@ class ForwardNetworkSoftmax(Classifier, optim.Optable):
         self.nHLayers = len(self.nHidden)
 
         self.layerDims = [(self.nIn+1, self.nHidden[0])]
-        for l in xrange(1, self.nHLayers):
+        for l in range(1, self.nHLayers):
             self.layerDims.append((self.nHidden[l-1]+1, self.nHidden[l]))
         self.layerDims.append((self.nHidden[-1]+1, self.nCls))
 
@@ -287,7 +287,7 @@ class ForwardNetworkSoftmax(Classifier, optim.Optable):
 
         # backward pass for hidden layers
         w = self.vw
-        for l in xrange(self.nHLayers-1, -1, -1):
+        for l in range(self.nHLayers-1, -1, -1):
             delta = delta.dot(w[:-1,:].T) * zPrimes[l]
             hgs[l][...] = z1s[l].T.dot(delta)
             hgs[l] += self.penaltyGradient(l)
@@ -343,9 +343,9 @@ def demoFNS2d():
     ##            batchSize=15, maxRound=5, maxIter=5,
     ##            transFunc=transfer.lecun, precision=1.0e-10,
     ##            verbose=1)
-    ##print 'ca:', model.ca(classData)
-    ##print 'bca:', model.bca(classData)
-    ##print 'confusion:\n', model.confusion(classData)
+    ##print('ca:', model.ca(classData))
+    ##print('bca:', model.bca(classData))
+    ##print('confusion:\n', model.confusion(classData))
     ##model.train(classData, optimFunc=optim.scg,
     ##            maxIter=10, precision=1.0e-10, verbose=True)
 
@@ -354,20 +354,20 @@ def demoFNS2d():
     greenLabel = model.label(green)
     blueLabel  = model.label(blue)
 
-    print model.probs(classData[0]).dtype
-    print model.probs(classData[1]).dtype
-    print model.probs(classData[2]).dtype
+    print(model.probs(classData[0]).dtype)
+    print(model.probs(classData[1]).dtype)
+    print(model.probs(classData[2]).dtype)
 
-    print 'red labels\n-------'
-    print redLabel
-    print '\ngreen labels\n-------'
-    print greenLabel
-    print '\nblue labels\n-------'
-    print blueLabel
+    print('red labels\n-------')
+    print(redLabel)
+    print('\ngreen labels\n-------')
+    print(greenLabel)
+    print('\nblue labels\n-------')
+    print(blueLabel)
 
-    print 'ca:', model.ca(classData)
-    print 'bca:', model.bca(classData)
-    print 'confusion:\n', model.confusion(classData)
+    print('ca:', model.ca(classData))
+    print('bca:', model.bca(classData))
+    print('confusion:\n', model.confusion(classData))
 
     # first figure shows training data and class intersections
     fig = plt.figure()

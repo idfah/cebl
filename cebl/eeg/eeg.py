@@ -275,7 +275,7 @@ class EEG(EEGBase):
 
     def keepChans(self, chans):
         chans = self.getChanIndices(chans)
-        delChan = [c for c in xrange(self.nChan) if c not in chans]
+        delChan = [c for c in range(self.nChan) if c not in chans]
         self.deleteChans(delChan)
         return self
 
@@ -591,7 +591,7 @@ class EEG(EEGBase):
             #if len(locs) > 20:
             #    locs = locs[0:len(locs):len(locs)/20]
             #labels = ['{:6.0g}'.format(v/float(self.sampRate)) for v in locs]
-            #print labels
+            #print(labels)
             #plt.xticks(locs, labels)
             #locs = range(self.nFreq)
             #if len(locs) > 20:
@@ -629,8 +629,8 @@ class EEG(EEGBase):
         fig = plt.figure()
         axs = []
 
-        for r in xrange(nDim):
-            for c in xrange(nDim):
+        for r in range(nDim):
+            for c in range(nDim):
                 ax = fig.add_subplot(nDim, nDim, r*nDim+c+1+nDim*(nDim-(r%nDim)*2-1))
                 axs.append(ax)
 
@@ -750,7 +750,7 @@ class EEG(EEGBase):
             ax = fig.add_subplot(nRows, nCols, i+1)
 
             lines = []
-            for j in xrange(s.shape[1]):
+            for j in range(s.shape[1]):
                 lines += ax.plot(s[lag:,j], s[:-lag,j], **kwargs)
                                  #color=plt.cm.jet(j/float(s.shape[1]), alpha=0.2))
 

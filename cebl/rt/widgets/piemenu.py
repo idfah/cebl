@@ -277,7 +277,7 @@ class PieMenu(GraphicsPanel):
 
         # for each cell
         for i,choice in enumerate(self.choices):
-        #in xrange(len(self.angles)-1):
+        #in range(len(self.angles)-1):
             gc.PushState()
 
             # set color for filling cell

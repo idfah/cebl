@@ -63,33 +63,33 @@ class Cache(object):
 if __name__ == '__main__':
     cache = Cache(3)
 
-    print 'adding a: 1'
+    print('adding a: 1')
     cache['a'] = 1
 
-    print 'adding b: 2'
+    print('adding b: 2')
     cache['b'] = 2
 
-    print 'adding c: 3'
+    print('adding c: 3')
     cache['c'] = 3
 
-    print cache
+    print(cache)
 
-    print 'getting b'
-    print cache['b']
+    print('getting b')
+    print(cache['b'])
 
-    print 'adding a'
+    print('adding a')
     cache['a'] = 10
 
-    print cache
+    print(cache)
 
-    print 'adding d'
+    print('adding d')
     cache['d'] = 4
 
-    print 'getting x'
-    print cache['x']
+    print('getting x')
+    print(cache['x'])
 
-    print cache
-    print len(cache)
+    print(cache)
+    print(len(cache))
 
-    print 'd' in cache
-    print 'c' in cache
+    print('d' in cache)
+    print('c' in cache)

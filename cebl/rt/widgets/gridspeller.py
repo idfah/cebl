@@ -205,7 +205,8 @@ class GridSpeller(DrawablePanel):
         return self.grid[row,col]
 
     def getGridLocation(self, symbol):
-        return np.where(self.grid == unicode(symbol))
+        #return np.where(self.grid == unicode(symbol))
+        return np.where(self.grid == symbol)
 
     def getCopyColor(self):
         return self.copyColor
@@ -437,8 +438,8 @@ class GridSpeller(DrawablePanel):
         dx = (self.winWidth+0.0)/(self.nCols+1)
         dy = (self.winHeight-yOffset)/(self.nRows+1)
 
-        for i in xrange(self.nRows):
-            for j in xrange(self.nCols):
+        for i in range(self.nRows):
+            for j in range(self.nCols):
                 # select the color and font for the next symbol
                 mark = self.marked[i,j]
 

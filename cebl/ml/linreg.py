@@ -236,7 +236,7 @@ def demoLinearRegressionElastic():
     axWeights.set_yticks((0,1,2,3))
     axWeights.set_yticklabels(('x1', 'x2', 'x3', 'bias'))
 
-    print model.weights
+    print(model.weights)
 
 
 if __name__ == '__main__':

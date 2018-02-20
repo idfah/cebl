@@ -44,7 +44,7 @@ def sciopt(optable,
             error = optable.error(*args, **kwargs)
 
         if verbose:
-            print '%d %6f' % (cb.iteration, error)
+            print('%d %6f' % (cb.iteration, error))
 
         # keep parameter history if requested
         if pTrace:
@@ -69,8 +69,8 @@ def sciopt(optable,
                 options=options, callback=cb)
 
     if verbose:
-        print optres
-        print '\n'
+        print(optres)
+        print('\n')
 
     params.flat[...] = optres['x']
 

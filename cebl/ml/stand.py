@@ -30,7 +30,7 @@ class Standardizer(object):
 
         # best way to handle this? XXX - idfah
         if np.any(np.isclose(self.scale, 0.0)):
-            print 'Standardizer Warning: Some dimensions are constant, capping zeros.'
+            print('Standardizer Warning: Some dimensions are constant, capping zeros.')
             self.scale = util.capZero(self.scale)
 
     def initRange(self, x):

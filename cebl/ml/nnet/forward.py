@@ -29,7 +29,7 @@ class ForwardNetwork(Regression, optim.Optable):
         self.nHLayers = len(self.nHidden)
 
         self.layerDims = [(self.nIn+1, self.nHidden[0])]
-        for l in xrange(1, self.nHLayers):
+        for l in range(1, self.nHLayers):
             self.layerDims.append((self.nHidden[l-1]+1, self.nHidden[l]))
         self.layerDims.append((self.nHidden[-1]+1, self.nOut))
 
@@ -242,7 +242,7 @@ class ForwardNetwork(Regression, optim.Optable):
 
         # backward pass for hidden layers
         w = self.vw
-        for l in xrange(self.nHLayers-1, -1, -1):
+        for l in range(self.nHLayers-1, -1, -1):
             delta = delta.dot(w[:-1,:].T) * zPrimes[l]
             hgs[l][...] = z1s[l].T.dot(delta)
             hgs[l] += self.penaltyGradient(l)
@@ -312,7 +312,7 @@ class ForwardNetworkL1(ForwardNetwork):
 
         # backward pass for hidden layers
         w = self.vw
-        for l in xrange(self.nHLayers-1, -1, -1):
+        for l in range(self.nHLayers-1, -1, -1):
             delta = delta.dot(w[:-1,:].T) * zPrimes[l]
             hgs[l][...] = z1s[l].T.dot(delta)
             hgs[l] += self.penaltyGradient(l)

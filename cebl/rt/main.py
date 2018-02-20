@@ -26,7 +26,7 @@ class CEBLApp(wx.App):
         """Send gracefull exit notice.
         This should go in final release XXX - idfah
         """
-        print 'Gracefull exit.'
+        print('Gracefull exit.')
         return True
 
 class CEBLMain(wx.Frame):

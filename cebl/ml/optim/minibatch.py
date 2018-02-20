@@ -49,11 +49,11 @@ def minibatch(optable, x, g, batchSize=10, maxRound=10,
     done = False
     while not done:
         if verbose > 0:
-            print '======='
-            print 'iterations: %d' % totalIter
-            print 'error: %.5f' % optable.error(x=x, g=g)
-            print 'round: %d' % curRound
-            print '======='
+            print('=======')
+            print('iterations: %d' % totalIter)
+            print('error: %.5f' % optable.error(x=x, g=g))
+            print('round: %d' % curRound)
+            print('=======')
 
         # start index into current minibatch
         start = 0
@@ -67,7 +67,7 @@ def minibatch(optable, x, g, batchSize=10, maxRound=10,
         curBatch = 0
         while True:
             if verbose > 0:
-                print 'minibatch: %d' % curBatch
+                print('minibatch: %d' % curBatch)
 
             # end index into current minibatch
             end = start + batchSize
@@ -123,9 +123,9 @@ def minibatch(optable, x, g, batchSize=10, maxRound=10,
             done = True
 
     if verbose > 0:
-        print 'reason: %s' % reason
-        print 'round: %d' % curRound
-        print 'iterations: %d' % totalIter
+        print('reason: %s' % reason)
+        print('round: %d' % curRound)
+        print('iterations: %d' % totalIter)
 
     # save result into a dictionary
     result = {}

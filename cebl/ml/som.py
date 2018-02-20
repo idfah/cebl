@@ -106,7 +106,7 @@ class SelfOrganizingMap(object):
         if self.callback is not None:
             self.callback(0, self.weights, self.learningRate, self.radius)
 
-        for iteration in xrange(1,self.maxIter+1):
+        for iteration in range(1,self.maxIter+1):
             curObs = x[np.random.randint(0, nObs)]
 
             curLearningRate = self.learningRate + self.learningRateDecay * iteration
@@ -120,7 +120,7 @@ class SelfOrganizingMap(object):
                 neighborHood[...,None] * (curObs[None,None,:] - self.weights)
 
             if self.verbose:
-                print '%d %.3f %.3f' % (iteration, curLearningRate, curRadius)
+                print('%d %.3f %.3f' % (iteration, curLearningRate, curRadius))
 
             if self.callback is not None:
                 self.callback(iteration, self.weights, curLearningRate, curRadius)

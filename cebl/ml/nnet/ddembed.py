@@ -15,7 +15,7 @@ import numpy.lib.stride_tricks as npst
 ###    
 ###    d = list()
 ###    sz = delta.itemsize
-###    for i in xrange(origDim):
+###    for i in range(origDim):
 ###        rowStride = width
 ###        colStride = rowStride+1
 ###        d.append(npst.as_strided(delta[:,i::origDim].copy(),
@@ -43,7 +43,7 @@ import numpy.lib.stride_tricks as npst
 ##    rowStride = width * sz
 ##    colStride = (width+1) * sz
 ##
-##    for i in xrange(origDim):
+##    for i in range(origDim):
 ##        d.append(npst.as_strided(delta[:,:,i::origDim].copy(),
 ##                shape=(nSeg,nObs+lags,width), strides=(segStride,rowStride,colStride)))
 ##

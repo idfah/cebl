@@ -260,9 +260,9 @@ class STrans(Filter):
 
             nComp = len(self.getInChans()) * (self.lags+1)
             if self.remove:
-                outChans = [str(c) for c in xrange(nComp) if c not in self.comp]
+                outChans = [str(c) for c in range(nComp) if c not in self.comp]
             else:
-                outChans = [str(c) for c in xrange(nComp) if c in self.comp]
+                outChans = [str(c) for c in range(nComp) if c in self.comp]
 
         else:
             filteredData = self.stransFilter.filter(data,

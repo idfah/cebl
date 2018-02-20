@@ -42,7 +42,7 @@ def sgd(optable, x, g, batchSize=30,
         start = 0
         np.random.shuffle(batchInd)
         if verbose:
-            print 'batch: %d' % batch
+            print('batch: %d' % batch)
 
         xShuff = x[batchInd]
         gShuff = g[batchInd]
@@ -66,7 +66,7 @@ def sgd(optable, x, g, batchSize=30,
             velocity[...] = momentum * velocity + curLearningRate * grad
 
             if verbose:
-                print '%d %3f %6f' % (iteration, curLearningRate, error)
+                print('%d %3f %6f' % (iteration, curLearningRate, error))
 
             if callback is not None:
                 callback(optable, iteration, paramTrace, errorTrace)
@@ -116,7 +116,7 @@ def sgd(optable, x, g, batchSize=30,
         batch += 1
 
     if verbose:
-        print reason
+        print(reason)
 
     # save result into a dictionary
     result = dict()

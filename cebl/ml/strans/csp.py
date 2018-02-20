@@ -105,8 +105,8 @@ def demoCSP():
     csp1 = cspFilt.transform(s1)#, comp=(2,), remove=True)
     csp2 = cspFilt.transform(s2)#, comp=(2,), remove=True)
 
-    print csp1.var(axis=0)
-    print csp2.var(axis=0)
+    print(csp1.var(axis=0))
+    print(csp2.var(axis=0))
 
     axCSP1 = fig.add_subplot(4,1, 3)
     axCSP1.plot(csp1 + util.colsep(csp1))

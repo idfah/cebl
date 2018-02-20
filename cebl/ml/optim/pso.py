@@ -19,11 +19,11 @@ def pso(optable, nParticles=10, pInit=0.5, vInit=0.01,
     params = optable.parameters()
 
     #pParams = [optable.parameters() + np.random.normal(scale=pInit, size=params.size)
-    #           for i in xrange(nParticles)]
+    #           for i in range(nParticles)]
     pParams = [optable.parameters() + np.random.uniform(-pInit, pInit, size=params.size)
-               for i in xrange(nParticles)]
+               for i in range(nParticles)]
 
-    pVeloc = [np.random.uniform(-vInit, vInit) for i in xrange(nParticles)]
+    pVeloc = [np.random.uniform(-vInit, vInit) for i in range(nParticles)]
 
     pError = []
     pBest = [p for p in pParams]
@@ -47,7 +47,7 @@ def pso(optable, nParticles=10, pInit=0.5, vInit=0.01,
     iteration = 0
 
     if verbose:
-        print '%d %6f' % (iteration, gError)
+        print('%d %6f' % (iteration, gError))
 
     if callback is not None:
         callback(optable, iteration, paramTrace, errorTrace)
@@ -77,7 +77,7 @@ def pso(optable, nParticles=10, pInit=0.5, vInit=0.01,
         iteration += 1
 
         if verbose:
-            print '%d %3f %6f' % (iteration, np.max(pVeloc), gError)
+            print('%d %3f %6f' % (iteration, np.max(pVeloc), gError))
 
         if callback is not None:
             callback(optable, iteration, paramTrace, errorTrace)
@@ -113,7 +113,7 @@ def pso(optable, nParticles=10, pInit=0.5, vInit=0.01,
     params[...] = gBest
 
     if verbose:
-        print reason
+        print(reason)
 
     # save result into a dictionary
     result = {}
@@ -154,7 +154,7 @@ def demoPSO():
     axCont.scatter(*rosen.solution, color='red', marker='x', s=400, linewidth=3)
 
     paramTrace = np.array(rosen.trainResult['pTrace'])
-    for i in xrange(paramTrace.shape[1]):
+    for i in range(paramTrace.shape[1]):
         axCont.plot(paramTrace[:,i:,0], paramTrace[:,i:,1], color=plt.cm.jet(i/float(paramTrace.shape[1])), linewidth=1)
 
     fig.tight_layout()

@@ -91,7 +91,7 @@ class IndependentComponentsAnalysis(STrans):
             wtol = np.max(np.abs(wPrev-self.w))
 
             if verbose:
-                print '%d %6f' % (iteration, wtol)
+                print('%d %6f' % (iteration, wtol))
 
             if callback is not None:
                 callback(iteration, wtol)
@@ -111,7 +111,7 @@ class IndependentComponentsAnalysis(STrans):
             iteration += 1
 
         if verbose:
-            print 'Reason: ' + self.reason
+            print('Reason: ' + self.reason)
 
         self.w /= np.sqrt(np.sum(self.w**2, axis=0))
         self.wInv[...] = np.linalg.pinv(self.w)

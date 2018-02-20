@@ -3,6 +3,7 @@ import numpy as np
 import wx
 
 #import wx.lib.plot as wxplt
+
 from . import wxlibplot as wxplt # cython rebuild
 
 from cebl import util
@@ -43,9 +44,8 @@ class wxPlot(wx.Panel):
         self.canvas.enableGrid = False
         self.setMediumQuality()
 
-    def initLayout(self):
+    def initLayout(self, event=None):
         self.sizer = wx.BoxSizer(orient=wx.VERTICAL)
-        self.sizer.Add(self.canvas, proportion=1, flag=wx.EXPAND)
         self.SetSizer(self.sizer)
         self.Layout()
 
@@ -80,7 +80,7 @@ class TracePlotCanvas(wxPlotCanvas):
             return wxplt.PlotCanvas._yticks(self, *args)
 
         locs = -np.arange(len(self.chanNames)) * self.scale
-        return zip(locs, self.chanNames)
+        return list(zip(locs, self.chanNames))
 
     def setChanNames(self, chanNames, scale):
         self.chanNames = chanNames
@@ -94,8 +94,13 @@ class TracePlot(wxPlot):
                         title=title, xLabel=xLabel, yLabel=yLabel,
                         *args, **kwargs)
 
-    def initCanvas(self):
-        self.canvas = TracePlotCanvas(self)
+    def initCanvas(self, event=None):
+        if not self.windowCreated:
+            self.windowCreated = True
+            self.canvas = TracePlotCanvas(self)
+            self.sizer.Add(self.canvas, proportion=1, flag=wx.EXPAND)
+            self.Layout()
+        wx.CallAfter(self.initCanvasSettings)
 
     def draw(self, data, time=None, scale=None, chanNames=None,
              colors=('black', 'red', 'violet', 'blue', 'green', 'orange'),
@@ -166,7 +171,7 @@ class PowerPlot(wxPlot):
                         title=title, xLabel=xLabel, yLabel=yLabel,
                         *args, **kwargs)
 
-    def initCanvasSettings(self):
+    def initCanvasSettings(self, event=None):
         wxPlot.initCanvasSettings(self)
         self.canvas.logScale = (False,True)
         self.canvas.enableLegend = True

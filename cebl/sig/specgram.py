@@ -68,7 +68,7 @@ class SpectrogramBase(object):
 
     def plotPower(self, scale='log', chanNames=None, colorbar=True, axs=None, **kwargs):
         if chanNames is None:
-            chanNames = [str(i) for i in xrange(self.nChan)]
+            chanNames = [str(i) for i in range(self.nChan)]
 
         if scale == 'linear':
             powers = self.powers
