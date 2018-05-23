@@ -185,14 +185,12 @@ class Config(Page):
 
         # intro message
         self.messageArea.SetDefaultStyle(
-                #wx.TextAttr(colText=wx.Colour('black'), font=helloFont)) # wxpython3
-                wx.TextAttr(font=helloFont))
+                wx.TextAttr(colText=wx.Colour('black'), font=helloFont))
         self.messageArea.AppendText('Welcome to CEBL!\n\n')
 
         # setup message style
         self.messageArea.SetDefaultStyle(wx.TextAttr())
-        #self.messageArea.SetDefaultStyle(wx.TextAttr(colText=wx.Colour('black'), font=msgFont)) # wxpython3
-        self.messageArea.SetDefaultStyle(wx.TextAttr(font=msgFont))
+        self.messageArea.SetDefaultStyle(wx.TextAttr(colText=wx.Colour('black'), font=msgFont))
 
         # add the message area text ctrl widget as a log target
         self.mgr.logger.addTextCtrl(self.messageArea)

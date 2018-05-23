@@ -12,15 +12,15 @@ class wxPlotCanvas(wxplt.PlotCanvas):
         wxplt.PlotCanvas.__init__(self, *args, **kwargs)
 
         self.lastSize = (0,0)
-        self.Bind(wx.EVT_SIZE, self.resizeHack)
+        ##self.Bind(wx.EVT_SIZE, self.resizeHack)
 
-    def resizeHack(self, event):
-        # hack alert, to prevent multiple consecutive resize events XXX - idfah
-        # should this be reported as a wx bug? XXX - idfah
-        size = self.GetSize()
-        if size != self.lastSize:
-            self.lastSize = size
-            event.Skip()
+    ##def resizeHack(self, event):
+    ##    # hack alert, to prevent multiple consecutive resize events XXX - idfah
+    ##    # should this be reported as a wx bug? XXX - idfah
+    ##    size = self.GetSize()
+    ##    if size != self.lastSize:
+    ##        self.lastSize = size
+    ##        event.Skip()
 
 class wxPlot(wx.Panel):
     def __init__(self, parent, title, xLabel, yLabel, *args, **kwargs):

@@ -73,15 +73,15 @@ class TextStim(DrawablePanel):
         fontEnum = wx.FontEnumerator()
         fontEnum.EnumerateFacenames()
         faceList = fontEnum.GetFacenames()
+
         if 'Utopia' in faceList:
             self.defaultStimFont = wx.Font(pointSize=196, family=wx.FONTFAMILY_ROMAN,
                 style=wx.FONTSTYLE_NORMAL, weight=wx.FONTWEIGHT_NORMAL,
-                #underline=False, faceName='Utopia') # wxpython3
-                underline=False, face='Utopia')
+                underline=False, faceName='Utopia')
             self.defaultFeedFont = wx.Font(pointSize=32, family=wx.FONTFAMILY_ROMAN,
                 style=wx.FONTSTYLE_NORMAL, weight=wx.FONTWEIGHT_NORMAL,
-                #underline=True, faceName='Utopia') # wxpython3
-                underline=True, face='Utopia')
+                underline=True, faceName='Utopia')
+
         else:
             self.defaultStimFont = wx.Font(pointSize=196, family=wx.FONTFAMILY_ROMAN,
                 style=wx.FONTSTYLE_NORMAL, weight=wx.FONTWEIGHT_NORMAL, underline=False)

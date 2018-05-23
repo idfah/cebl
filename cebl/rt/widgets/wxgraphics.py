@@ -71,8 +71,8 @@ class DrawablePanel(wx.Panel):
         size = self.winWidth, self.winHeight = self.GetSize()
         if size != self.lastSize: # hack to mitigate multiple consecutive resize events
             self.winRadius = min((self.winWidth/2.0, self.winHeight/2.0))
-            #self.drawingBuffer = wx.Bitmap(self.winWidth, self.winHeight) # wxpython3
-            self.drawingBuffer = wx.EmptyBitmap(self.winWidth, self.winHeight) # wxpython3
+            self.drawingBuffer = wx.Bitmap(self.winWidth, self.winHeight)
+            #self.drawingBuffer = wx.EmptyBitmap(self.winWidth, self.winHeight)
             self.lastSize = size
             self.refresh()
 

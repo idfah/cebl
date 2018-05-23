@@ -76,10 +76,9 @@ class PieMenu(GraphicsPanel):
         # if none, use SWISS font
         if font is None:
             self.font = \
-                wx.Font(pointSize=12, family=wx.FONTFAMILY_SWISS,
+                wx.Font(pointSize=10, family=wx.FONTFAMILY_SWISS,
                         style=wx.FONTSTYLE_NORMAL, weight=wx.FONTWEIGHT_BOLD,
-                        #underline=False)#, faceName='Utopia') # wxpython3
-                        underline=False)#, face='Utopia') # wxpython3
+                        underline=False)#, faceName='Utopia')
 
         # otherwise, use given font
         else:
@@ -317,8 +316,7 @@ class PieMenu(GraphicsPanel):
         radius = 0.8 * self.winRadius
         textCenters = radius * np.array((np.cos(self.midAngles), np.sin(self.midAngles))).T
 
-        #gc.SetFont(self.font, wx.Colour('black')) # wxpython3
-        gc.SetFont(self.font)
+        gc.SetFont(self.font, wx.Colour('black'))
 
         # for each cell
         for i,choice in enumerate(self.choices):

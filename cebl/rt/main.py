@@ -2,7 +2,7 @@
 """
 import os
 import wx
-#import wx.adv # wxpython3
+import wx.adv
 
 import sys
 
@@ -131,15 +131,12 @@ class CEBLMain(wx.Frame):
         self.statusBar.SetStatusText('Sampling Rate: %.2fHz' % sampRate, 3)
         self.statusBar.SetStatusText('Version: 3.0.0a', 4)
 
-#class Splash(wx.adv.SplashScreen): # wxpython3
-class Splash(wx.SplashScreen):
+class Splash(wx.adv.SplashScreen):
     def __init__(self, parent):
         logo = wx.Image(os.path.dirname(__file__) + '/images/CEBL3_splash.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap()
-        #wx.adv.SplashScreen.__init__(self, # wxpython3
-        wx.SplashScreen.__init__(self,
+        wx.adv.SplashScreen.__init__(self,
             parent=parent, milliseconds=2000, bitmap=logo,
-            #splashStyle=wx.adv.SPLASH_CENTER_ON_SCREEN | wx.adv.SPLASH_TIMEOUT) # wxpython3
-            splashStyle=wx.SPLASH_CENTER_ON_SCREEN | wx.SPLASH_TIMEOUT)
+            splashStyle=wx.adv.SPLASH_CENTER_ON_SCREEN | wx.adv.SPLASH_TIMEOUT)
 
 def run():
     bci = CEBLApp()
