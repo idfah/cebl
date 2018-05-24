@@ -72,5 +72,5 @@ setuptools.setup(
     license='GPL3, Copyright (2017) Elliott Forney, Charles Anderson, Colorado State University',
     description='Colorado Electroencephalography and Brain-Computer Interfaces Laboratory (CEBL)',
     include_package_data=True,
-    #install_requires=['matplotlib', 'scipy', 'numpy', 'pylibftdi']
+    install_requires=['matplotlib', 'numpy', 'scipy', 'wxPython', 'pylibftdi', 'serial']
 )
