@@ -98,7 +98,7 @@ static PyObject *fastTanh(PyObject *self, PyObject *args)
 }
 
 static PyMethodDef fasttanh_methods[] = {
-    {"fastTanh", fastTanh, METH_VARARGS, "Fast Hyperbolic Tangent"},
+    {"tanh", fastTanh, METH_VARARGS, "Fast Hyperbolic Tangent"},
     {NULL, NULL, 0, NULL}
 };
 

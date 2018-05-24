@@ -1,7 +1,7 @@
 import numpy as np
 import wx
-#import wx.lib.plot as wxplt
 
+#import wx.lib.plot as wxplt
 from . import wxlibplot as wxplt # cython rebuild
 
 from cebl import util

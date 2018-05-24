@@ -76,14 +76,14 @@ class IndependentComponentsAnalysis(STrans):
             elif kurtosis == 'super':
                 k = 1
             elif kurtosis == 'adapt':
-                #k = np.sign(np.mean(1.0-util.fastTanh(y)**2, axis=0) *
+                #k = np.sign(np.mean(1.0-util.tanh(y)**2, axis=0) *
                 #            np.mean(y**2, axis=0) -
-                #            np.mean(y*util.fastTanh(y), axis=0))
+                #            np.mean(y*util.tanh(y), axis=0))
 
                 k = np.sign(spstat.kurtosis(y, axis=0))
                 k[np.isclose(k,0.0)] = -1.0
 
-            grad[...] = (I - k*util.fastTanh(y).T.dot(y) - y.T.dot(y)).T.dot(self.w) * n
+            grad[...] = (I - k*util.tanh(y).T.dot(y) - y.T.dot(y)).T.dot(self.w) * n
 
             wPrev[...] = self.w
             self.w += learningRate * grad

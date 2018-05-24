@@ -88,7 +88,7 @@ class RandomConfigPanel(SourceConfigPanel):
         distControlBox = widgets.ControlBox(self, label='Distribution', orient=wx.VERTICAL)
 
         self.distComboBox = wx.ComboBox(self, choices=list(distributions.keys()),
-            value='uniform', style=wx.CB_SORT | wx.CB_READONLY)
+            value='uniform')#, style=wx.CB_SORT | wx.CB_READONLY)
         self.distComboBox.Bind(wx.EVT_COMBOBOX, self.setDist, self.distComboBox)
         distControlBox.Add(self.distComboBox, proportion=0, flag=wx.ALL, border=10)
 

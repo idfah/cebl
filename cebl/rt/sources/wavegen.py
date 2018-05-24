@@ -47,7 +47,7 @@ class WaveGenConfigPanel(SourceConfigPanel):
         waveformControlBox = widgets.ControlBox(self, label='Waveform', orient=wx.VERTICAL)
 
         self.waveformComboBox = wx.ComboBox(self, id=wx.ID_ANY, choices=list(waveforms.keys()),
-            value='sinusoid', style=wx.CB_SORT | wx.CB_READONLY)
+            value='sinusoid')#, style=wx.CB_SORT | wx.CB_READONLY)
         self.waveformComboBox.Bind(wx.EVT_COMBOBOX, self.setWaveform)
 
         waveformControlBox.Add(self.waveformComboBox, proportion=0, flag=wx.ALL, border=10)

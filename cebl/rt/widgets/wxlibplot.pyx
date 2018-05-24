@@ -1198,7 +1198,7 @@ class PlotCanvas(wx.Panel):
 
         # sizes axis to axis type, create lower left and upper right corners of
         # plot
-        if xAxis == None or yAxis == None:
+        if xAxis is None or yAxis is None:
             # One or both axis not specified in Draw
             p1, p2 = graphics.boundingBox()     # min, max points of graphics
             if xAxis == None:
@@ -1513,7 +1513,7 @@ class PlotCanvas(wx.Panel):
         # Make new offscreen bitmap: this bitmap will always have the
         # current drawing in it, so it can be used to save the image to
         # a file, or whatever.
-        self._Buffer = wx.EmptyBitmap(Size.width, Size.height)
+        self._Buffer = wx.Bitmap(Size.width, Size.height)
         self._setSize()
 
         self.last_PointLabel = None  # reset pointLabel
@@ -1578,7 +1578,7 @@ class PlotCanvas(wx.Panel):
         width = self._Buffer.GetWidth()
         height = self._Buffer.GetHeight()
         if sys.platform != "darwin":
-            tmp_Buffer = wx.EmptyBitmap(width, height)
+            tmp_Buffer = wx.Bitmap(width, height)
             dcs = wx.MemoryDC()
             dcs.SelectObject(tmp_Buffer)
             dcs.Clear()

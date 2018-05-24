@@ -1,8 +1,7 @@
 """Module for processing unsegmented eeg.
 """
 
-#import _pickle as pickle
-import cPickle as pickle
+import pickle
 import json
 import matplotlib.pyplot as plt
 from matplotlib.colors import LogNorm as pltLogNorm

@@ -26,10 +26,10 @@ def linear(x, prime=0):
 
 def tanh(x, prime=0):
     if prime == 0:
-        return util.fastTanh(x)
+        return util.tanh(x)
 
     elif prime == 1:
-        return 1.0 - util.fastTanh(x)**2
+        return 1.0 - util.tanh(x)**2
 
     else:
         raise NotImplementedError('%d order derivative not implemented.' % int(prime))
@@ -39,12 +39,10 @@ def tanhTwist(x, prime=0, **kwargs):
 
 def lecun(x, prime=0):
     if prime == 0:
-        return 1.7159 * util.fastTanh((2.0/3.0) * x)
-        #return 1.7159 * np.tanh((2.0/3.0) * x)
+        return 1.7159 * util.tanh((2.0/3.0) * x)
 
     elif prime == 1:
-        return 1.7159 * (2.0/3.0) * (1.0 - util.fastTanh((2.0/3.0) * x)**2)
-        #return 1.7159 * (2.0/3.0) * (1.0 - np.tanh((2.0/3.0) * x)**2)
+        return 1.7159 * (2.0/3.0) * (1.0 - util.tanh((2.0/3.0) * x)**2)
 
     else:
         raise NotImplementedError('%d order derivative not implemented.' % int(prime))

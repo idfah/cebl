@@ -385,7 +385,7 @@ class PlotPanel(wx.Panel):
         self.pieMenu = widgets.PieMenu(self, choices=choices, rotation=-np.pi/2.0,
                 #colors=('red', (50,220,50), 'yellow', 'blue'))
                 colors=('turquoise', 'red', 'blue violet', 'orange',
-                        'blue', 'crimson'))
+                        'blue', 'yellow'))
 
     def initFeatureCanvas(self):
         self.featureFig = plt.Figure()
