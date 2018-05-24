@@ -25,7 +25,7 @@ if sys.platform.startswith('linux'):
             sources = ['cebl/rt/sources/biosemi/activetwo.c'],
             libraries = ['bsif', 'usb'],
             library_dirs = ['cebl/rt/sources/biosemi/'],
-            extra_compile_args = ['-Wall', '-march=core2', '-O3'],
+            extra_compile_args = ['-Wall', '-march=native', '-O3'],
             language='c++'))
 
     # fast tanh in c
@@ -34,7 +34,7 @@ if sys.platform.startswith('linux'):
             sources = ['cebl/util/fasttanh.c'],
             libraries = ['pthread', 'gomp'],
             include_dirs = [np.get_include()],
-            extra_compile_args = ['-march=core2', '-O3', '-fopenmp']))
+            extra_compile_args = ['-march=native', '-O3', '-fopenmp']))
 
 # cython extension modules
 cython_modules = []
@@ -43,19 +43,19 @@ cython_modules = []
 cython_modules.append(
     setuptools.Extension('cebl.rt.sources.source.source',
         sources = ['cebl/rt/sources/source/source.pyx'],
-        extra_compile_args = ['-march=core2', '-O3']))
+        extra_compile_args = ['-march=native', '-O3']))
 
 # cythonized wx.lib.plot
 cython_modules.append(
     setuptools.Extension('cebl.rt.widgets.wxlibplot',
         sources = ['cebl/rt/widgets/wxlibplot.pyx'],
-        extra_compile_args = ['-march=core2', '-O3']))
+        extra_compile_args = ['-march=native', '-O3']))
 
 # cythonized cwt implementation
 cython_modules.append(
     setuptools.Extension('cebl.sig.cwt',
         sources = ['cebl/sig/cwt.pyx'],
-        extra_compile_args = ['-march=core2', '-O3']))
+        extra_compile_args = ['-march=native', '-O3']))
 
 # all extension modules
 ext_modules = c_modules + cythonize(cython_modules)

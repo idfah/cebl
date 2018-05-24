@@ -1,13 +1,17 @@
 #!/bin/bash
 
-max_rt_prio=$(ulimit -r)
+cmd='python'
 
-if [[ $max_rt_prio -gt 0 ]]
+if [[ "$(uname)" == "Linux" ]]
 then
-    cmd="chrt -f $max_rt_prio python"
-else
-    echo "Warning: Unable to set real-time priority. max_rt_prio=${max_rt_prio}"
-    cmd='python'
+    max_rt_prio=$(ulimit -r)
+
+    if [[ $max_rt_prio -gt 0 ]]
+    then
+        cmd="chrt -f $max_rt_prio ${cmd}"
+    else
+        echo "Warning: Unable to set real-time priority. max_rt_prio=${max_rt_prio}"
+    fi
 fi
 
 eval $cmd <<- EOM
