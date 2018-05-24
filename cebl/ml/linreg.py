@@ -30,8 +30,8 @@ class RidgeRegression(Regression):
         penaltyMat = self.penalty * np.eye(x1.shape[1], dtype=self.dtype)
         penaltyMat[-1,-1] = 0.0
 
-        a = x1.T.dot(x1) + penaltyMat
-        b = x1.T.dot(g)
+        a = x1.T @ x1 + penaltyMat
+        b = x1.T @ g
 
         if self.pseudoInv is None:
             if np.linalg.cond(a) < 1.0/np.finfo(self.dtype).eps:
@@ -45,11 +45,11 @@ class RidgeRegression(Regression):
             #self.weights, residuals, rank, s = \
             #    np.linalg.lstsq(a, b)
 
-            #self.weights = np.linalg.pinv(a).dot(b)
-            #self.weights = sp.linalg.pinv2(a).dot(b)
+            #self.weights = np.linalg.pinv(a) @ b
+            #self.weights = sp.linalg.pinv2(a) @ b
 
-            # since x1.T.dot(x1) is symmetric, pinvh is equivalent but faster than pinv2
-            self.weights = sp.linalg.pinvh(a).dot(b)
+            # since x1.T @ x1 is symmetric, pinvh is equivalent but faster than pinv2
+            self.weights = sp.linalg.pinvh(a) @ b
 
         else:
             #self.weights = sp.linalg.solve(a, b, sym_pos=True)
@@ -57,7 +57,7 @@ class RidgeRegression(Regression):
 
     def eval(self, x):
         x = np.asarray(x).reshape((x.shape[0], -1))
-        return x.dot(self.weights[:-1]) + self.weights[-1]
+        return x @ self.weights[:-1] + self.weights[-1]
 
 class RR(RidgeRegression):
     pass
@@ -140,7 +140,7 @@ class LinearRegressionElastic(Regression, optim.Optable):
 
     def eval(self, x):
         x = np.asarray(x)
-        y = x.dot(self.weights[:-1]) + self.weights[-1]
+        y = x @ self.weights[:-1] + self.weights[-1]
 
         if self.flattenOut:
             y = y.ravel()
@@ -159,7 +159,7 @@ class LinearRegressionElastic(Regression, optim.Optable):
         wf = self.weights[:-1,:].ravel()
 
         return (np.mean((y-g)**2) +
-                self.elastic       * self.penalty * wf.dot(wf)/wf.size + # L2-norm penalty
+                self.elastic       * self.penalty * (wf @ wf)/wf.size + # L2-norm penalty
                 (1.0-self.elastic) * self.penalty * np.mean(np.abs(wf))) # L1-norm penalty
 
     def gradient(self, x, g, returnError=True):
@@ -170,7 +170,7 @@ class LinearRegressionElastic(Regression, optim.Optable):
             g = g.ravel()
 
         x1 = util.bias(x)
-        y = x1.dot(self.weights)
+        y = x1 @ self.weights
 
         if self.flattenOut:
             y = y.ravel()
@@ -180,7 +180,7 @@ class LinearRegressionElastic(Regression, optim.Optable):
 
         penMask = np.ones_like(self.weights)
         penMask[-1,:] = 0.0
-        grad = (x1.T.dot(delta) +
+        grad = (x1.T @ delta +
             self.elastic * 2.0 * self.penalty * penMask * self.weights / self.weights.size +
             (1.0-self.elastic) * self.penalty * penMask * np.sign(self.weights) / self.weights.size)
 
@@ -190,7 +190,7 @@ class LinearRegressionElastic(Regression, optim.Optable):
             wf = self.weights[:-1,:].ravel()
 
             error = (np.mean(e**2) +
-                self.elastic       * self.penalty * wf.dot(wf)/wf.size + # L2-norm penalty
+                self.elastic       * self.penalty * (wf @ wf)/wf.size + # L2-norm penalty
                 (1.0-self.elastic) * self.penalty * np.mean(np.abs(wf))) # L1-norm penalty
             return error, gf
         else:
