@@ -2,8 +2,8 @@
 
 import numpy as np
 import sys
+import subprocess
 
-#import distutils.core as dc
 import setuptools
 from Cython.Build import cythonize
 
@@ -60,9 +60,14 @@ cython_modules.append(
 # all extension modules
 ext_modules = c_modules + cythonize(cython_modules)
 
+# extract version from startup script
+# this is all hacky - XXX idfah
+version = subprocess.check_output(['scripts/cebl', '--version'])
+version = '.'.join(version.split('.')[0:3])
+
 setuptools.setup(
     name='CEBL',
-    version='3.0.0',
+    version=version,
     author='Elliott Forney and Charles Anderson',
     author_email='eeg@cs.colostate.edu',
     url='http://www.cs.colostate.edu/eeg',
