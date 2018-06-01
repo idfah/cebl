@@ -2,7 +2,8 @@ import numpy as np
 import wx
 
 #import wx.lib.plot as wxplt
-from . import wxlibplot as wxplt # cython rebuild
+#from . import wxlibplot as wxplt # cython rebuild
+from . import wxlibplot as wxplt
 
 from cebl import util
 
@@ -39,7 +40,8 @@ class wxPlot(wx.Panel):
 
     def initCanvasSettings(self):
         self.canvas.SetDoubleBuffered(True)
-        self.canvas.SetFontSizeAxis(12)
+        self.canvas.fontSizeAxis = 12
+        self.canvas.enableGrid = False
         self.setMediumQuality()
 
     def initLayout(self):
@@ -55,16 +57,16 @@ class wxPlot(wx.Panel):
         return self.canvas.SaveFile(fileName=fileName)
 
     def setHighQuality(self):
-        self.canvas.SetEnableHiRes(True)
-        self.canvas.SetEnableAntiAliasing(True)
+        self.canvas.enableHiRes = True
+        self.canvas.enableAntiAliasing = True
 
     def setMediumQuality(self):
-        self.canvas.SetEnableHiRes(False)
-        self.canvas.SetEnableAntiAliasing(True)
+        self.canvas.enableHiRes = False
+        self.canvas.enableAntiAliasing = True
 
     def setLowQuality(self):
-        self.canvas.SetEnableHiRes(False)
-        self.canvas.SetEnableAntiAliasing(False)
+        self.canvas.enableHiRes = False
+        self.canvas.enableAntiAliasing = False
 
 
 class TracePlotCanvas(wxPlotCanvas):
@@ -96,7 +98,7 @@ class TracePlot(wxPlot):
     def initCanvas(self):
         self.canvas = TracePlotCanvas(self)
 
-    def draw(self, data, t=None, scale=None, chanNames=None,
+    def draw(self, data, time=None, scale=None, chanNames=None,
              colors=('black', 'red', 'violet', 'blue', 'green', 'orange'),
              #colors=('black', 'blue', 'green', 'red', 'turquoise', 'blue violet', 'maroon', 'orange'),
              wxYield=False):
@@ -104,10 +106,10 @@ class TracePlot(wxPlot):
         data = util.colmat(data)
         nObs, nChan = data.shape
 
-        if t is None:
-            t = np.arange(nObs)
+        if time is None:
+            time = np.arange(nObs)
         else:
-            t = np.linspace(0,t,nObs)
+            time = np.linspace(0, time, nObs)
 
         colsep = util.colsep(data, scale=scale)
         scale = colsep[1]
@@ -116,6 +118,8 @@ class TracePlot(wxPlot):
         yMax = scale * 0.5
 
         data = data - colsep
+        #time = time.repeat(data.shape[1]).reshape(data.shape)
+        #comb = np.array((time,data)).swapaxes(1,2).swapaxes(0,1)
 
         if chanNames is None:
             chanNames = (None,) * nObs
@@ -126,16 +130,26 @@ class TracePlot(wxPlot):
 
         if wxYield:
             wx.Yield()
-        data = data.T
-        lines = [wxplt.PolyLine(zip(t,d), legend=chan, colour=col, width=2)
-            for d,col,chan in zip(data, colors, chanNames)]
+
+        # so many ways to slice this XXX - idfah
+        #lines = [wxplt.PolyLine(pts.T, legend=chan, colour=col, width=2)
+        #    for pts,col,chan in zip(comb, colors, chanNames)]
+        #lines = [wxplt.PolyLine(zip(time,d), legend=chan, colour=col, width=2)
+        #    for d,col,chan in zip(data.T, colors, chanNames)]
+        #lines = [wxplt.PolyLine(np.vstack((time,d)).T, legend=chan, colour=col, width=2)
+        #    for d,col,chan in zip(data.T, colors, chanNames)]
+        lines = []
+        for i in range(nChan):
+            lines.append(wxplt.PolyLine(np.vstack((time,data[:,i])).T,
+                legend=chanNames[i], colour=colors[i], width=2))
+
         gc = wxplt.PlotGraphics(lines, title=self.title,
             xLabel=self.xLabel, yLabel=self.yLabel)
 
         if wxYield:
             wx.Yield()
         self.canvas.Draw(gc,
-            xAxis=(np.min(t),np.max(t)),
+            xAxis=(np.min(time),np.max(time)),
             yAxis=(yMin,yMax))
 
 
@@ -149,9 +163,9 @@ class PowerPlot(wxPlot):
 
     def initCanvasSettings(self):
         wxPlot.initCanvasSettings(self)
-        self.canvas.setLogScale((False,True))
-        self.canvas.SetEnableLegend(True)
-        self.canvas.SetFontSizeLegend(12)
+        self.canvas.logScale = (False,True)
+        self.canvas.enableLegend = True
+        self.canvas.fontSizeLegend = 12
 
     def draw(self, freqs, powers, chanNames=None,
              colors = ('black', 'red', 'violet', 'blue', 'green', 'orange'),
@@ -163,7 +177,6 @@ class PowerPlot(wxPlot):
         colors = util.cycle(colors, powers.shape[1])
 
         powers = util.colmat(powers)
-        powers = powers.T
 
         # cap so we don't break wxplt.PlotGraphics with inf
         # Note: we need to use finfo.max/10.0 since
@@ -173,11 +186,10 @@ class PowerPlot(wxPlot):
         powers[powers < finfo.eps] = finfo.eps
         powers[powers > (finfo.max/10.0)] = (finfo.max/10.0)
 
-
         if wxYield:
             wx.Yield()
         lines = [wxplt.PolyLine(zip(freqs,p), legend=chan, colour=col, width=2)
-            for p,col,chan in zip(powers, colors, chanNames)]
+            for p,col,chan in zip(powers.T, colors, chanNames)]
 
         #lines += [wxplt.PolyLine(( (60.0,np.min(powers)), (60.0,np.max(powers)) ), legend='60Hz', colour='black', width=1)]
 

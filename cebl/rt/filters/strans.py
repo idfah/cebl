@@ -59,10 +59,10 @@ class STransConfigPanel(FilterConfigPanel):
         if dFactor > 1:
             data = sig.decimate(data, factor=dFactor)#, lowpassFrac=0.75, order=4)
 
-        t = self.flt.trainCap.getNSec()
+        time = self.flt.trainCap.getNSec()
 
         scale = np.max(2*data.std(axis=0))
-        self.tracePlot.draw(data, t=t, chanNames=chanNames, scale=scale)
+        self.tracePlot.draw(data, time, chanNames=chanNames, scale=scale)
 
     def updateFilt(self, event=None):
         # retrain the filter and update the trace

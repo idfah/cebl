@@ -54,7 +54,11 @@
 #     which appear on stderr on some Linux systems until printing functionality
 #     is actually used.
 #
-#
+# May 30, 2018  Elliott Forney (elliott.forney@gmail.com)
+#   - Customized for use in CEBL3
+#   - use float32
+#   - support cython
+#   - tweaks for wx4
 
 """
 This is a simple light weight plotting module that can be used with

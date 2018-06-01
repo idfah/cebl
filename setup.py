@@ -46,9 +46,18 @@ cython_modules.append(
         extra_compile_args = ['-march=native', '-O3']))
 
 # cythonized wx.lib.plot
+#cython_modules.append(
+#    setuptools.Extension('cebl.rt.widgets.wxlibplot',
+#        sources = ['cebl/rt/widgets/wxlibplot.pyx'],
+#        extra_compile_args = ['-march=native', '-O3']))
 cython_modules.append(
-    setuptools.Extension('cebl.rt.widgets.wxlibplot',
-        sources = ['cebl/rt/widgets/wxlibplot.pyx'],
+    setuptools.Extension('cebl.rt.widgets.wxlibplot.plotcanvas',
+        sources = ['cebl/rt/widgets/wxlibplot/plotcanvas.pyx'],
+        extra_compile_args = ['-march=native', '-O3']))
+
+cython_modules.append(
+    setuptools.Extension('cebl.rt.widgets.wxlibplot.polyobjects',
+        sources = ['cebl/rt/widgets/wxlibplot/polyobjects.pyx'],
         extra_compile_args = ['-march=native', '-O3']))
 
 # cythonized cwt implementation
