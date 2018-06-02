@@ -1,9 +1,9 @@
+import time as _time
 import numpy as np
 import wx
 
 #import wx.lib.plot as wxplt
-#from . import wxlibplot as wxplt # cython rebuild
-from . import wxlibplot as wxplt
+from . import wxlibplot as wxplt # cython rebuild
 
 from cebl import util
 
@@ -39,7 +39,6 @@ class wxPlot(wx.Panel):
         self.canvas = wxPlotCanvas(self)
 
     def initCanvasSettings(self):
-        self.canvas.SetDoubleBuffered(True)
         self.canvas.fontSizeAxis = 12
         self.canvas.enableGrid = False
         self.setMediumQuality()
@@ -138,19 +137,25 @@ class TracePlot(wxPlot):
         #    for d,col,chan in zip(data.T, colors, chanNames)]
         #lines = [wxplt.PolyLine(np.vstack((time,d)).T, legend=chan, colour=col, width=2)
         #    for d,col,chan in zip(data.T, colors, chanNames)]
+        #t = _time.time()
         lines = []
         for i in range(nChan):
             lines.append(wxplt.PolyLine(np.vstack((time,data[:,i])).T,
                 legend=chanNames[i], colour=colors[i], width=2))
+        #print("time making lines: ", _time.time()-t)
 
+        #t = _time.time()
         gc = wxplt.PlotGraphics(lines, title=self.title,
             xLabel=self.xLabel, yLabel=self.yLabel)
+        #print("time making PlotGraphics: ", _time.time()-t)
 
         if wxYield:
             wx.Yield()
+        #t = _time.time()
         self.canvas.Draw(gc,
             xAxis=(np.min(time),np.max(time)),
             yAxis=(yMin,yMax))
+        #print("time drawing at top level: ", _time.time()-t)
 
 
 class PowerPlot(wxPlot):

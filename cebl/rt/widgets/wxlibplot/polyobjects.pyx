@@ -14,7 +14,7 @@ __docformat__ = "restructuredtext en"
 
 # Standard Library
 import string as _string
-import time as _time
+import time
 import sys
 import wx
 import warnings
@@ -422,8 +422,11 @@ class PolyLine(PolyPoints):
         dc.SetPen(pen)
         if coord is None:
             if len(self.scaled):  # bugfix for Mac OS X
-                for c1, c2 in zip(self.scaled, self.scaled[1:]):
-                    self._path(dc, c1, c2, drawstyle)
+                #t = time.time()
+                dc.DrawLines(self.scaled)
+                #print("time drawing line in dc: ", time.time()-t)
+                #for c1, c2 in zip(self.scaled, self.scaled[1:]):
+                #    self._path(dc, c1, c2, drawstyle)
         else:
             dc.DrawLines(coord)  # draw legend line
 
@@ -1416,10 +1419,10 @@ class PlotGraphics(object):
 
     def draw(self, dc):
         for o in self.objects:
-#            t=_time.perf_counter()          # profile info
+            #t = time.time()
             o._pointSize = self._pointSize
             o.draw(dc, self._printerScale)
-#            print(o, "time=", _time.perf_counter()-t)
+            #print(o, "time=", time.time()-t)
 
     def getSymExtent(self, printerScale):
         """Get max width and height of lines and markers symbols for legend"""

@@ -14,6 +14,7 @@ __docformat__ = "restructuredtext en"
 
 # Standard Library
 import sys
+import time
 
 # Third-Party
 import wx
@@ -1901,21 +1902,25 @@ class PlotCanvas(wx.Panel):
         self._drawPlotAreaItems(dc, p1, p2, scale, shift, xticks, yticks)
 
         graphics.scaleAndShift(scale, shift)
+
         # thicken up lines and markers if printing
         graphics.printerScale = self.printerScale
 
         # set clipping area so drawing does not occur outside axis box
         ptx, pty, rectWidth, rectHeight = self._point2ClientCoord(p1, p2)
+
         # allow graph to overlap axis lines by adding units to w and h
         dc.SetClippingRegion(ptx * self._pointSize[0],
                              pty * self._pointSize[1],
                              rectWidth * self._pointSize[0] + 2,
                              rectHeight * self._pointSize[1] + 1)
+
         # Draw the lines and markers
-#        start = _time.perf_counter()
+        #start = time.time()
         graphics.draw(dc)
-#        time_str = "entire graphics drawing took: {} seconds"
-#        print(time_str.format(_time.perf_counter() - start))
+        #time_str = "entire graphics drawing took: {} seconds"
+        #print(time_str.format(time.time() - start))
+
         # remove the clipping region
         dc.DestroyClippingRegion()
 
