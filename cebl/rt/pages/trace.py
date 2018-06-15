@@ -310,7 +310,7 @@ class Trace(StandardMonitorPage):
             chanNames = chanNames + ['Mk']
 
         # tell trace plot widget to draw
-        self.plot.draw(data, t=self.width, scale=self.scale, chanNames=chanNames)
+        self.plot.draw(data, self.width, scale=self.scale, chanNames=chanNames)
 
     def captureImage(self, event=None):
         self.plot.saveFile()

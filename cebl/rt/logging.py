@@ -2,17 +2,12 @@ import wx
 import sys
 
 
-#class LogTarget(wx.Log): # wxpython3
-class LogTarget(wx.PyLog): # wxpython3
+class LogTarget(wx.Log):
     def __init__(self, *args, **kwargs):
-        #wx.Log.__init__(self, *args, **kwargs)
-        wx.PyLog.__init__(self, *args, **kwargs) # wxpython3
-
+        wx.Log.__init__(self, *args, **kwargs)
         self.textCtrls = []
 
-    # should use DoLogTextAtLevel in newer versions of wxPython XXX - idfah
-    #def DoLogTextAtLevel(self, level, msg): # wxpython3
-    def DoLog(self, level, msg, time):
+    def DoLogTextAtLevel(self, level, msg):
         if level == wx.LOG_Warning:
             caption = 'Warning'
         elif level == wx.LOG_Error:

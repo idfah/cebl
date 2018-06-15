@@ -231,14 +231,13 @@ class PlotPanel(wx.Panel):
         font = wx.Font(pointSize=10, family=wx.FONTFAMILY_SWISS,
                        style=wx.FONTSTYLE_NORMAL, weight=wx.FONTWEIGHT_BOLD,
                        #underline=False, face='DejaVu Serif')
-                       #underline=False, faceName='Utopia') #wxpython3
-                       underline=False, face='Utopia')
+                       underline=False, faceName='Utopia')
 
         self.pieMenu = widgets.PieMenu(self,
                 choices=self.pg.choices, #font=font,
                 rotation=4.0*np.pi/len(self.pg.choices),
                 colors=('turquoise', 'red', 'blue violet', 'orange',
-                        'blue', 'crimson'))
+                        'blue', 'yellow'))
                 #colors=('turquoise', 'red', 'blue', 'green',
                 #        'yellow', 'blue violet'))
 

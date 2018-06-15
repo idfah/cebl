@@ -27,8 +27,8 @@ pageList.append(P300Bot)
 from .p300grid import P300Grid
 pageList.append(P300Grid)
 
-from .bciplayer import BCIPlayer
-pageList.append(BCIPlayer)
+#from .bciplayer import BCIPlayer
+#pageList.append(BCIPlayer)
 
 from .mentaltasks import MentalTasks
 pageList.append(MentalTasks)

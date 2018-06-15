@@ -241,7 +241,7 @@ class PlotPanel(wx.Panel):
                 choices=self.pg.choices,
                 rotation=4.0*np.pi/len(self.pg.choices),
                 colors=('turquoise', 'red', 'blue violet', 'orange',
-                        'blue', 'crimson'))
+                        'blue', 'yellow'))
                 #colors=('turquoise', 'red', 'blue', 'green',
                 #        'yellow', 'blue violet'))
 

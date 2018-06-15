@@ -1,23 +1,60 @@
 #!/bin/bash
 
-max_rt_prio=$(ulimit -r)
+function version
+{
+    major=3
+    minor=$(git tag -l | wc -l | sed 's/^ *//')
+    patch=$(git rev-list $(git tag)..HEAD | wc -l | sed 's/^ *//')
 
-if [[ $max_rt_prio -gt 0 ]]
-then
-    cmd="chrt -f $max_rt_prio python"
-else
-    echo "Warning: Unable to set real-time priority. max_rt_prio=${max_rt_prio}"
+    hash=$(git log --pretty=format:'%h' -n 1)
+    branch=$(git rev-parse --abbrev-ref HEAD)
+
+    short_version="${major}.${minor}.${patch}"
+
+    long_version="${major}.${minor}.${patch}.${hash}.${branch}"
+    if git diff --quiet --exit-code
+    then
+        :
+    else
+        long_version="${long_version}.DIRTY"
+    fi
+
+    #echo $short_version
+    echo $long_version
+}
+
+function run
+{
     cmd='python'
-fi
 
-eval $cmd <<- EOM
-	# hack to prevent segfault in wxPython3.x, forces wxAgg backend XXX - idfah
-	# https://github.com/matplotlib/matplotlib/issues/3316
-    # note, cebl.rt.__init__ also tries to change backend in case cebl is
-    # started from the console.  That doesn't play nice with all backends though.
-	import matplotlib
-	matplotlib.use('wxAgg')
+    if [[ "$(uname)" == "Linux" ]]
+    then
+        max_rt_prio=$(ulimit -r)
 
-	import cebl.rt
-	cebl.rt.main.run()
+        if [[ $max_rt_prio -gt 0 ]]
+        then
+            cmd="chrt -f $max_rt_prio ${cmd}"
+        else
+            echo "Warning: Unable to set real-time priority. max_rt_prio=${max_rt_prio}"
+        fi
+    fi
+
+    eval $cmd <<- EOM
+# hack to prevent segfault in wxPython3.x, forces wxAgg backend XXX - idfah
+# https://github.com/matplotlib/matplotlib/issues/3316
+# note, cebl.rt.__init__ also tries to change backend in case cebl is
+# started from the console.  That doesn't play nice with all backends though.
+import matplotlib
+matplotlib.use('wxAgg')
+
+import cebl.rt
+cebl.rt.main.run()
 EOM
+}
+
+if [[ $1 == "--version" ]]
+then
+    version
+else
+    run
+fi

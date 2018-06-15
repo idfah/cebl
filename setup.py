@@ -1,53 +1,84 @@
 #!/usr/bin/env python
 
-#import distutils.core as dc
+import numpy as np
+import sys
+import subprocess
+
 import setuptools
 from Cython.Build import cythonize
-import numpy as np
 
+# c extension modules
+c_modules = []
 
-cebl_rt_sources_source_ext = setuptools.Extension('cebl.rt.sources.source.source',
-    sources = ['cebl/rt/sources/source/source.pyx'],
-    extra_compile_args = ['-march=core2', '-O3'])
+extra_compile_args = ['-Wall',] #'-march=native', '-O3']
 
-cebl_rt_sources_neuropulse_m24rlib_ext = setuptools.Extension('cebl.rt.sources.neuropulse.libmindset24r',
-    sources = ['cebl/rt/sources/neuropulse/libmindset24r.c'],
-    extra_compile_args = ['-Wall'])
+# these devices are currently only supported on linux
+if sys.platform.startswith('linux'):
 
-cebl_rt_sources_biosemi_activetwolib_ext = setuptools.Extension('cebl.rt.sources.biosemi.libactivetwo',
-    sources = ['cebl/rt/sources/biosemi/activetwo.c'],
-    libraries = ['bsif', 'usb'],
-    library_dirs = ['cebl/rt/sources/biosemi/'],
-    extra_compile_args = ['-Wall', '-march=core2', '-O3'],
-    language='c++')
+    # Neuropulse Mindset-24R
+    c_modules.append(
+        setuptools.Extension('cebl.rt.sources.neuropulse.libmindset24r',
+            sources = ['cebl/rt/sources/neuropulse/libmindset24r.c'],
+            extra_compile_args = extra_compile_args))
 
-cebl_rt_widgets_wxlibplot_ext = setuptools.Extension('cebl.rt.widgets.wxlibplot',
-    sources = ['cebl/rt/widgets/wxlibplot.pyx'],
-    extra_compile_args = ['-march=core2', '-O3'])
+    # BioSemi ActiveTwo
+    c_modules.append(
+        setuptools.Extension('cebl.rt.sources.biosemi.libactivetwo',
+            sources = ['cebl/rt/sources/biosemi/activetwo.c'],
+            libraries = ['bsif', 'usb'],
+            library_dirs = ['cebl/rt/sources/biosemi/'],
+            language='c++',
+            extra_compile_args = extra_compile_args))
 
-cebl_sig_cwt_ext = setuptools.Extension('cebl.sig.cwt',
-    sources = ['cebl/sig/cwt.pyx'],
-    libraries = ['pthread', 'gomp'],
-    extra_compile_args = ['-march=core2', '-O3'])
+    # fast tanh in c
+    c_modules.append(
+        setuptools.Extension('cebl.util.fasttanh',
+            sources = ['cebl/util/fasttanh.c'],
+            libraries = ['pthread', 'gomp'],
+            include_dirs = [np.get_include()],
+            extra_compile_args = extra_compile_args + ['-fopenmp',]))
 
-cebl_util_fasttanh_ext = setuptools.Extension('cebl.util.fasttanh',
-    sources = ['cebl/util/fasttanh.c'],
-    libraries = ['pthread', 'gomp'],
-    include_dirs = [np.get_include()],
-    extra_compile_args = ['-march=core2', '-O3', '-fopenmp'])
+# cython extension modules
+cython_modules = []
 
+# source extension
+cython_modules.append(
+    setuptools.Extension('cebl.rt.sources.source.source',
+        sources = ['cebl/rt/sources/source/source.pyx'],
+        extra_compile_args = extra_compile_args))
 
-ext_modules = [cebl_rt_sources_neuropulse_m24rlib_ext,
-               cebl_rt_sources_biosemi_activetwolib_ext,
-               cebl_util_fasttanh_ext] + \
-               cythonize([cebl_rt_sources_source_ext,
-                          cebl_rt_widgets_wxlibplot_ext,
-                          cebl_sig_cwt_ext])
+# cythonized wx.lib.plot
+#cython_modules.append(
+#    setuptools.Extension('cebl.rt.widgets.wxlibplot',
+#        sources = ['cebl/rt/widgets/wxlibplot.pyx'],
+#        extra_compile_args = ['-march=native', '-O3']))
+cython_modules.append(
+    setuptools.Extension('cebl.rt.widgets.wxlibplot.plotcanvas',
+        sources = ['cebl/rt/widgets/wxlibplot/plotcanvas.pyx'],
+        extra_compile_args = extra_compile_args))
 
+cython_modules.append(
+    setuptools.Extension('cebl.rt.widgets.wxlibplot.polyobjects',
+        sources = ['cebl/rt/widgets/wxlibplot/polyobjects.pyx'],
+        extra_compile_args = extra_compile_args))
+
+# cythonized cwt implementation
+cython_modules.append(
+    setuptools.Extension('cebl.sig.cwt',
+        sources = ['cebl/sig/cwt.pyx'],
+        extra_compile_args = extra_compile_args))
+
+# all extension modules
+ext_modules = c_modules + cythonize(cython_modules)
+
+# extract version from startup script
+# this is all hacky - XXX idfah
+version = subprocess.check_output(['scripts/cebl', '--version'])
+version = '.'.join(version.split('.')[0:3])
 
 setuptools.setup(
     name='CEBL',
-    version='3.0.0',
+    version=version,
     author='Elliott Forney and Charles Anderson',
     author_email='eeg@cs.colostate.edu',
     url='http://www.cs.colostate.edu/eeg',
@@ -57,5 +88,5 @@ setuptools.setup(
     license='GPL3, Copyright (2017) Elliott Forney, Charles Anderson, Colorado State University',
     description='Colorado Electroencephalography and Brain-Computer Interfaces Laboratory (CEBL)',
     include_package_data=True,
-    #install_requires=['matplotlib', 'scipy', 'numpy', 'pylibftdi']
+    install_requires=['matplotlib', 'numpy', 'scipy', 'wxPython', 'pylibftdi', 'serial']
 )
