@@ -4,6 +4,7 @@ function version
 {
     major=3
     minor=$(git tag -l | wc -l | sed 's/^ *//')
+    minor=$((minor - 1))
     patch=$(git rev-list $(git tag)..HEAD | wc -l | sed 's/^ *//')
 
     hash=$(git log --pretty=format:'%h' -n 1)
