@@ -423,10 +423,10 @@ class PolyLine(PolyPoints):
         if coord is None:
             if len(self.scaled):  # bugfix for Mac OS X
                 #t = time.time()
-                dc.DrawLines(self.scaled)
+                #dc.DrawLines(self.scaled)
                 #print("time drawing line in dc: ", time.time()-t)
-                #for c1, c2 in zip(self.scaled, self.scaled[1:]):
-                #    self._path(dc, c1, c2, drawstyle)
+                for c1, c2 in zip(self.scaled, self.scaled[1:]):
+                    self._path(dc, c1, c2, drawstyle)
         else:
             dc.DrawLines(coord)  # draw legend line
 

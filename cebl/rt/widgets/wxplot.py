@@ -145,14 +145,14 @@ class TracePlot(wxPlot):
         #print("time making lines: ", _time.time()-t)
 
         #t = _time.time()
-        gc = wxplt.PlotGraphics(lines, title=self.title,
+        graphics = wxplt.PlotGraphics(lines, title=self.title,
             xLabel=self.xLabel, yLabel=self.yLabel)
         #print("time making PlotGraphics: ", _time.time()-t)
 
         if wxYield:
             wx.Yield()
         #t = _time.time()
-        self.canvas.Draw(gc,
+        self.canvas.Draw(graphics,
             xAxis=(np.min(time),np.max(time)),
             yAxis=(yMin,yMax))
         #print("time drawing at top level: ", _time.time()-t)
@@ -200,10 +200,10 @@ class PowerPlot(wxPlot):
 
         if wxYield:
             wx.Yield()
-        gc = wxplt.PlotGraphics(lines, title=self.title,
+        graphics = wxplt.PlotGraphics(lines, title=self.title,
             xLabel=self.xLabel, yLabel=self.yLabel)
 
-        self.canvas.Draw(gc,
+        self.canvas.Draw(graphics,
             xAxis=(freqs[0], freqs[-1]),
             yAxis=(np.min(powers), np.max(powers)))
 
@@ -221,12 +221,12 @@ class BMUPlot(wxPlot):
         data = data + 1
 
         points = (wxplt.PolyMarker(data, colour=color),)
-        gc = wxplt.PlotGraphics(points, title=self.title,
+        graphics = wxplt.PlotGraphics(points, title=self.title,
             xLabel=self.xLabel, yLabel=self.yLabel)
 
         if wxYield:
             wx.Yield()
 
-        self.canvas.Draw(gc,
+        self.canvas.Draw(graphics,
             xAxis=(0,latticeSize[0]+1),
             yAxis=(0,latticeSize[1]+1))
