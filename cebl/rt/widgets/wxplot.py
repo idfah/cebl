@@ -95,12 +95,13 @@ class TracePlot(wxPlot):
                         *args, **kwargs)
 
     def initCanvas(self, event=None):
-        if not self.windowCreated:
-            self.windowCreated = True
-            self.canvas = TracePlotCanvas(self)
-            self.sizer.Add(self.canvas, proportion=1, flag=wx.EXPAND)
-            self.Layout()
-        wx.CallAfter(self.initCanvasSettings)
+        ##if not self.windowCreated:
+        ##    self.windowCreated = True
+        ##    self.canvas = TracePlotCanvas(self)
+        ##    self.sizer.Add(self.canvas, proportion=1, flag=wx.EXPAND)
+        ##    self.Layout()
+        ##wx.CallAfter(self.initCanvasSettings)
+        self.canvas = TracePlotCanvas(self)
 
     def draw(self, data, time=None, scale=None, chanNames=None,
              colors=('black', 'red', 'violet', 'blue', 'green', 'orange'),
@@ -198,7 +199,7 @@ class PowerPlot(wxPlot):
 
         if wxYield:
             wx.Yield()
-        lines = [wxplt.PolyLine(zip(freqs,p), legend=chan, colour=col, width=2)
+        lines = [wxplt.PolyLine(list(zip(freqs,p)), legend=chan, colour=col, width=2)
             for p,col,chan in zip(powers.T, colors, chanNames)]
 
         #lines += [wxplt.PolyLine(( (60.0,np.min(powers)), (60.0,np.max(powers)) ), legend='60Hz', colour='black', width=1)]
