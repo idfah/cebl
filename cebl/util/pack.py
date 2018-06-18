@@ -1,3 +1,7 @@
+"""Utilities for packing and unpacking matrices of
+weights into flat vectors.
+"""
+
 import numpy as np
 
 

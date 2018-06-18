@@ -1,3 +1,6 @@
+"""Data structures.
+"""
+
 class Holder(object):
     def __init__(self, **kwargs):
         for name, value in kwargs.items():

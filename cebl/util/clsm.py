@@ -1,3 +1,6 @@
+"""Classification performance metrics.
+"""
+
 import numpy as np
 
 from .arr import capZero

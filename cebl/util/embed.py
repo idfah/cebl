@@ -1,3 +1,6 @@
+"""Sliding windows and time-delay embedding.
+"""
+
 import numpy as np
 import numpy.lib.stride_tricks as npst
 

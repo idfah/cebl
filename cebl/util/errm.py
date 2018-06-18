@@ -1,3 +1,6 @@
+"""Error metrics.
+"""
+
 import numpy as np
 
 

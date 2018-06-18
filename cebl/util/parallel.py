@@ -1,3 +1,6 @@
+"""Parallel processing utilities.
+"""
+
 import multiprocessing as mp
 
 

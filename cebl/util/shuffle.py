@@ -1,3 +1,6 @@
+"""Shuffling utilities.
+"""
+
 import numpy as np
 
 
