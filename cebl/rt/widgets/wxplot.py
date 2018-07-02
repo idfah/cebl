@@ -46,6 +46,7 @@ class wxPlot(wx.Panel):
 
     def initLayout(self, event=None):
         self.sizer = wx.BoxSizer(orient=wx.VERTICAL)
+        self.sizer.Add(self.canvas, proportion=1, flag=wx.EXPAND)
         self.SetSizer(self.sizer)
         self.Layout()
 
