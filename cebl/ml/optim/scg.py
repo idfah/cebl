@@ -110,6 +110,7 @@ def scg(optable,
     sigma0 = 1.0e-4
 
     # initial scale
+    #beta = 0.01
     beta = 1.0
 
     # force calculation of directional derivatives
@@ -267,8 +268,11 @@ def scg(optable,
     return result
 
 def demoSCG():
-    rosen = tests.Rosen(optimFunc=scg, verbose=True)
-    rosen.plot()
+    #rosen = tests.Rosen(optimFunc=scg, verbose=True)
+    #rosen.plot()
+
+    quad = tests.Quad(optimFunc=scg, verbose=True)
+    quad.plot()
 
 
 if __name__ == '__main__':
