@@ -95,7 +95,7 @@ def confusion(classLabels, normalize=True):
     Args:
         classLabels:    A list with length equal to the number of classes
                         with one element per class.  Each element of
-                        this list contains a list of predictec class labels.
+                        this list contains a list of predicted class labels.
 
         normalize:      If True (default) then each cell in the confusion
                         matrix is a fraction of the predicted labels over
@@ -148,6 +148,9 @@ def confusion(classLabels, normalize=True):
     return confMat
 
 def itrSimple(accuracy, nCls, decisionRate):
+    if accuracy < 0.0 or np.isclose(accuracy, 0.0):
+        return 0.0
+
     left = np.log2(nCls)
     middle = accuracy*np.log2(accuracy)
 
