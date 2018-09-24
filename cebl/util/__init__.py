@@ -20,8 +20,9 @@ from .parallel import *
 from .shuffle import *
 from .stats import *
 
-if sys.platform.startswith('linux'):
-    from .fasttanh import tanh
-else:
-    from numpy import tanh
+#if sys.platform.startswith('linux'):
+#    from .fasttanh import tanh
+#else:
+#    from numpy import tanh
+from numpy import tanh
 

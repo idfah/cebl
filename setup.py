@@ -31,12 +31,12 @@ if sys.platform.startswith('linux'):
             extra_compile_args = extra_compile_args))
 
     # fast tanh in c
-    c_modules.append(
-        setuptools.Extension('cebl.util.fasttanh',
-            sources = ['cebl/util/fasttanh.c'],
-            libraries = ['pthread', 'gomp'],
-            include_dirs = [np.get_include()],
-            extra_compile_args = extra_compile_args + ['-fopenmp',]))
+    ## c_modules.append(
+    ##     setuptools.Extension('cebl.util.fasttanh',
+    ##         sources = ['cebl/util/fasttanh.c'],
+    ##         libraries = ['pthread', 'gomp'],
+    ##         include_dirs = [np.get_include()],
+    ##         extra_compile_args = extra_compile_args + ['-fopenmp',]))
 
 # cython extension modules
 cython_modules = []
