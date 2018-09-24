@@ -22,10 +22,10 @@ class CommonSpatialPatterns(STrans):
         s1 = self.prep(s1)
         s2 = self.prep(s2)
 
-        if False: # maybe faster and more stable?
+        if True: # maybe faster and more stable?
             u, d, v = np.linalg.svd(np.vstack((s1,s2)), full_matrices=False)
-            #dInv = np.sqrt(0.5*(s1.shape[0]+s2.shape[0]-2)) / d[:,None]
-            dInv = 1.0 / d[:,None] # think about this XXX - idfah
+            dInv = np.sqrt(0.5*(s1.shape[0]+s2.shape[0]-2)) / d[:,None]
+            #dInv = 1.0 / d[:,None] # think about this XXX - idfah
 
             c1 = s1.T.dot(s1)
             c2 = s2.T.dot(s2)
