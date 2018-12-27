@@ -792,8 +792,8 @@ class EEG(EEGBase):
 
 class EEGFromPickledMatrix(EEG):
     def __init__(self, fileName, sampRate, chanNames=None, markers=-1, transpose=False, *args, **kwargs):
-        with util.openCompressedFile(fileName, 'r') as fileHandle:
-            data = np.asarray(pickle.load(fileHandle))
+        with util.openCompressedFile(fileName, 'rb') as fileHandle:
+            data = np.asarray(pickle.load(fileHandle, encoding='bytes'))
 
         if transpose:
             data = data.T
