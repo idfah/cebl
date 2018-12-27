@@ -68,6 +68,18 @@ cython_modules.append(
         sources = ['cebl/sig/cwt.pyx'],
         extra_compile_args = extra_compile_args))
 
+## # g.tec g.MOBILab+
+## cython_modules.append(
+##     setuptools.Extension('cebl.rt.sources.gtec.gmobilab.gmobilab',
+##     sources = ['cebl/rt/sources/gtec/gmobilab/gmobilab.pyx'],
+##     extra_compile_args = extra_compile_args))
+##
+## # g.tec g.Nautilus
+## cython_modules.append(
+##     setuptools.Extension('cebl.rt.sources.gtec.gnautilus.gnautilus',
+##     sources = ['cebl/rt/sources/gtec/gnautilus/gnautilus.pyx'],
+##     extra_compile_args = extra_compile_args))
+
 # all extension modules
 ext_modules = c_modules + cythonize(cython_modules)
 

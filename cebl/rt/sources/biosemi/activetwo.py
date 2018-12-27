@@ -10,7 +10,8 @@ from cebl.rt import widgets
 from cebl.rt.sources.source import Source, SourceConfigPanel
 
 
-bs = ctypes.cdll.LoadLibrary(os.path.dirname(__file__) + '/libactivetwo.so')
+#bs = ctypes.cdll.LoadLibrary(os.path.dirname(__file__) + '/libactivetwo.so')
+bs = ctypes.cdll.LoadLibrary(os.path.dirname(__file__) + '/libactivetwo.cpython-36m-x86_64-linux-gnu.so')
 
 bs.bs_poll.argtypes = [ctypes.POINTER(ctypes.c_double),]
 

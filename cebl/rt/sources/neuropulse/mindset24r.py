@@ -10,7 +10,8 @@ from cebl.rt import widgets
 from cebl.rt.sources.source import Source, SourceConfigPanel
 
 
-ms = ctypes.cdll.LoadLibrary(os.path.dirname(__file__) + '/libmindset24r.so')
+#ms = ctypes.cdll.LoadLibrary(os.path.dirname(__file__) + '/libmindset24r.so')
+ms = ctypes.cdll.LoadLibrary(os.path.dirname(__file__) + '/libmindset24r.cpython-36m-x86_64-linux-gnu.so')
 
 ms.ms_Open.argtypes = [ctypes.POINTER(ctypes.c_char)]
 ms.ms_ReadNextDataBlock.argtypes = [ctypes.POINTER(ctypes.c_double), ctypes.c_int]

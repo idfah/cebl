@@ -125,7 +125,13 @@ class SegmentedEEG(EEGBase):
         return self
 
     def select(self, matchFunc, copy=False):
-        indicators = np.asarray(map(matchFunc, self.markers), dtype=np.bool)
+        # return None if nomatches found
+        # XXX should do this for other select functions, or else raise exception?
+        matches = list(map(matchFunc, self.markers))
+        if not matches:
+            return None
+
+        indicators = np.asarray(matches, dtype=np.bool)
         return SegmentedEEG(data=self.data[indicators],
             sampRate=self.sampRate, markers=self.markers[indicators], start=self.getStart(),
             chanNames=self.chanNames, deviceName=self.deviceName, copy=copy)
