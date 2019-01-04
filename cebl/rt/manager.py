@@ -14,7 +14,7 @@ from . import sources
 def logExceptionHook(etype, e, trace):
     wx.LogError(''.join(traceback.format_exception(etype, e, trace)) + 'Uncaught.\n')
 
-class Manager(object):
+class Manager:
     def __init__(self, pageParent, statusPanel=None,
                  sourceList=sources.sourceList,
                  defaultSource=sources.defaultSource,

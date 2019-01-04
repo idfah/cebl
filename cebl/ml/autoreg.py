@@ -9,7 +9,7 @@ from .linreg import RidgeRegression
 #from . import strans
 
 
-class AutoRegressionBase(object):
+class AutoRegressionBase:
     def __init__(self, ss, horizon, regClass, *args, **kwargs):
         """
         Args:

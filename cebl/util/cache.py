@@ -1,7 +1,7 @@
 from collections import OrderedDict as odict
 
 
-class Cache(object):
+class Cache:
     def __init__(self, maxSize=10):
         self.maxSize = maxSize
         self.enabled = True

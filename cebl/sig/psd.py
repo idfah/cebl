@@ -7,7 +7,7 @@ from cebl.ml.autoreg import AutoRegression
 from . import windows
 
 
-class PSDBase(object):
+class PSDBase:
     def __init__(self, freqs, powers, sampRate):
         self.freqs = np.asarray(freqs)
         self.powers = np.asarray(powers)

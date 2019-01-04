@@ -1,7 +1,7 @@
 """Module containing EEG base class and related routines.
 """
 
-class EEGBase(object):
+class EEGBase:
     """Base class for all EEG types.
     """
     def __init__(self, nObs, nChan, sampRate=256.0, chanNames=None, deviceName=''):

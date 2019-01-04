@@ -119,7 +119,7 @@ def miniRProp(x, errFunc, step=0.1, stepUp=1.01, stepDown=0.6,
     return x
 
 
-class EchoStateNetworkReservoir(object):
+class EchoStateNetworkReservoir:
     """Echo State Network reservoir.
     """
     def __init__(self, x, nRes=1024, rwScale=0.95, rwConn=0.01,

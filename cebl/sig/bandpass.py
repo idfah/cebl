@@ -7,7 +7,7 @@ from . import windows
 from cebl import util
 
 
-class BandpassFilterBase(object):
+class BandpassFilterBase:
     """Base class for all bandpass filters.
     This class must be extended in order to construct an actual filter.
     """

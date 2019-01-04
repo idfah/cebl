@@ -9,7 +9,7 @@ import time
 from cebl import util
 
 
-class SelfOrganizingMap(object):
+class SelfOrganizingMap:
     """Self-Organizing Map (SOM).
     """
     def __init__(self, x, latticeSize=(64,64), maxIter=5000,

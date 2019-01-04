@@ -3,7 +3,7 @@ import numpy as np
 from cebl import util
 
 
-class Standardizer(object):
+class Standardizer:
     def __init__(self, x, method='zmus'):
         """
 

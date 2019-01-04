@@ -6,7 +6,7 @@ from cebl.util.clsm import *
 from . import label
 
 
-class Classifier(object):
+class Classifier:
     """Base class for classifiers.
     """
     def __init__(self, nIn, nCls):

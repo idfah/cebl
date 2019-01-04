@@ -1,4 +1,4 @@
-class Optable(object):
+class Optable:
     """Base class/interface for classes that can be optimized using the routines
     in the optable module.  This class holds the abstract methods that should/can
     be overridden and the documentation regarding their arguments and usage.

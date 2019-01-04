@@ -9,7 +9,7 @@ from .cwt import CWT
 from . import windows
 
 
-class SpectrogramBase(object):
+class SpectrogramBase:
     def __init__(self, freqs, powers, phases, sampRate):
         self.freqs = np.asarray(freqs)
         self.powers = np.asarray(powers)
