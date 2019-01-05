@@ -1,4 +1,9 @@
+"""Channel site name to coordinate location mappings.
+"""
+
+# locations in polar coordinates
 # borrowed from EEGLab standard channel location files
+# pylint: disable=bad-whitespace
 chanLocsPolar = {
     'af3':  ( -27.0,    0.28000000),
     'af4':  (  27.0,    0.28000000),
@@ -8,7 +13,6 @@ chanLocsPolar = {
     'cp2':  ( 135.0,    0.11111111),
     'cp5':  (-110.0,    0.27000000),
     'cp6':  ( 110.0,    0.27000000),
-    'cz':   (   0.0,    0.00000000),
     'cz':   (   0.0,    0.00000000),
     'f3':   ( -39.0,    0.22222222),
     'f4':   (  39.0,    0.22222222),
@@ -21,7 +25,6 @@ chanLocsPolar = {
     'fp1':  ( -18.0,    0.34074074),
     'fp2':  (  18.0,    0.34074074),
     'fpz':  (   0.0,    0.34074074),
-    'fz':   (   0.0,    0.17037037),
     'fz':   (   0.0,    0.17037037),
     'o1':   (-162.0,    0.34074074),
     'o2':   ( 162.0,    0.34074074),
@@ -41,9 +44,11 @@ chanLocsPolar = {
     't8':   (  90.0,    0.34074074)
 }
 
+# locations in 3d cartesian coordinates
 # borrowed from EEG lab channel location files
 # ftp://sccn.ucsd.edu/pub/locfiles/eeglab/
 # ftp://sccn.ucsd.edu/pub/locfiles/eeglab/Standard-10-20-Cap81.ced
+# pylint: disable=bad-whitespace
 chanLocs3d = {
     'fp1':  (0.95,      0.309,    -0.0349),
     'fpz':  (0.999,    -0.0,      -0.0349),

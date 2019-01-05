@@ -84,7 +84,7 @@ class EEG(EEGBase):
                    markers=self.markers, deviceName=self.deviceName, dtype=dtype, copy=True)
 
     def getData(self):
-        """Get the current data as a numpy array of shape (nSeg,nObs,nChan).
+        """Get the current data as a numpy array of shape (nSeg, nObs, nChan).
         """
         return self.data
 
@@ -153,7 +153,7 @@ class EEG(EEGBase):
 
         veog = self.data[:,vChan1] - self.data[:,vChan2]
         heog = self.data[:,hChan1] - self.data[:,hChan2]
-        eog = np.vstack((veog,heog)).T
+        eog = np.vstack((veog, heog)).T
 
         bp = sig.BandpassFilter(0.0, 20.0, order=2, sampRate=self.sampRate)
         eogFilt = bp.filter(eog);
@@ -173,7 +173,7 @@ class EEG(EEGBase):
         if None in (vChan1, vChan2, hChan1, hChan2):
             raise Exception('Invalid channel.')
 
-        eog = self.data[:,(vChan1,vChan2,hChan1,hChan2)]
+        eog = self.data[:,(vChan1, vChan2, hChan1, hChan2)]
 
         if model is None:
             model = ml.RidgeRegression(eog, self.data)
@@ -254,7 +254,8 @@ class EEG(EEGBase):
         return self
 
     def resample(self, factorDown, factorUp=1, interpKwargs=dict(), **decimKwargs):
-        self.data = sig.resample(self.data, factorDown, factorUp, interpKwargs=interpKwargs, **decimKwargs)
+        self.data = sig.resample(self.data, factorDown, factorUp,
+            interpKwargs=interpKwargs, **decimKwargs)
 
         self.markers = sig.upsample(self.markers, factorUp)
         self.markers = sig.downsample(self.markers, factorDown)
@@ -270,7 +271,7 @@ class EEG(EEGBase):
         chans = self.getChanIndices(chans)
         self.data = np.delete(self.data, chans, axis=1)
         self.nChan -= len(chans)
-        self.chanNames = [c for i,c in enumerate(self.chanNames) if i not in chans]
+        self.chanNames = [c for i, c in enumerate(self.chanNames) if i not in chans]
         return self
 
     def keepChans(self, chans):
@@ -424,14 +425,14 @@ class EEG(EEGBase):
             pair = self.getChanIndices(pair)
 
             ref = self.data[:,pair].mean(axis=1)
-            self.data[:,pair] = ref.reshape((-1,1))
+            self.data[:,pair] = ref.reshape((-1, 1))
 
         chanNames = []
         for pair in pairs:
             pair = self.getChanNames(pair)
             chanNames.append('-'.join(pair))
 
-        self.deleteChans([r for l,r in pairs])
+        self.deleteChans([r for l, r in pairs])
         self.setChanNames(chanNames)
 
         return self
@@ -445,7 +446,7 @@ class EEG(EEGBase):
             ref = self.data[:,refs]
             if len(refs) > 1:
                 ref = ref.mean(axis=1)
-            self.data[:,chans] -= ref.reshape((-1,1))
+            self.data[:,chans] -= ref.reshape((-1, 1))
 
         return self
 
@@ -491,7 +492,7 @@ class EEG(EEGBase):
         overlap = int(overlap*span)
 
         data = util.slidingWindow(self.data,
-            span=span, stride=span-overlap, axis=0).reshape((-1,span,self.nChan))
+            span=span, stride=span-overlap, axis=0).reshape((-1, span, self.nChan))
 
         return seg.SegmentedEEG(self, data=data, sampRate=self.sampRate,
             chanNames=self.chanNames, deviceName=self.deviceName, **kwargs)
@@ -518,7 +519,7 @@ class EEG(EEGBase):
 
         if ax is None:
             fig = plt.figure()
-            ax = fig.add_subplot(1,1,1)
+            ax = fig.add_subplot(1, 1, 1)
 
         ax.grid()
         ax.set_xlabel(r'Lag')
@@ -568,7 +569,7 @@ class EEG(EEGBase):
         axs = []
         ims = []
 
-        for i,cn in enumerate(chanNames):
+        for i, cn in enumerate(chanNames):
             ax = fig.add_subplot(plotRows, plotCols, i+1)
             axs += [ax]
 
@@ -639,19 +640,19 @@ class EEG(EEGBase):
 
                 if (r == c):
                     plt.hist(sx, bins=bins, normed=False)
-                    ax.set_xlim(-mx/2.0,mx/2.0)
+                    ax.set_xlim(-mx/2.0, mx/2.0)
                 else:
                     ax.scatter(sx, sy, alpha=0.5, s=10, marker='.')
-                    ax.plot((-mx,mx),(-mx,mx), color='grey', linestyle='dashed')
-                    pearsonr, pearsonp = spstats.pearsonr(sx,sy)
+                    ax.plot((-mx, mx), (-mx, mx), color='grey', linestyle='dashed')
+                    pearsonr, pearsonp = spstats.pearsonr(sx, sy)
                     pearsons = ".%2d" % np.round(pearsonr*100)
-                    ax.text(0.9,0.1,pearsons,
+                    ax.text(0.9, 0.1, pearsons,
                         transform=ax.transAxes,
                         horizontalalignment='right',
                         verticalalignment='bottom',
                         fontsize=8)
-                    ax.set_ylim(-mx,mx)
-                    ax.set_xlim(-mx,mx)
+                    ax.set_ylim(-mx, mx)
+                    ax.set_xlim(-mx, mx)
 
                 if r == 0:
                 #if r == ndim-1:
@@ -677,7 +678,8 @@ class EEG(EEGBase):
         psd = sig.PSD(self.data[:,chans], sampRate=self.sampRate, **psdKwargs)
         return psd.plotPower(ax=ax, **kwargs)
 
-    def plotTrace(self, start=None, end=None, chans=None, drawZero=False, scale=None, ax=None, **kwargs):
+    def plotTrace(self, start=None, end=None, chans=None,
+                  drawZero=False, scale=None, ax=None, **kwargs):
         if chans is None:
             chans = self.getChanNames()
         chans = self.getChanIndices(chans)
@@ -696,21 +698,21 @@ class EEG(EEGBase):
 
         s = self.data[startSamp:endSamp, chans].copy()
         ##s -= s.mean(axis=0)
-        #time = np.linspace(0,end-start,s.shape[0]).astype(self.dtype, copy=False)
-        time = np.linspace(start,end,s.shape[0]).astype(self.dtype, copy=False)
+        #time = np.linspace(0, end-start, s.shape[0]).astype(self.dtype, copy=False)
+        time = np.linspace(start, end, s.shape[0]).astype(self.dtype, copy=False)
 
         sep, scale = util.colsep(s, scale=scale, returnScale=True)
 
         if ax is None:
-            #fig = plt.figure(figsize=(14,8.5))
-            #fig = plt.figure(figsize=(9,5.5))
+            #fig = plt.figure(figsize=(14, 8.5))
+            #fig = plt.figure(figsize=(9, 5.5))
             fig = plt.figure()
-            ax = fig.add_subplot(1,1,1)
+            ax = fig.add_subplot(1, 1, 1)
 
         ax.set_xlabel(r'Time ($s$)')
         ax.set_ylabel(r'Signal ($\mu V$)')
         if len(chans) > 1:
-            ax.set_yticklabels([c for i,c in enumerate(self.chanNames) if i in chans])
+            ax.set_yticklabels([c for i, c in enumerate(self.chanNames) if i in chans])
             ax.set_yticks(sep)
             ##ax.set_ylim(-scale, sep[-1] + scale)
 
@@ -726,14 +728,14 @@ class EEG(EEGBase):
 
         return {'ax': ax, 'lines': lines, 'scale': scale, 'sep': sep}
 
-    def plotLags(self, chans=None, lags=(1,2,4,8,16,32,64,128,256), **kwargs):
+    def plotLags(self, chans=None, lags=(1, 2, 4, 8, 16, 32, 64, 128, 256), **kwargs):
         if chans is None:
             chans = self.getChanNames()
         chans = self.getChanIndices(chans)
 
         s = self.data[:, chans].copy()
 
-        fig = plt.figure(figsize=(10,8))
+        fig = plt.figure(figsize=(10, 8))
         #fig.subplots_adjust(hspace=0.15, wspace=0.25,
         #        left=0.05, right=0.92, top=0.97, bottom=0.06)
 
@@ -746,7 +748,7 @@ class EEG(EEGBase):
         mn = np.min(s)
         mx = np.max(s)
 
-        for i,lag in enumerate(lags):
+        for i, lag in enumerate(lags):
             ax = fig.add_subplot(nRows, nCols, i+1)
 
             lines = []
@@ -766,7 +768,8 @@ class EEG(EEGBase):
             #    leg = ax.legend(lines, self.getChanNames(chans), labelspacing=0.34, prop={'size': 12},
             #                    bbox_to_anchor=(1.35, 0.8))
             if i == 0:
-                leg = ax.legend(lines, self.getChanNames(chans), loc='upper left', prop={'size': 12})
+                leg = ax.legend(lines, self.getChanNames(chans),
+                    loc='upper left', prop={'size': 12})
 
         for l in leg.legendHandles:
             l.set_alpha(1.0)
@@ -791,7 +794,8 @@ class EEG(EEGBase):
             raise Exception('Unknown file format ' + str(fileFormat))
 
 class EEGFromPickledMatrix(EEG):
-    def __init__(self, fileName, sampRate, chanNames=None, markers=-1, transpose=False, *args, **kwargs):
+    def __init__(self, fileName, sampRate, chanNames=None,
+                 markers=-1, transpose=False, *args, **kwargs):
         with util.openCompressedFile(fileName, 'rb') as fileHandle:
             data = np.asarray(pickle.load(fileHandle, encoding='bytes'))
 

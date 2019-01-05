@@ -41,6 +41,8 @@ class EEGBase:
         return self
 
     def getNChan(self):
+        """Get the number of channels in the eeg data.
+        """
         return self.nChan
 
     def getChanNames(self, chans=None):
@@ -63,7 +65,7 @@ class EEGBase:
         chanNames = []
         lowerChanNames = [c.lower() for c in self.chanNames]
         for c in chans:
-            if isinstance(c,str):
+            if isinstance(c, str):
                 if c.lower() in lowerChanNames:
                     i = lowerChanNames.index(c.lower())
                     chanNames.append(self.chanNames[i])
@@ -113,7 +115,7 @@ class EEGBase:
         chanIndices = []
         lowerChanNames = [c.lower() for c in self.chanNames]
         for c in chans:
-            if isinstance(c,str):
+            if isinstance(c, str):
                 if c.lower() in lowerChanNames:
                     chanIndices.append(lowerChanNames.index(c.lower()))
                 else:
@@ -140,7 +142,11 @@ class EEGBase:
         return self
 
     def getNObs(self):
+        """Get the number of observations in the eeg data.
+        """
         return self.nObs
 
     def getNSec(self):
+        """Get the number of seconds in the eeg data.
+        """
         return self.nSec
