@@ -740,7 +740,7 @@ class P300Grid(StandardBCIPage):
 
     def trainClassifier(self):
         if self.trainCap is None:
-            raise Exception('No data available for training.')
+            raise RuntimeError('No data available for training.')
 
         self.plotPanel.plotERP(self.trainCap)
 
@@ -782,7 +782,7 @@ class P300Grid(StandardBCIPage):
         elif self.classifierKind == 'Neural Network':
             self.trainNN(classData, dialog)
         else:
-            raise Exception('Invalid classifier kind: %s.' % str(self.classifierKind))
+            raise RuntimeError('Invalid classifier kind: %s.' % str(self.classifierKind))
 
         self.plotPanel.showGrid()
 

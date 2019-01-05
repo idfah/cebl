@@ -137,7 +137,7 @@ class OpenBCI(Source):
                 self.connected = True
         except Exception as e:
             self.connected = False
-            raise Exception('Failed to connect to OpenBCI: ' + str(e))
+            raise RuntimeError('Failed to connect to OpenBCI: ' + str(e))
 
     # def read_incoming_text(self):
     #     if self.device.inWaiting():
@@ -163,7 +163,7 @@ class OpenBCI(Source):
             self.device.close()
 
         except Exception as e:
-            raise Exception('Failed to disconnect from OpenBCI: ' + str(e))
+            raise RuntimeError('Failed to disconnect from OpenBCI: ' + str(e))
 
         finally:
             self.connected = False
@@ -221,7 +221,7 @@ class OpenBCI(Source):
             time.sleep(1)
 
         except Exception as e:
-            raise Exception('Failed to query OpenBCI: ' + str(e))
+            raise RuntimeError('Failed to query OpenBCI: ' + str(e))
 
         return repr(self)
 

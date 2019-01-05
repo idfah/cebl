@@ -296,7 +296,7 @@ class ConfigPanel(StandardConfigPanel):
         elif method == 'AR Model':
             self.methodConfigPanel = self.autoregPanel
         else:
-            raise Exception('Unknown PSD method: ' + str(method))
+            raise RuntimeError('Unknown PSD method: ' + str(method))
         self.methodConfigPanel.Show()
 
         self.FitInside()
@@ -369,7 +369,7 @@ class Power(StandardMonitorPage):
             spectrum = cap.psd(method='ar', order=self.autoregConfig.order,
                                freqs=self.autoregConfig.nFreq)
         else:
-            raise Exception('Unknown PSD estimation method: ' + str(method))
+            raise RuntimeError('Unknown PSD estimation method: ' + str(method))
 
         freqs, powers = spectrum.getFreqsPowers()
 

@@ -202,7 +202,7 @@ when one of the following cues appears. When the screen is blank, relax and thin
 'Song'   sing a favorite song silently to yourself'''
 
         else:
-            raise Exception('Invalid protocol: ' % protocol)
+            raise RuntimeError('Invalid protocol: ' % protocol)
 
     def toggleRunning(self, event=None):
         if self.isRunning():

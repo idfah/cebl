@@ -99,7 +99,7 @@ class SegmentedEEG(EEGBase):
         self.markers = self.markers.astype(self.dtype, copy=False)
 
         if len(self.markers) != self.nSeg:
-            raise Exception('Length of markers ' + str(len(self.markers)) + \
+            raise RuntimeError('Length of markers ' + str(len(self.markers)) + \
                             ' does not match number of segments ' + str(self.nSeg))
         return self
 
@@ -167,7 +167,7 @@ class SegmentedEEG(EEGBase):
             start = int(start*float(self.sampRate))/self.sampRate
 
             if start < startOrig:
-                raise Exception('Cannot trim to start %f before original start %f.' %
+                raise RuntimeError('Cannot trim to start %f before original start %f.' %
                                 (start, startOrig))
 
             startTrimSamp = int((start-startOrig)*self.sampRate)
@@ -180,7 +180,7 @@ class SegmentedEEG(EEGBase):
             end = int(end*float(self.sampRate))/self.sampRate
 
             if end > endOrig:
-                raise Exception('Cannot trim to end %f before original end %f.' %
+                raise RuntimeError('Cannot trim to end %f before original end %f.' %
                                 (end, endOrig))
 
             endTrimSamp = int((end-endOrig)*self.sampRate)
@@ -280,7 +280,7 @@ class SegmentedEEG(EEGBase):
     def bipolarReference(self, pairs):
         for pair in pairs:
             if len(pair) > 2:
-                raise Exception('Bipolar reference assumes pairs of electrodes but got %s.' % pair)
+                raise RuntimeError('Bipolar reference assumes pairs of electrodes but got %s.' % pair)
 
             pair = self.getChanIndices(pair)
 
@@ -342,7 +342,7 @@ class SegmentedEEG(EEGBase):
             dist = head.sphereDist(locs, locs)
 
         else:
-            raise Exception('Invalid coord %s.', str(coord))
+            raise RuntimeError('Invalid coord %s.', str(coord))
 
         self.data = np.array([sig.sharpen(seg, dist=dist, *args, **kwargs) for seg in self.data])
         return self
@@ -350,7 +350,7 @@ class SegmentedEEG(EEGBase):
     def baselineCorrect(self, t=None):
         if t is None:
             if self.getStart() >= 0.0:
-                raise Exception('Cannot baselineCorrect with positive start time ' +
+                raise RuntimeError('Cannot baselineCorrect with positive start time ' +
                                 'unless t is given explicitely')
             tSamp = int(np.abs(self.getStart()) * self.sampRate)
         else:
@@ -434,7 +434,7 @@ class SegmentedEEG(EEGBase):
         elif timeUnit == 'obs':
             time = np.arange(self.nObs)
         else:
-            raise Exception('Invalid timeUnit %s.' + str(timeUnit))
+            raise RuntimeError('Invalid timeUnit %s.' + str(timeUnit))
 
         if timeUnit == 'ms':
             time *= 1000.0
@@ -484,7 +484,7 @@ class SegmentedEEG(EEGBase):
         elif timeUnit == 'obs':
             time = np.arange(self.nObs)
         else:
-            raise Exception('Invalid timeUnit %s.' + str(timeUnit))
+            raise RuntimeError('Invalid timeUnit %s.' + str(timeUnit))
 
         if timeUnit == 'ms':
             time *= 1000.0
@@ -596,7 +596,7 @@ class SegmentedEEG(EEGBase):
                 i = t
                 fmt = '%.0f'
             else:
-                raise Exception('Invalid timeUnit %s.' % str(timeUnit))
+                raise RuntimeError('Invalid timeUnit %s.' % str(timeUnit))
             i -= startObs
 
             if mn is None:
@@ -654,7 +654,7 @@ class SegmentedEEG(EEGBase):
         elif scale in ('db', 'decibels'):
             powers = 10.0*np.log10(powers/np.max(powers))
         else:
-            raise Exception('Invalid scale %s.' % str(scale))
+            raise RuntimeError('Invalid scale %s.' % str(scale))
 
         powersFlat = powers.reshape((-1,), order='F')
         lines = ax.plot(powersFlat, **kwargs)
@@ -773,7 +773,7 @@ class SegmentedEEGFromMatFiles(SegmentedEEG):
             elif koa == 'arg':
                 return val
             else:
-                raise Exception('Invalid spec %s.' % spec)
+                raise RuntimeError('Invalid spec %s.' % spec)
 
         sampRate = int(keyOrArg(sampRate))
         chanNames = [str(chanName[0]) for chanName in keyOrArg(chanNames)[0][0]]
@@ -791,7 +791,7 @@ class SegmentedEEGFromMatFiles(SegmentedEEG):
                 seg = seg.T
 
             if seg.shape != firstShape:
-                raise Exception('Shape of first segment %s %s does not not match shape of segment %s %s.' %
+                raise RuntimeError('Shape of first segment %s %s does not not match shape of segment %s %s.' %
                     (str(fileNames[0]), str(firstShape), str(fileName), str(seg.shape)))
 
             data.append(seg)

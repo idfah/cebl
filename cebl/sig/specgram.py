@@ -58,7 +58,7 @@ class SpectrogramBase:
         elif scale == 'degrees':
             return self.phases * 180.0 / np.pi
         else:
-            raise Exception('Invalid phase scale: %s.' % str(scale))
+            raise RuntimeError('Invalid phase scale: %s.' % str(scale))
 
     def getFreqsPowers(self):
         return self.freqs, self.powers
@@ -87,7 +87,7 @@ class SpectrogramBase:
             zlabel = 'Power (db)'
 
         else:
-            raise Exception('Invalid scale %s.' % str(scale))
+            raise RuntimeError('Invalid scale %s.' % str(scale))
 
         nRows = int(np.sqrt(self.nChan))
         if nRows*nRows < self.nChan:
@@ -157,10 +157,10 @@ class FFTSpectrogram(SpectrogramBase):
 
         # check span parameter
         if wObs > nObs:
-            raise Exception('Span of %.2f exceedes length of input %.2f.' %
+            raise RuntimeError('Span of %.2f exceedes length of input %.2f.' %
                 (span, nObs/float(sampRate)))
         if wObs < 7:
-            raise Exception('Span of %.2f is too small.', span)
+            raise RuntimeError('Span of %.2f is too small.', span)
 
         if pad:
             # find next largest power of two
@@ -213,7 +213,7 @@ def Spectrogram(s, method='cwt', *args, **kwargs):
     elif method in ('fft', 'stft', 'stfft'):
         return FFTSpectrogram(s, *args, **kwargs)
     else:
-        raise Exception('Unknown Spectrogram  estimation method: ' + str(method))
+        raise RuntimeError('Unknown Spectrogram  estimation method: ' + str(method))
 
 
 def demoCWT():

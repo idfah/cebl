@@ -351,7 +351,7 @@ class EchoStateNetworkReservoir:
             m = r.x
 
         else:
-            raise Exception('Invalid scaleIW method %s.' % method)
+            raise RuntimeError('Invalid scaleIW method %s.' % method)
 
         self.actCache.enable()
 

@@ -152,7 +152,7 @@ class MPlayerPanel(wx.Panel):
         songPath = self.cwd + os.path.sep + album + os.path.sep + song
         status = self.mediaCtrl.Load(songPath)
         if not status:
-            raise Exception('Failed to load song %s.' % str(songPath))
+            raise RuntimeError('Failed to load song %s.' % str(songPath))
 
         self.mediaCtrl.ShowPlayerControls()
         self.mediaCtrl.Play()

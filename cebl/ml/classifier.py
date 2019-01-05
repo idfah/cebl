@@ -84,7 +84,7 @@ class Classifier:
         elif method == 'union':
             return self.labelUnion(x, *args, **kwargs)
         else:
-            raise Exception('Unknown method.')
+            raise RuntimeError('Unknown method.')
 
     def labelSingle(self, x, *args, **kwargs):
         dv = self.discrim(x, *args, **kwargs)

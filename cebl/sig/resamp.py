@@ -105,7 +105,7 @@ def interpolate(s, factor, order=8, filtType='lanczos'):
         New observations (length 4*2=8):   |**|**|**|**
     """
     if order % 2 != 0:
-        raise Exception('Invalid order: ' + str(order) +
+        raise RuntimeError('Invalid order: ' + str(order) +
             ' Must be an even integer.')
 
     # ensure we have a numpy array
@@ -139,7 +139,7 @@ def interpolate(s, factor, order=8, filtType='lanczos'):
     elif filtType == 'sinc-blackman':
         impulseResponse = np.sinc(taps) * windows.blackman(newOrder+1).astype(s.dtype, copy=False)
     else:
-        raise Exception('Invalid filtType: ' + str(filtType))
+        raise RuntimeError('Invalid filtType: ' + str(filtType))
 
     # convolve with FIR filter to smooth across zero padding
     # NOTE:  there is potential for performance improvement here since

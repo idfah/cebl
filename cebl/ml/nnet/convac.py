@@ -52,7 +52,7 @@ class ConvolutionalNetworkAccum(Classifier, optim.Optable):
             self.initLanczos(filtOrder)
 
         elif not self.poolMethod in ('stride', 'average'):
-            raise Exception('Invalid poolMethod %s.' % str(self.poolMethod))
+            raise RuntimeError('Invalid poolMethod %s.' % str(self.poolMethod))
 
         self.transFunc = transFunc if util.isiterable(transFunc) \
                 else (transFunc,) * (len(self.layerDims)-1)
@@ -101,7 +101,7 @@ class ConvolutionalNetworkAccum(Classifier, optim.Optable):
         self.filtOrder = filtOrder
 
         if self.filtOrder % 2 != 0:
-             raise Exception('Invalid filtOrder: ' + str(self.filtOrder) +
+             raise RuntimeError('Invalid filtOrder: ' + str(self.filtOrder) +
                  ' Must be an even integer.')
 
         radius = self.filtOrder // 2
@@ -245,7 +245,7 @@ class ConvolutionalNetworkAccum(Classifier, optim.Optable):
             return votes.sum(axis=1)
 
         else:
-            raise Exception('Invalid discrim accum method: ' + str(accum))
+            raise RuntimeError('Invalid discrim accum method: ' + str(accum))
 
     def probs(self, x, squash='softmax', accum='prod'):
         x = util.segmat(x)
@@ -268,7 +268,7 @@ class ConvolutionalNetworkAccum(Classifier, optim.Optable):
             return dv / dv.sum(axis=1)[:,None]
 
         else:
-            raise Exception('Invalid probs squash method: ' + str(squash))
+            raise RuntimeError('Invalid probs squash method: ' + str(squash))
 
     def penaltyError(self):
         if self.penalty is None:

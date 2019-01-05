@@ -286,7 +286,7 @@ class Random(Source):
         elif nChan == 72:
             self.setChans(chans72)
         else:
-            raise Exception('Invalid number of channels: ' + str(nChan))
+            raise RuntimeError('Invalid number of channels: ' + str(nChan))
 
         #self.setChans(self.allChans[:nChan] + self.allChans[-8:])
         self.initWalk()

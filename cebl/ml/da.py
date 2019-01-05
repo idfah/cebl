@@ -109,18 +109,18 @@ class QuadraticDiscriminantAnalysis(Classifier):
             #try:
             #    cvi = np.linalg.inv(cv)
             #except np.linalg.LinAlgError as e:
-            #    raise Exception('Failed to invert covariance matrix, consider using shrinkage.')
+            #    raise RuntimeError('Failed to invert covariance matrix, consider using shrinkage.')
 
             try:
                 cvi = sp.linalg.pinvh(cv)
             except Exception as e:
-                raise Exception('Failed to invert covariance matrix, consider using shrinkage.')
+                raise RuntimeError('Failed to invert covariance matrix, consider using shrinkage.')
 
             self.invCovs.append(cvi)
 
             sign, logDet = np.linalg.slogdet(cv)
             if sign == 0:
-                raise Exception('Covariance matrix has zero determinant, consider using shrinkage.')
+                raise RuntimeError('Covariance matrix has zero determinant, consider using shrinkage.')
 
             #self.intercepts[i] = logDet - 2.0*logPriors[i]
 
@@ -455,16 +455,16 @@ class LinearDiscriminantAnalysis(Classifier):
         #try:
         #    self.invCov = np.linalg.inv(self.avgCov)
         #except np.linalg.LinAlgError as e:
-        #    raise Exception('Failed to invert covariance matrix, consider using shrinkage.')
+        #    raise RuntimeError('Failed to invert covariance matrix, consider using shrinkage.')
 
         try:
             self.invCov = sp.linalg.pinvh(self.avgCov)
         except Exception as e:
-            raise Exception('Failed to invert covariance matrix, consider using shrinkage.')
+            raise RuntimeError('Failed to invert covariance matrix, consider using shrinkage.')
 
         sign, self.logDet = np.linalg.slogdet(self.avgCov)
         if sign == 0:
-            raise Exception('Covariance matrix has zero determinant, consider using shrinkage.')
+            raise RuntimeError('Covariance matrix has zero determinant, consider using shrinkage.')
 
         # model coefficients
         # (ndim,nCls) = (ndim,ndim) x (ndim,nCls)

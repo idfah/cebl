@@ -68,7 +68,7 @@ class ConfigPanel(StandardConfigPanel):
         path = os.path.expanduser(self.mediaPathTextCtrl.GetValue())
 
         if not os.path.isdir(path):
-            raise Exception('Path %s is not a valid directory!' % str(path))
+            raise RuntimeError('Path %s is not a valid directory!' % str(path))
 
         self.pg.mplayer.setCWD(self.mediaPathTextCtrl.GetValue())
 
@@ -533,7 +533,7 @@ class BCIPlayer(StandardBCIPage):
 
     def trainClassifier(self):
         if self.trainCap is None:
-            raise Exception('No data available for training.')
+            raise RuntimeError('No data available for training.')
 
         self.plotPanel.plotERP(self.trainCap)
 
@@ -572,7 +572,7 @@ class BCIPlayer(StandardBCIPage):
         elif self.classifierKind == 'Neural Network':
             self.trainNN(classData, dialog)
         else:
-            raise Exception('Invalid classifier kind: %s.' % str(self.classifierKind))
+            raise RuntimeError('Invalid classifier kind: %s.' % str(self.classifierKind))
 
         self.plotPanel.showMPlayer()
 
@@ -843,7 +843,7 @@ class BCIPlayer(StandardBCIPage):
             self.mplayer.preview()
             wx.CallLater(1000.0*2.0, self.pieMenu.zeroBars)
         else:
-            raise Exception('Invalid choice: %s.' % str(choice))
+            raise RuntimeError('Invalid choice: %s.' % str(choice))
 
     def mplayerFinished(self, event=None):
         if self.isRunning():

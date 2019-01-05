@@ -412,7 +412,7 @@ class PieERN(StandardBCIPage):
 
     def trainClassifier(self):
         if self.trainCap is None:
-            raise Exception('No data available for training.')
+            raise RuntimeError('No data available for training.')
 
         dialog = wx.ProgressDialog('Training Classifier',
                     'Featurizing', maximum=self.nFold+1,
@@ -443,7 +443,7 @@ class PieERN(StandardBCIPage):
         elif self.classifierKind == 'nn':
             self.trainNN(trainData, dialog)
         else:
-            raise Exception('Invalid classifier kind: %s.' % str(self.classifierKind))
+            raise RuntimeError('Invalid classifier kind: %s.' % str(self.classifierKind))
 
         self.plotPanel.showPieMenu()
 

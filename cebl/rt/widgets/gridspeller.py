@@ -394,7 +394,7 @@ class GridSpeller(DrawablePanel):
         if how.shape == self.marked.shape:
             self.marked = how.copy()
         else:
-            raise Exception('Shape of how %s does not match grid shape %s.' %\
+            raise RuntimeError('Shape of how %s does not match grid shape %s.' %\
                             (str(how.show), str(self.marked.shape)))
 
         if refresh:
@@ -458,7 +458,7 @@ class GridSpeller(DrawablePanel):
                     self.gridFont.SetWeight(wx.FONTWEIGHT_BOLD)
 
                 else:
-                    raise Exception('Invalid mark value %d.' % mark)
+                    raise RuntimeError('Invalid mark value %d.' % mark)
 
                 dc.SetFont(self.gridFont)
 

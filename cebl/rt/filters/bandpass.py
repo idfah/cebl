@@ -50,7 +50,7 @@ class IIRBandpassConfigPanel(FilterConfigPanel):
         filtType = self.filtTypeComboBox.GetValue()
 
         if filtType not in self.flt.filtMap.keys():
-            raise Exception('Invalid filter type: %s.' % str(filtType))
+            raise RuntimeError('Invalid filter type: %s.' % str(filtType))
 
         self.flt.filtType = filtType
         self.updateResponse()
@@ -295,7 +295,7 @@ class FIRBandpassConfigPanel(FilterConfigPanel):
         filtType = self.filtTypeComboBox.GetValue()
 
         if filtType not in self.flt.filtMap.keys():
-            raise Exception('Invalid filter type: %s.' % str(filtType))
+            raise RuntimeError('Invalid filter type: %s.' % str(filtType))
 
         self.flt.filtType = filtType
         self.updateResponse()

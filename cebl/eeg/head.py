@@ -49,7 +49,7 @@ def cacheDist(x1, x2, coord):
     elif coord == 'sphere':
         distFunc = sphereDist
     else:
-        raise Exception('Invalid coord %s.' % str(coord))
+        raise RuntimeError('Invalid coord %s.' % str(coord))
 
     hx1 = util.hashArray(x1)
     hx2 = util.hashArray(x2)
@@ -249,7 +249,7 @@ def plotHeadLines(magnitudes, chanNames=('F3','F4','C3','C4','P3','P4','O1','O2'
             lines = sax.plot(mags, **kwargs)
             result['lines'] = lines
         else:
-            raise Exception('Invalid method: ' + str(method))
+            raise RuntimeError('Invalid method: ' + str(method))
 
         if drawLabels:
             sax.set_title(chanName, fontsize=fontSize)
@@ -304,7 +304,7 @@ def plotHeadInterp(magnitudes, chanNames=('Fp1','Fp2','F7','F3','Fz','F4','F8','
     elif scale == 'log':
         norm = pltColors.LogNorm(mn,mx)
     else:
-        raise Exception('Invalid scale ' + str(scale))
+        raise RuntimeError('Invalid scale ' + str(scale))
 
     # get chanNames that we have a location for
     chanNames = [chanName for chanName in chanNames if chanName.lower() in chanLocs3d.keys()]
@@ -342,7 +342,7 @@ def plotHeadInterp(magnitudes, chanNames=('Fp1','Fp2','F7','F3','Fz','F4','F8','
 
     elif method == 'nearest':
         if coord != '2d':
-            raise Exception('Interpolation method %s only supports coord 2d, cannot use %s.' %
+            raise RuntimeError('Interpolation method %s only supports coord 2d, cannot use %s.' %
                 (str(method), str(coord)))
 
         # interpolation over 2d grid
@@ -442,7 +442,7 @@ def plotHeadInterp(magnitudes, chanNames=('Fp1','Fp2','F7','F3','Fz','F4','F8','
             magi = rbfModel(xi3, yi3, zi3).reshape((n,n))
 
         else:
-            raise Exception('Invalid coord %s.', str(coord))
+            raise RuntimeError('Invalid coord %s.', str(coord))
 
         magi[magi > mx] = mx
         magi[magi < mn] = mn

@@ -358,7 +358,7 @@ class ConfigPanel(StandardConfigPanel):
         elif method == 'Autoregressive':
             self.methodConfig = self.autoregPanel
         else:
-            raise Exception('Unknown method: ' + str(method))
+            raise RuntimeError('Unknown method: ' + str(method))
         self.methodConfig.Show()
 
         self.FitInside()
@@ -688,7 +688,7 @@ class MotorPong(StandardBCIPage):
 
     def trainClassifier(self):
         if self.trainCap is None:
-            raise Exception('No data available for training.')
+            raise RuntimeError('No data available for training.')
 
         nFold = self.nTrainTrial
         dialog = wx.ProgressDialog('Training Classifier',
@@ -712,7 +712,7 @@ class MotorPong(StandardBCIPage):
         elif self.method == 'Autoregressive':
             self.trainAutoreg(segs, dialog)
         else:
-            raise Exception('Invalid method: %s.' % str(self.method))
+            raise RuntimeError('Invalid method: %s.' % str(self.method))
 
         if self.gameActive:
             self.plotPanel.showPong()
@@ -732,7 +732,7 @@ class MotorPong(StandardBCIPage):
             self.trainWelchNN(trainData, dialog)
 
         else:
-            raise Exception('Invalid classifier kind: %s.' % str(self.welchConfig.classifierKind))
+            raise RuntimeError('Invalid classifier kind: %s.' % str(self.welchConfig.classifierKind))
 
     def trainWelchLDA(self, trainData, dialog):
         self.stand = ml.ClassStandardizer(trainData)

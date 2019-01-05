@@ -94,7 +94,7 @@ class ConfigPanel(StandardConfigPanel):
             self.pg.pieMenu.setRotation(np.pi/len(self.pg.choices)+np.pi/2.0)
 
         else:
-            raise Exception('Invalid robot kind: %s.' % str(self.pg.robotKind))
+            raise RuntimeError('Invalid robot kind: %s.' % str(self.pg.robotKind))
 
         self.pg.requireRetrain()
 
@@ -506,7 +506,7 @@ class P300Bot(StandardBCIPage):
 
     def trainClassifier(self):
         if self.trainCap is None:
-            raise Exception('No data available for training.')
+            raise RuntimeError('No data available for training.')
 
         self.plotPanel.plotERP(self.trainCap)
 
@@ -544,7 +544,7 @@ class P300Bot(StandardBCIPage):
         elif self.classifierKind == 'NN':
             self.trainNN(classData, dialog)
         else:
-            raise Exception('Invalid classifier kind: %s.' % str(self.classifierKind))
+            raise RuntimeError('Invalid classifier kind: %s.' % str(self.classifierKind))
 
         self.plotPanel.showPieMenu()
 

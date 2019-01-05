@@ -110,7 +110,7 @@ class EEG(EEGBase):
         self.markers = self.markers.astype(self.dtype, copy=False)
 
         if len(self.markers) != self.nObs:
-            raise Exception('Length of markers ' + str(len(self.markers)) + \
+            raise RuntimeError('Length of markers ' + str(len(self.markers)) + \
                             ' does not match number of observations ' + str(self.nObs))
 
         return self
@@ -149,7 +149,7 @@ class EEG(EEGBase):
 
         # report which chan?  do this elsewhere? XXX - idfah
         if None in (vChan1, vChan2, hChan1, hChan2):
-            raise Exception('Invalid channel.')
+            raise RuntimeError('Invalid channel.')
 
         veog = self.data[:,vChan1] - self.data[:,vChan2]
         heog = self.data[:,hChan1] - self.data[:,hChan2]
@@ -171,7 +171,7 @@ class EEG(EEGBase):
 
         # report which chan?  do this elsewhere? XXX - idfah
         if None in (vChan1, vChan2, hChan1, hChan2):
-            raise Exception('Invalid channel.')
+            raise RuntimeError('Invalid channel.')
 
         eog = self.data[:,(vChan1, vChan2, hChan1, hChan2)]
 
@@ -186,7 +186,7 @@ class EEG(EEGBase):
         chan = self.getChanIndices((chan,))[0]
 
         if chan is None:
-            raise Exception('Invalid channel.')
+            raise RuntimeError('Invalid channel.')
 
         eog = self.data[:,chan][:,None]
 
@@ -218,7 +218,7 @@ class EEG(EEGBase):
             dist = head.sphereDist(locs, locs)
 
         else:
-            raise Exception('Invalid coord %s.', str(coord))
+            raise RuntimeError('Invalid coord %s.', str(coord))
 
         self.data = sig.sharpen(self.data, dist=dist, *args, **kwargs)
         return self
@@ -315,7 +315,7 @@ class EEG(EEGBase):
     def icaFilter(self, comp, remove=False, lags=0, returnICA=False, **kwargs):
         ica = ml.ICA(self.data, lags=lags, **kwargs)
         if ica.reason == 'diverge':
-            raise Exception('ICA training diverged.  Try a smaller learning rate.')
+            raise RuntimeError('ICA training diverged.  Try a smaller learning rate.')
 
         self.data = ica.filter(self.data, comp=comp, remove=remove)
 
@@ -327,7 +327,7 @@ class EEG(EEGBase):
     def icaTransform(self, comp=None, remove=False, lags=0, returnICA=False, **kwargs):
         ica = ml.ICA(self.data, lags=lags, **kwargs)
         if ica.reason == 'diverge':
-            raise Exception('ICA training diverged.  Try a smaller learning rate.')
+            raise RuntimeError('ICA training diverged.  Try a smaller learning rate.')
 
         newData = ica.transform(self.data, comp=comp, remove=remove)
 
@@ -420,7 +420,7 @@ class EEG(EEGBase):
     def bipolarReference(self, pairs):
         for pair in pairs:
             if len(pair) > 2:
-                raise Exception('Bipolar reference assumes pairs of electrodes but got %s.' % pair)
+                raise RuntimeError('Bipolar reference assumes pairs of electrodes but got %s.' % pair)
 
             pair = self.getChanIndices(pair)
 
@@ -456,7 +456,7 @@ class EEG(EEGBase):
             start = int(start*float(self.sampRate))/self.sampRate
 
             if start < 0.0:
-                raise Exception('start %f is less than zero.' % start)
+                raise RuntimeError('start %f is less than zero.' % start)
 
             startTrimSamp = int(start*self.sampRate)
         else:
@@ -467,7 +467,7 @@ class EEG(EEGBase):
             end = int(end*float(self.sampRate))/self.sampRate
 
             if end > self.nSec:
-                raise Exception('end %f is greater than length of data %f.' % (end, self.nSec))
+                raise RuntimeError('end %f is greater than length of data %f.' % (end, self.nSec))
 
             endTrimSamp = int((end-self.nSec)*self.sampRate)
         else:
@@ -791,7 +791,7 @@ class EEG(EEGBase):
             with util.openCompressedFile(fileName, 'w') as fileHandle:
                 pickle.dump(data, fileHandle, protocol=pickle.HIGHEST_PROTOCOL)
         else:
-            raise Exception('Unknown file format ' + str(fileFormat))
+            raise RuntimeError('Unknown file format ' + str(fileFormat))
 
 class EEGFromPickledMatrix(EEG):
     def __init__(self, fileName, sampRate, chanNames=None,
@@ -827,7 +827,7 @@ class EEGFromJSON(EEG):
                     break
 
             if not found:
-                raise Exception('Invalid protocol: %s.' % str(protocol))
+                raise RuntimeError('Invalid protocol: %s.' % str(protocol))
 
         sampRate = jData['sample rate']
         chanNames = [str(cn) for cn in jData['channels']]

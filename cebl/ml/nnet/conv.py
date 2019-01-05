@@ -33,7 +33,7 @@ class ConvolutionalNetwork(Classifier, optim.Optable):
 
         self.poolMethod = poolMethod.lower()
         if not self.poolMethod in ('stride', 'average'):
-            raise Exception('Invalid poolMethod %s.' % str(self.poolMethod))
+            raise RuntimeError('Invalid poolMethod %s.' % str(self.poolMethod))
 
         self.poolSize = poolSize if util.isiterable(poolSize) \
                 else (poolSize,) * self.nConvLayers

@@ -74,7 +74,7 @@ class AutoRegressiveClassifier3(Classifier):
             self.center = np.mean([np.median(te, axis=0) for te in trainErrors], axis=0)
 
         else:
-            raise Exception('Invalid center method %s.' % str(center))
+            raise RuntimeError('Invalid center method %s.' % str(center))
 
     def modelErrors(self, ss, *args, **kwargs):
         errors = [np.vstack([mdl.rmse(s, *args, **kwargs) for s in ss]) for mdl in self.models]

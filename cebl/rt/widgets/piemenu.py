@@ -177,7 +177,7 @@ class PieMenu(GraphicsPanel):
         elif style.lower() == 'jump':
             self.highlightJump.add(choice)
         else:
-            raise Exception('Unknown highlight style %s.' % style)
+            raise RuntimeError('Unknown highlight style %s.' % style)
 
         if refresh:
             self.refresh()

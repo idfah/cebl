@@ -90,7 +90,7 @@ class EEGBase:
             chanNames = [str(i) for i in range(self.nChan)]
 
         if len(chanNames) != self.nChan:
-            raise Exception('Length of chanNames ' + str(len(chanNames)) + \
+            raise RuntimeError('Length of chanNames ' + str(len(chanNames)) + \
                             ' does not match number of channels ' + str(self.nChan))
 
         self.chanNames = list(chanNames)

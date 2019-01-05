@@ -44,7 +44,7 @@ class MovingAverageConfigPanel(FilterConfigPanel):
         kernType = self.kernTypeComboBox.GetValue()
 
         if kernType not in self.flt.kernMap.keys():
-            raise Exception('Invalid kernel type: %s.' % str(kernType))
+            raise RuntimeError('Invalid kernel type: %s.' % str(kernType))
 
         self.flt.kernType = kernType
 

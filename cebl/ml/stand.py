@@ -19,7 +19,7 @@ class Standardizer:
         elif method == 'range':
             self.initRange(x)
         else:
-            raise Exception('Unknown method: %s.' % method)
+            raise RuntimeError('Unknown method: %s.' % method)
 
     def initZmus(self, x):
         x = np.asarray(x)

@@ -349,7 +349,7 @@ class ConfigPanel(StandardConfigPanel):
         elif method == 'Fourier':
             self.methodConfigPanel = self.fourierPanel
         else:
-            raise Exception('Unknown method: ' + str(method))
+            raise RuntimeError('Unknown method: ' + str(method))
         self.methodConfigPanel.Show()
 
         self.FitInside()
@@ -557,7 +557,7 @@ class Spectrogram(StandardMonitorPage):
             norm = pltLogNorm(mn,mx)
 
         else:
-            raise Exception('Invalid norm %s.' % norm)
+            raise RuntimeError('Invalid norm %s.' % norm)
 
         return norm
 

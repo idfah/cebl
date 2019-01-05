@@ -60,7 +60,7 @@ class Ensemble(Regression):
 
             if dimPerModel is not None:
                 if xSub.ndim != 2:
-                    raise Exception('Cannot subset dimensions for x with shape ' + \
+                    raise RuntimeError('Cannot subset dimensions for x with shape ' + \
                                     str(x.shape) + '.')
 
                 dimInd = np.arange(self.nIn)
@@ -97,7 +97,7 @@ class Ensemble(Regression):
         elif method == 'median':
             return np.median(ys, axis=0)
         else:
-            raise Exception('Invalid method %s.' % str(method))
+            raise RuntimeError('Invalid method %s.' % str(method))
 
 class ClassEnsemble(Classifier):
     def __init__(self, classData, nModels=10, obsFrac=0.5,
@@ -145,7 +145,7 @@ class ClassEnsemble(Classifier):
 
             if dimPerModel is not None:
                 if classDataSub[0].ndim != 2:
-                    raise Exception('Cannot subset dimensions with shape ' + \
+                    raise RuntimeError('Cannot subset dimensions with shape ' + \
                                     str(classDataSub[0].shape) + '.')
 
                 dimInd = np.arange(self.nIn)

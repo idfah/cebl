@@ -48,7 +48,7 @@ class PSDBase:
         if ax is None:
             fig = plt.figure()
             result['fig'] = fig
-            ax = fig.add_subplot(1,1,1)
+            ax = fig.add_subplot(1, 1, 1)
         result['ax'] = ax
 
         ax.grid()
@@ -67,7 +67,7 @@ class PSDBase:
         elif scale in ('db', 'decibels'):
             scaledPowers = 10.0*np.log10(self.powers/np.max(self.powers))
         else:
-            raise Exception('Invalid scale %s.' % str(scale))
+            raise RuntimeError('Invalid scale %s.' % str(scale))
 
         lines = ax.plot(self.freqs, scaledPowers, **kwargs)
         result['lines'] = lines
@@ -109,7 +109,8 @@ class WelchPSD(PSDBase):
 
         Refs:
             @article{heinzel2002spectrum,
-              title={Spectrum and spectral density estimation by the Discrete Fourier transform (DFT), including a comprehensive list of window functions and some new flat-top windows},
+              title={Spectrum and spectral density estimation by the Discrete Fourier transform (DFT),
+                     including a comprehensive list of window functions and some new flat-top windows},
               author={Heinzel, G. and R{\"u}diger, A. and Schilling, R. and Hannover, T.},
               journal={Max Plank Institute},
               year={2002}
@@ -123,10 +124,10 @@ class WelchPSD(PSDBase):
 
         # check span parameter
         if wObs > nObs:
-            raise Exception('Span of %.2f exceedes length of input %.2f.' %
+            raise RuntimeError('Span of %.2f exceedes length of input %.2f.' %
                 (span, nObs/float(sampRate)))
         if wObs < 7:
-            raise Exception('Span of %.2f is too small.' % span)
+            raise RuntimeError('Span of %.2f is too small.' % span)
 
         if pad:
             # find next largest power of two
@@ -227,7 +228,7 @@ class RawPSD(PSDBase):
         else:
             nPad = nObs
 
-        paddedS = np.zeros((nPad,nChan), dtype=s.dtype)
+        paddedS = np.zeros((nPad, nChan), dtype=s.dtype)
         paddedS[:s.shape[0],:] = s
         s = paddedS
 
@@ -255,7 +256,7 @@ class AutoRegPSD(PSDBase):
     """PSD generated from the coefficients of univariate autoregressive models.
     """
 
-    def __init__(self, s, sampRate=1.0, order=20, freqs=None, *args, **kwargs):
+    def __init__(self, s, sampRate=1.0, order=20, freqs=None, **kwargs):
         """Construct a new PSD using univariate autoregressive models.
 
         Args:
@@ -300,13 +301,13 @@ class AutoRegPSD(PSDBase):
         #orders = np.arange(1, order+1)[None,:]
         orders = np.arange(order, 0, -1)[None,:]
 
-        weights = np.empty((order,nChan))
+        weights = np.empty((order, nChan))
         iVar = np.empty(nChan)
 
         # for each channel
         for chanI, chanS in enumerate(s.T):
             # train an AR model
-            arFit = AutoRegression(chanS[None,...], order=order, *args, **kwargs)
+            arFit = AutoRegression(chanS[None,...], order=order, **kwargs)
 
             # residual values of AR model
             resid = arFit.resid(chanS[None,...])[0]
@@ -325,50 +326,49 @@ class AutoRegPSD(PSDBase):
         # scale to power density
         powers /= sampRate
 
-        """
-        # for each channel
-        for chanI, chanS in enumerate(s.T):
-            # train an AR model
-            arFit = AutoRegression((chanS,), order=order, *args, **kwargs)
+        ## # for each channel
+        ## for chanI, chanS in enumerate(s.T):
+        ##     # train an AR model
+        ##     arFit = AutoRegression((chanS,), order=order, *args, **kwargs)
 
-            # predicted and residual values of AR model
-            pred, resid = arFit.eval(chanS, returnResid=True)
+        ##     # predicted and residual values of AR model
+        ##     pred, resid = arFit.eval(chanS, returnResid=True)
 
-            # model weights, ditch bias
-            weights = arFit.model.weights[:-1,None]
+        ##     # model weights, ditch bias
+        ##     weights = arFit.model.weights[:-1,None]
 
-            # innovation variance
-            iVar = np.var(resid)
+        ##     # innovation variance
+        ##     iVar = np.var(resid)
 
-            # estimate spectrum, in a loop
-            #for i,f in enumerate(freqs):
-            #    powers[i,chanI] = (iVar * dt) / (np.abs(1.0 - \
-            #        np.sum(weights * np.exp(-2.0j*np.pi*f*orders) * dt)))**2)
+        ##     # estimate spectrum, in a loop
+        ##     #for i, f in enumerate(freqs):
+        ##     #    powers[i,chanI] = (iVar * dt) / (np.abs(1.0 - \
+        ##     #        np.sum(weights * np.exp(-2.0j*np.pi*f*orders) * dt)))**2)
 
-            # estimate spectrum, vectorized
-            powers[:,chanI] = ((iVar * dt) /
-                (np.abs(1.0 - np.sum(weights *
-                    np.exp(-2.0j*np.pi*freqs[:,None]*orders*dt), axis=0))**2))
+        ##     # estimate spectrum, vectorized
+        ##     powers[:,chanI] = ((iVar * dt) /
+        ##         (np.abs(1.0 - np.sum(weights *
+        ##             np.exp(-2.0j*np.pi*freqs[:,None]*orders*dt), axis=0))**2))
 
-            # estimate spectrum vectorized using sines and cosines instead of complex numbers
-            #cs = np.sum(weights[:,None] * np.cos(2.0 * np.pi * freqsNorm*orders)), axis=0)
-            #sn = np.sum(weights[:,None] * np.sin(2.0 * np.pi * freqsNorm*orders)), axis=0)
-            #powers[:,chanI] = iVar / (sampRate * ((1.0 - cs)**2 + sn**2))
-        """
+        ##     # estimate spectrum vectorized using sines and cosines instead of complex numbers
+        ##     #cs = np.sum(weights[:,None] * np.cos(2.0 * np.pi * freqsNorm*orders)), axis=0)
+        ##     #sn = np.sum(weights[:,None] * np.sin(2.0 * np.pi * freqsNorm*orders)), axis=0)
+        ##     #powers[:,chanI] = iVar / (sampRate * ((1.0 - cs)**2 + sn**2))
 
         PSDBase.__init__(self, freqs, powers, sampRate)
 
-
-def PowerSpectralDensity(s, method='welch', *args, **kwargs):
+# wrapper around class constructors
+# pylint: disable=invalid-name
+def PowerSpectralDensity(s, method='welch', **kwargs):
     method = method.lower()
     if method == 'welch':
-        return WelchPSD(s, *args, **kwargs)
+        return WelchPSD(s, **kwargs)
     elif method in ('raw', 'fft'):
-        return RawPSD(s, *args, **kwargs)
+        return RawPSD(s, **kwargs)
     elif method in ('ar', 'autoreg'):
-        return AutoRegPSD(s, *args, **kwargs)
+        return AutoRegPSD(s, **kwargs)
     else:
-        raise Exception('Unknown PSD estimation method: ' + str(method))
+        raise RuntimeError('Unknown PSD estimation method: ' + str(method))
 
 def PSD(*args, **kwargs):
     return PowerSpectralDensity(*args, **kwargs)
@@ -380,12 +380,12 @@ def demoPSD():
     f1 = 60.0
     f2 = 160.0
 
-    s = np.arange(0,10*np.pi,1.0/sampRate)
+    s = np.arange(0, 10*np.pi, 1.0/sampRate)
 
-    noise1 = np.random.uniform(0,0.001, size=s.shape)
+    noise1 = np.random.uniform(0, 0.001, size=s.shape)
     noise2 = np.random.normal(loc=0.0, scale=0.2, size=s.shape)
 
-    y = np.vstack((np.sin(2*f1*np.pi*s)+noise1,10.0*np.sin(2*f2*np.pi*s)+noise2)).T
+    y = np.vstack((np.sin(2*f1*np.pi*s)+noise1, 10.0*np.sin(2*f2*np.pi*s)+noise2)).T
     print('True max power: ', np.mean(y**2, axis=0))
 
     scale = 'log'
