@@ -85,7 +85,7 @@ ext_modules = c_modules + cythonize(cython_modules)
 
 # extract version from startup script
 # this is all hacky - XXX idfah
-version = str(subprocess.check_output(['scripts/cebl', '--version']))
+version = subprocess.check_output(['scripts/cebl', '--version']).decode()
 version = '.'.join(version.split('.')[:3])
 
 setuptools.setup(

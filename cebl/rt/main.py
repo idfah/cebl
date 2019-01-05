@@ -4,12 +4,10 @@ import os
 import wx
 import wx.adv
 
-import sys
-
 from . import events
 from . import widgets
 
-from .manager import *
+from .manager import Manager
 
 
 class CEBLApp(wx.App):

@@ -357,6 +357,7 @@ class AutoRegPSD(PSDBase):
 
         PSDBase.__init__(self, freqs, powers, sampRate)
 
+
 # wrapper around class constructors
 # pylint: disable=invalid-name
 def PowerSpectralDensity(s, method='welch', **kwargs):

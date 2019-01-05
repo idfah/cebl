@@ -2,9 +2,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 import scipy.signal as spsig
 
-from . import windows
-
 from cebl import util
+
+from . import windows
 
 
 class BandpassFilterBase:
@@ -74,7 +74,7 @@ class BandpassFilterBase:
     def filter(self, s, axis=0):
         raise NotImplementedError('filter not implemented.')
 
-    def plotFreqResponse(self, freqs=None, scale='linear', 
+    def plotFreqResponse(self, freqs=None, scale='linear',
                          showCorners=True,
                          label='Frequency Response',
                          ax=None, **kwargs):
@@ -99,7 +99,7 @@ class BandpassFilterBase:
             ax.set_ylabel('Gain (dB)')
         else:
             raise RuntimeError('Invalid scale: ' + str(scale) + '.')
-        
+
         lines = ax.plot(freqs, responseMags,
                         label=label, **kwargs)
 
@@ -240,7 +240,7 @@ class BandpassFilterIIR(BandpassFilterBase):
 
         numCoef = self.numCoef
         denomCoef = self.denomCoef
-        
+
         if self.zeroPhase:
             # http://www.mathworks.com/matlabcentral/newsreader/view_thread/245017
             numCoef = np.convolve(numCoef, numCoef[::-1])
@@ -290,7 +290,7 @@ class BandpassFilterIIR(BandpassFilterBase):
 
 class BandpassFilterIIRStateful(BandpassFilterIIR):
     def __init__(self, *args, **kwargs):
-        if ('zeroPhase' in kwargs) and (kwargs['zeroPhase'] == True):
+        if ('zeroPhase' in kwargs) and (kwargs['zeroPhase'] is True):
             raise RuntimeError('Stateful IIR filter cannot have linear phase.')
 
         BandpassFilterIIR.__init__(self, *args, zeroPhase=False, **kwargs)
@@ -308,7 +308,7 @@ class BandpassFilterIIRStateful(BandpassFilterIIR):
             self.zi = self.scaleZi(s, axis)
             self.ziSaved = True
 
-        y, self.zi = spsig.lfilter(nc, dc, s, axis=axis, zi=self.zi)
+        y, self.zi = spsig.lfilter(self.numCoef, self.denomCoef, s, axis=axis, zi=self.zi)
         return y
 
 def demoBandpassFilterIIR():
@@ -457,7 +457,7 @@ class BandpassFilterFIR(BandpassFilterBase):
 
     def filter(self, s, axis=0, mode='same'):
         return np.apply_along_axis(lambda v:
-                    np.convolve(v, self.impulseResponse, mode='same'), axis=axis, arr=s)
+                    np.convolve(v, self.impulseResponse, mode=mode), axis=axis, arr=s)
 
 def demoBandpassFilterFIR():
     order = 20
@@ -528,18 +528,29 @@ def demoBandpassFilterFIR():
     fig.tight_layout()
 
 
+# wrapper around class constructors
+# pylint: disable=invalid-name
 def BandpassFilter(lowFreq, highFreq, sampRate=1.0, order=None, filtType='butter', **kwargs):
     filtType = filtType.lower()
     if filtType in ('butter', 'cheby1', 'cheby2', 'ellip', 'bessel'):
-        if order is None: order = 3
+        if order is None:
+            order = 3
+
         return BandpassFilterIIR(lowFreq=lowFreq, highFreq=highFreq,
                     sampRate=sampRate, order=order, filtType=filtType, **kwargs)
+
     elif filtType in ('lanczos', 'sinc-blackman', 'sinc-hamming', 'sinc-hann'):
-        if order is None: order = 20
+        if order is None:
+            order = 20
+
         return BandpassFilterFIR(lowFreq=lowFreq, highFreq=highFreq,
                     sampRate=sampRate, order=order, filtType=filtType, **kwargs)
+
     else:
         raise RuntimeError('Invalid filter type: ' + str(filtType) + '.')
+
+def BP(*args, **kwargs):
+    return BandpassFilter(*args, **kwargs)
 
 
 if __name__ == '__main__':

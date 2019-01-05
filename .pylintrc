@@ -395,7 +395,7 @@ function-naming-style=camelCase
 #function-rgx=
 
 # Good variable names which should always be accepted, separated by a comma
-good-names=a,b,c,d,e,f,g,h,i,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,ax,cn,dt,ex,im,mn,mx,pt,xs,ys,gs,x1,x2,x3,y1,y2,y3,Run,_
+good-names=a,b,c,d,e,f,g,h,i,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,ax,cn,dc,dt,dx,dy,ex,im,mn,mx,pt,xs,ys,gs,x1,x2,x3,y1,y2,y3,Run,_
 
 # Include a hint for the correct naming format with invalid-name
 include-naming-hint=no
@@ -523,7 +523,7 @@ max-public-methods=20
 max-returns=6
 
 # Maximum number of statements in function / method body
-max-statements=50
+max-statements=100
 
 # Minimum number of public methods for a class (see R0903).
 min-public-methods=1
