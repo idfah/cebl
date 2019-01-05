@@ -131,7 +131,7 @@ def interpolate(s, factor, order=8, filtType='lanczos'):
     # determine filter order and tap locations
     radius = order//2
     newOrder = order*factor
-    taps = np.linspace(-radius,radius, newOrder+1).astype(s.dtype, copy=False)
+    taps = np.linspace(-radius, radius, newOrder+1).astype(s.dtype, copy=False)
 
     # generate FIR filter
     if filtType == 'lanczos':
@@ -149,7 +149,7 @@ def interpolate(s, factor, order=8, filtType='lanczos'):
                np.convolve(v, impulseResponse, mode='same'),
                axis=0, arr=sl)
 
-def resample(s, factorDown, factorUp=1, interpKwargs={}, **decimKwargs):
+def resample(s, factorDown, factorUp=1, interpKwargs=None, **decimKwargs):
     """Resample a discrete signal using a factor defined as a rational number.
     This is performed by first upsampling (if necessary) and then decimating the
     signal by given factors.
@@ -181,6 +181,9 @@ def resample(s, factorDown, factorUp=1, interpKwargs={}, **decimKwargs):
         rational number.  See the documentation for the interpolate and
         decimate functions in this module for more information.
     """
+    if interpKwargs is None:
+        interpKwargs = {}
+
     s = np.asarray(s)
     end = s.shape[0]*factorUp//factorDown
 
@@ -223,7 +226,7 @@ def demoResample():
 
     fig = plt.figure()
 
-    ##axChirp = fig.add_subplot(4,1, 1)
+    ##axChirp = fig.add_subplot(4, 1, 1)
     ##axChirp.plot(f, chirp, color='black')
     ##axChirp.set_title('Chirp')
     ##axChirp.set_xlabel('Frequency (Hz)')
@@ -237,7 +240,7 @@ def demoResample():
     fDown = downsample(f, factor)
     chirpDown = downsample(chirp, factor)
 
-    axDown = fig.add_subplot(2,2, 1)
+    axDown = fig.add_subplot(2, 2, 1)
     axDown.plot(f, chirp, color='lightgrey', linewidth=2)
     axDown.plot(fDown, chirpDown, color='red')
     axDown.vlines(nyquist/factor, -1.0, 1.0, linewidth=2,
@@ -248,7 +251,7 @@ def demoResample():
     axDown.autoscale(tight=True)
 
     chirpDeci = decimate(chirp, factor)
-    axDeci = fig.add_subplot(2,2, 3)
+    axDeci = fig.add_subplot(2, 2, 3)
     axDeci.plot(f, chirp, color='lightgrey', linewidth=2)
     axDeci.plot(fDown, chirpDeci, color='red')
     axDeci.vlines(nyquist/factor, -1.0, 1.0, linewidth=2,
@@ -261,7 +264,7 @@ def demoResample():
     fInterp = np.linspace(0.0, nyquist, 2.0*sampRate*factor, endpoint=False)
     chirpInterp = interpolate(chirp, factor)
 
-    axInterp = fig.add_subplot(2,2, 2)
+    axInterp = fig.add_subplot(2, 2, 2)
     axInterp.plot(f, chirp, color='lightgrey', linewidth=2)
     axInterp.plot(fInterp, chirpInterp, color='red')
     #axInterp.vlines(nyquist*factor, -1.0, 1.0, linewidth=2,
@@ -274,7 +277,7 @@ def demoResample():
     fResamp = np.linspace(0.0, nyquist, 2.0*sampRate*(2.0/factor), endpoint=False)
     chirpResamp = resample(chirp, factorUp=2, factorDown=factor)
 
-    axResamp = fig.add_subplot(2,2, 4)
+    axResamp = fig.add_subplot(2, 2, 4)
     axResamp.plot(f, chirp, color='lightgrey', linewidth=2)
     axResamp.plot(fResamp, chirpResamp, color='red')
     axResamp.vlines((2.0/factor)*nyquist, -1.0, 1.0, linewidth=2,

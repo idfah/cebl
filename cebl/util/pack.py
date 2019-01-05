@@ -113,6 +113,7 @@ def packedViews(shapes, dtype=np.float):
     starts[0] = 0
 
     packed = np.empty(totalSize, dtype=dtype)
-    views = [packed[st:en].reshape(sh) for st,en,sh in zip(starts,ends,shapes)]
+    views = [packed[st:en].reshape(sh)
+             for st, en, sh in zip(starts, ends, shapes)]
 
     return [packed] + views
