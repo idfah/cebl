@@ -1,6 +1,5 @@
-"""Module for processing unsegmented eeg.
+"""Loading and processing unsegmented / asynchronous EEG signals.
 """
-
 import pickle
 import json
 import matplotlib.pyplot as plt
@@ -20,12 +19,20 @@ from . import readbdf
 from . import seg
 
 
+# pylint: disable=too-many-public-methods
 class EEG(EEGBase):
-    """Class for processing unsegmented eeg.
+    """An unsegmented / asynchronous EEG signal.
     """
     def __init__(self, data, sampRate=256.0, chanNames=None,
-                 markers=None, deviceName='', dtype=None, copy=False):
-        """Construct a new EEG instance.
+                 markers=None, deviceName="", dtype=None, copy=False):
+        """Unsegmented / asynchronous EEG signal data.  This class is used to
+        represent a single, contiguous EEG signal.  EEG data should typically
+        be represented in this way for loading, preprocessing and analysis in
+        asynchronous settings, i.e., when the signals are not time-locked.
+
+        For synchronous applications, i.e., when the signals are time-locked,
+        an EEG object is first typically created for loading and preprocessing
+        and then a SegmentedEEG object is created using the segment method.
 
         Args:
             data:       A 2D numpy array of floats containing the eeg data.
@@ -55,7 +62,7 @@ class EEG(EEGBase):
                         the data argument.
 
             copy:       If False (default) then data will not be copied if
-                        possible.  If True, then the data definitely be 
+                        possible.  If True, then the data definitely be
                         copied.  Warning:  If multiple EEG instances use
                         the same un-copied data array, then modifying one
                         EEG instance may lead to undefined behavior in
@@ -69,7 +76,7 @@ class EEG(EEGBase):
         # if given an int, assume its the channel in the data
         if isinstance(markers, (int,)):
             markerChan = markers
-            markers = self.data[:,markerChan]
+            markers = self.data[:, markerChan]
             self.data = np.delete(self.data, markerChan, axis=1)
 
         # initialize the eeg base class
@@ -80,6 +87,15 @@ class EEG(EEGBase):
         self.setMarkers(markers, copy=copy)
 
     def copy(self, dtype=None):
+        """Create a copy if this EEG object.  The underlying signal data
+        will be duplicated.
+
+        Args:
+            dtype:  The data type used to store the signal.  Must be
+                    a floating point type, e.g., np.float32 or np.float64.
+                    If None (default) the data type will be the same as
+                    the EEG object being copied.
+        """
         return EEG(data=self.data, sampRate=self.sampRate, chanNames=self.chanNames,
                    markers=self.markers, deviceName=self.deviceName, dtype=dtype, copy=True)
 
@@ -104,59 +120,170 @@ class EEG(EEGBase):
         """
         if markers is None:
             self.markers = np.linspace(0.0, self.nSec, self.nObs)
+
         else:
             self.markers = np.array(markers, copy=copy)
 
         self.markers = self.markers.astype(self.dtype, copy=False)
 
         if len(self.markers) != self.nObs:
-            raise RuntimeError('Length of markers ' + str(len(self.markers)) + \
-                            ' does not match number of observations ' + str(self.nObs))
+            raise RuntimeError("Length of markers " + str(len(self.markers)) + \
+                               " does not match number of observations " + str(self.nObs))
 
         return self
 
     def bandpass(self, lowFreq, highFreq, **kwargs):
+        """Apply a linear bandpass / highpass / lowpass / stopband filter.
+        See sig.BandpassFilter for more information.
+
+        Args:
+            lowFreq:    The frequency of the lower corner of the filter.
+                        See sig.BandpassFilter for more information.
+
+            highFreq:   The frequency of the high corner of the filter.
+                        See sig.BandpassFilter for more information.
+
+            **kwargs:   Additional keyword arguments to pass to
+                        sig.BandpassFilter.
+
+        Returns:
+            This function modifies the signal data and returns self.
+        """
         bp = sig.BandpassFilter(lowFreq=lowFreq, highFreq=highFreq,
                 sampRate=self.sampRate, dtype=self.dtype, **kwargs)
         self.data = bp.filter(self.data)
         return self
 
     def cap(self, level):
-        self.data[self.data >  level] =  level
+        """Cap the signal values so that |signal| < level.
+
+        Args:
+            level:  Signal value for capping.
+
+        Returns:
+            This function modifies the signal data and returns self.
+        """
+        self.data[self.data > level] = level
         self.data[self.data < -level] = -level
         return self
 
     def commonAverageReference(self, *args, **kwargs):
+        """Apply a common average reference.  This subtracts the mean signal
+        value across all channels from all channels at each time step.
+        See sig.commonAverageReference for more information.
+
+        Args:
+            *args, **kwargs:  Additional arguments to pass to
+                              sig.commonAverageReference.
+
+        Returns:
+            This function modifies the signal data and returns self.
+        """
         self.data = sig.commonAverageReference(self.data, *args, **kwargs)
         return self
 
     def car(self, *args, **kwargs):
+        """Apply a common average reference.  This function is an alias
+        to self.commonAverageReference.
+        """
         return self.commonAverageReference(*args, **kwargs)
 
     def meanSeparate(self, recover=False):
+        """Separate the signal mean (across channels) into a separate
+        chanel.  The mean across all channels, at each time step, is
+        computed and then subtracted from all channels.  This is
+        similar to a common average reference.  Note, however, that
+        any channel can be reconstructed from the remaining channels
+        in a signal that has had the common average reference applied.
+        This function replaces the last channel with the signal means,
+        which has the channel name "mean."  It is then possible to
+        recover the original signal.  See sig.meanSeparate for more
+        information.
+
+        Args:
+            recover:  If False (default) then separate the mean into
+                      a final channel named mean.  Otherwise, recover
+                      the original signal from a mean-separated signal.
+
+        Throws:
+            RuntimeError if trying to recover but the last channel is
+            not named mean.
+
+        Returns:
+            This function modifies the signal data and returns self.
+        """
+        if recover and self.chanNames[-1] != "mean":
+            raise RuntimeError("Not a mean separated signal!")
+
         self.data = sig.meanSeparate(self.data, recover=recover)
 
         if recover:
-            self.chanNames[-1] = 'recovered'
+            self.chanNames[-1] = "recovered"
+
         else:
-            self.chanNames[-1] = 'mean'
+            self.chanNames[-1] = "mean"
 
         return self
 
-    def EOGRegress(self, vChan1, vChan2, hChan1, hChan2, model=None):
+    # pylint: disable=invalid-name
+    def EOGRegress(self, vChan1, vChan2, hChan1, hChan2, bipolar=True, model=None):
+        """Use a linear regression to occular artifacts using channels
+        that measure electrooculography (EOG).
+
+        This approache uses four EOG channels as inputs to a multivariate
+        linear least-squares regression model that attempts predict all
+        channels at each time step using only these EOG signals.  These
+        predictions are then subtracted from each channel in order to
+        attenuate EOG artifacts.  If we assume that EOG artifacts are linear
+        in this way and that our EOG signals do not contain any real brain
+        signals (assumptions which are likely both violated) then this
+        should remove contamination is the EEG signals caused by eye
+        movement.
+
+        Args:
+            vChan1:     Vertical EOG channel should be above the right eye.
+
+            vChan2:     Vertical EOG channel should be below the right eye.
+
+            hChan1:     Horizontal EOG channel should be outside the left eye.
+
+            hChan2:     Horizontal EOG channel should be outside the right eye.
+
+            bipolar:    If True (default) then the difference between the
+                        vertical channels (vChan1 - vChan2) and between the
+                        horizontal channels (hChan1 - hChan2) are used as
+                        inputs to the linear regression model.  If False, then
+                        all four channels are used as inputs to the model.
+
+            model:      Linear regression model to use.  If None (default) then
+                        a new model will be constructed.  Note that the model
+                        is also returned.  This is useful if you want to use
+                        the same linear EOG model to preprocess multiple EEG
+                        objects.
+
+        Returns:
+            This function modifies the signal data and returns a tuple
+            containing self and the linear model used for regression.
+            The linear model returned can be passed as an argument to
+            process other signals in the same way, e.g., test data.
+        """
         vChan1, vChan2 = self.getChanIndices((vChan1, vChan2))
         hChan1, hChan2 = self.getChanIndices((hChan1, hChan2))
 
         # report which chan?  do this elsewhere? XXX - idfah
         if None in (vChan1, vChan2, hChan1, hChan2):
-            raise RuntimeError('Invalid channel.')
+            raise RuntimeError('Invalid channel name.')
 
-        veog = self.data[:,vChan1] - self.data[:,vChan2]
-        heog = self.data[:,hChan1] - self.data[:,hChan2]
-        eog = np.vstack((veog, heog)).T
+        if bipolar:
+            veog = self.data[:, vChan1] - self.data[:, vChan2]
+            heog = self.data[:, hChan1] - self.data[:, hChan2]
+            eog = np.vstack((veog, heog)).T
+
+        else:
+            eog = self.data[:, (vChan1, vChan2, hChan1, hChan2)]
 
         bp = sig.BandpassFilter(0.0, 20.0, order=2, sampRate=self.sampRate)
-        eogFilt = bp.filter(eog);
+        eogFilt = bp.filter(eog)
 
         if model is None:
             model = ml.RidgeRegression(eogFilt, self.data)
@@ -165,48 +292,16 @@ class EEG(EEGBase):
 
         return self, model
 
-    def EOGRegress2(self, vChan1, vChan2, hChan1, hChan2, model=None):
-        vChan1, vChan2 = self.getChanIndices((vChan1, vChan2))
-        hChan1, hChan2 = self.getChanIndices((hChan1, hChan2))
-
-        # report which chan?  do this elsewhere? XXX - idfah
-        if None in (vChan1, vChan2, hChan1, hChan2):
-            raise RuntimeError('Invalid channel.')
-
-        eog = self.data[:,(vChan1, vChan2, hChan1, hChan2)]
-
-        if model is None:
-            model = ml.RidgeRegression(eog, self.data)
-
-        self.data -= model.eval(eog)
-
-        return self, model
-
-    def EOGRegress3(self, chan, model=None):
-        chan = self.getChanIndices((chan,))[0]
-
-        if chan is None:
-            raise RuntimeError('Invalid channel.')
-
-        eog = self.data[:,chan][:,None]
-
-        if model is None:
-            model = ml.RidgeRegression(eog, self.data)
-
-        self.data -= model.eval(eog)
-
-        return self, model
-
-    def sharpen(self, coord='sphere', *args, **kwargs):
+    def sharpen(self, coord='sphere', **kwargs):
         locs = np.asarray([chanlocs.chanLocs3d[cn.lower()] for cn in self.getChanNames()],
                           dtype=self.dtype)
 
         coord = coord.lower()
         if coord == '2d':
             # steriographic projection
-            x = locs[:,0]
-            y = locs[:,1]
-            z = locs[:,2]
+            x = locs[:, 0]
+            y = locs[:, 1]
+            z = locs[:, 2]
             xy = np.vstack((x/(1.0+z), y/(1.0+z))).T
 
             dist = head.euclidDist(xy, xy)
@@ -218,9 +313,9 @@ class EEG(EEGBase):
             dist = head.sphereDist(locs, locs)
 
         else:
-            raise RuntimeError('Invalid coord %s.', str(coord))
+            raise RuntimeError('Invalid coord %s.' % str(coord))
 
-        self.data = sig.sharpen(self.data, dist=dist, *args, **kwargs)
+        self.data = sig.sharpen(self.data, dist=dist, **kwargs)
         return self
 
     def decimate(self, factor, *args, **kwargs):
@@ -253,7 +348,10 @@ class EEG(EEGBase):
 
         return self
 
-    def resample(self, factorDown, factorUp=1, interpKwargs=dict(), **decimKwargs):
+    def resample(self, factorDown, factorUp=1, interpKwargs=None, **decimKwargs):
+        if interpKwargs is None:
+            interpKwargs = {}
+
         self.data = sig.resample(self.data, factorDown, factorUp,
             interpKwargs=interpKwargs, **decimKwargs)
 
@@ -285,7 +383,7 @@ class EEG(EEGBase):
         return self
 
     def getStandardizer(self, **kwargs):
-        return ml.Standardizer(self.data)
+        return ml.Standardizer(self.data, **kwargs)
 
     def standardize(self, standardizer=None, **kwargs):
         if standardizer is None:
@@ -409,23 +507,24 @@ class EEG(EEGBase):
     def reference(self, chans):
         chans = self.getChanIndices(chans)
 
-        ref = self.data[:,chans]
+        ref = self.data[:, chans]
         if len(chans) > 1:
             ref = ref.mean(axis=1)
 
-        self.data -= ref[:,None]
+        self.data -= ref[:, None]
 
         return self
 
     def bipolarReference(self, pairs):
         for pair in pairs:
             if len(pair) > 2:
-                raise RuntimeError('Bipolar reference assumes pairs of electrodes but got %s.' % pair)
+                raise RuntimeError(
+                    'Bipolar reference assumes pairs of electrodes but got %s.' % pair)
 
             pair = self.getChanIndices(pair)
 
-            ref = self.data[:,pair].mean(axis=1)
-            self.data[:,pair] = ref.reshape((-1, 1))
+            ref = self.data[:, pair].mean(axis=1)
+            self.data[:, pair] = ref.reshape((-1, 1))
 
         chanNames = []
         for pair in pairs:
@@ -443,10 +542,10 @@ class EEG(EEGBase):
             chans = self.getChanIndices(chans)
             refs = self.getChanIndices(refs)
 
-            ref = self.data[:,refs]
+            ref = self.data[:, refs]
             if len(refs) > 1:
                 ref = ref.mean(axis=1)
-            self.data[:,chans] -= ref.reshape((-1, 1))
+            self.data[:, chans] -= ref.reshape((-1, 1))
 
         return self
 
@@ -467,7 +566,8 @@ class EEG(EEGBase):
             end = int(end*float(self.sampRate))/self.sampRate
 
             if end > self.nSec:
-                raise RuntimeError('end %f is greater than length of data %f.' % (end, self.nSec))
+                raise RuntimeError(
+                    'end %f is greater than length of data %f.' % (end, self.nSec))
 
             endTrimSamp = int((end-self.nSec)*self.sampRate)
         else:
@@ -532,9 +632,10 @@ class EEG(EEGBase):
         return {'ax': ax, 'lines': lines}
 
     def plotCWT(self, chans=None, start=None, end=None,
-                method='cwt', colorbar=True, *args, **kwargs):
+                method='cwt', colorbar=True, **kwargs):
         if chans is None:
             chans = self.getChanNames()
+
         chans = self.getChanIndices(chans)
         chanNames = self.getChanNames(chans)
 
@@ -553,11 +654,11 @@ class EEG(EEGBase):
         else:
             endSamp = int(end*self.sampRate)
 
-        s = self.data[startSamp:endSamp,chans]
+        s = self.data[startSamp:endSamp, chans]
 
         time = np.linspace(0, end-start, s.shape[0]).astype(self.dtype, copy=False)
 
-        transform = sig.CWT(sampRate=self.sampRate, *args, **kwargs)
+        transform = sig.CWT(sampRate=self.sampRate, **kwargs)
         freqs = transform.freqs
         powers, phases = transform.apply(s)
 
@@ -573,7 +674,7 @@ class EEG(EEGBase):
             ax = fig.add_subplot(plotRows, plotCols, i+1)
             axs += [ax]
 
-            im = ax.imshow(powers[:,:,i].T, interpolation='lanczos',
+            im = ax.imshow(powers[:, :, i].T, interpolation='lanczos',
                             origin='lower', cmap=pltcm.get_cmap('jet'),
                             norm=pltLogNorm(), aspect='auto',
                             extent=(0.0, d.shape[0]/float(self.sampRate),
@@ -620,7 +721,7 @@ class EEG(EEGBase):
         if end is not None:
             endSamp = int(end*self.sampRate)
 
-        s = util.colmat(self.data[startSamp:endSamp,chans])
+        s = util.colmat(self.data[startSamp:endSamp, chans])
 
         nObs = s.shape[0]
         nDim = s.shape[1]
@@ -635,10 +736,10 @@ class EEG(EEGBase):
                 ax = fig.add_subplot(nDim, nDim, r*nDim+c+1+nDim*(nDim-(r%nDim)*2-1))
                 axs.append(ax)
 
-                sx = s[:,r]
-                sy = s[:,c]
+                sx = s[:, r]
+                sy = s[:, c]
 
-                if (r == c):
+                if r == c:
                     plt.hist(sx, bins=bins, normed=False)
                     ax.set_xlim(-mx/2.0, mx/2.0)
                 else:
@@ -670,12 +771,15 @@ class EEG(EEGBase):
 
         return {'fig': fig, 'axs': axs}
 
-    def plotPSD(self, chans=None, ax=None, psdKwargs={}, **kwargs):
+    def plotPSD(self, chans=None, ax=None, psdKwargs=None, **kwargs):
+        if psdKwargs is None:
+            psdKwargs = {}
+
         if chans is None:
             chans = self.getChanNames()
         chans = self.getChanIndices(chans)
 
-        psd = sig.PSD(self.data[:,chans], sampRate=self.sampRate, **psdKwargs)
+        psd = sig.PSD(self.data[:, chans], sampRate=self.sampRate, **psdKwargs)
         return psd.plotPower(ax=ax, **kwargs)
 
     def plotTrace(self, start=None, end=None, chans=None,
@@ -753,7 +857,7 @@ class EEG(EEGBase):
 
             lines = []
             for j in range(s.shape[1]):
-                lines += ax.plot(s[lag:,j], s[:-lag,j], **kwargs)
+                lines += ax.plot(s[lag:, j], s[:-lag, j], **kwargs)
                                  #color=plt.cm.jet(j/float(s.shape[1]), alpha=0.2))
 
             ax.set_xlabel(r'$x_t$')
@@ -765,7 +869,8 @@ class EEG(EEGBase):
             ax.set_ylim((mn, mx))
 
             #if i == nCols-1:
-            #    leg = ax.legend(lines, self.getChanNames(chans), labelspacing=0.34, prop={'size': 12},
+            #    leg = ax.legend(lines, self.getChanNames(chans),
+            #                    labelspacing=0.34, prop={'size': 12},
             #                    bbox_to_anchor=(1.35, 0.8))
             if i == 0:
                 leg = ax.legend(lines, self.getChanNames(chans),
@@ -787,7 +892,7 @@ class EEG(EEGBase):
             fileFormat = dotSplit[-1]
 
         if fileFormat == 'pkl':
-            data = np.hstack((self.data, self.markers[:,None]))
+            data = np.hstack((self.data, self.markers[:, None]))
             with util.openCompressedFile(fileName, 'w') as fileHandle:
                 pickle.dump(data, fileHandle, protocol=pickle.HIGHEST_PROTOCOL)
         else:

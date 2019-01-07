@@ -72,7 +72,7 @@ class EEGBase:
                 else:
                     chanNames.append(None)
             else:
-                if c < self.nChan and c >= 0:
+                if 0 <= c < self.nChan:
                     chanNames.append(self.chanNames[c])
                 else:
                     chanNames.append(None)
@@ -121,7 +121,7 @@ class EEGBase:
                 else:
                     chanIndices.append(None)
             else:
-                if c < self.nChan and c >= 0:
+                if 0 <= c < self.nChan:
                     chanIndices.append(c)
                 else:
                     chanIndices.append(None)
