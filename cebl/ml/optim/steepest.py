@@ -246,7 +246,7 @@ def steepestl(optable, stepInitial=0.1, lineSearchPrecision=1.0e-4,
         error, grad = optable.gradient(*args, returnError=True, **kwargs)
 
         if verbose:
-            print '%d %6f' % (iteration, error)
+            print('%d %6f' % (iteration, error))
 
         if callback is not None:
             callback(optable, iteration, paramTrace, errorTrace)
@@ -298,7 +298,7 @@ def steepestl(optable, stepInitial=0.1, lineSearchPrecision=1.0e-4,
                 break
 
             if verbose:
-                print 'ls:  %3f %6f' % (stepSize, lsError)
+                print('ls:  %3f %6f' % (stepSize, lsError))
 
             # if error got worse
             if lsError > lsErrorPrev:
@@ -318,7 +318,7 @@ def steepestl(optable, stepInitial=0.1, lineSearchPrecision=1.0e-4,
         iteration += 1
 
     if verbose:
-        print reason
+        print(reason)
 
     # save result into a dictionary
     result = dict()
