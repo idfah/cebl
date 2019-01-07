@@ -174,7 +174,7 @@ class MTTest(Source):
         if np.any(np.isclose(marker/10.0, (1,2,3,4))):
             self.trigger(int(marker/10.0))
 
-        print self.trig.value
+        print(self.trig.value)
 
         Source.setMarker(self, marker)
 

@@ -9,7 +9,7 @@ from .linreg import RidgeRegression
 #from . import strans
 
 
-class AutoRegressionBase(object):
+class AutoRegressionBase:
     def __init__(self, ss, horizon, regClass, *args, **kwargs):
         """
         Args:
@@ -101,13 +101,13 @@ def demoAutoRegressionSine():
     time = np.linspace(0.0,10.0*np.pi,5000)
     s = np.sin(time)
 
-    #data = [s + np.random.normal(size=s.shape, scale=0.3) for i in xrange(5)]
+    #data = [s + np.random.normal(size=s.shape, scale=0.3) for i in range(5)]
     data = s[None,...]
 
     order = 2
     arFit = AutoRegression(data, order=order)
 
-    print arFit.model.weights
+    print(arFit.model.weights)
 
     pred, resid = arFit.eval((s,), returnResid=True)
 
@@ -127,7 +127,7 @@ def demoAutoRegressionMulti():
     n = len(time)
     s2 = np.empty(n)
     s2[0] = 0.1
-    for i in xrange(1,n):
+    for i in range(1,n):
         s2[i] = np.exp(-a*s2[i-1]**2) + b
 
     s3 = np.random.normal(size=len(time), scale=0.3)
@@ -148,7 +148,7 @@ def demoAutoRegressionMulti():
     predTrain, residTrain = arFit.eval(dataTrain, returnResid=True)
     predTest, residTest = arFit.eval(dataTest, returnResid=True)
 
-    print arFit.rmse(dataTest)
+    print(arFit.rmse(dataTest))
 
     sepTrain = np.arange(dataTrain.shape[2])*2.0*np.max(np.abs(data))
     sepTest = np.arange(dataTest.shape[2])*2.0*np.max(np.abs(data))
@@ -218,7 +218,7 @@ class UnivariateAutoRegression(AutoRegression):
         ss = util.segmat(ss)
 
         self.model = []
-        for i in xrange(ss.shape[2]):
+        for i in range(ss.shape[2]):
             v = ss[:,:,i]
 
             xs = self.getInputs(v)
@@ -234,7 +234,7 @@ class UnivariateAutoRegression(AutoRegression):
 
         preds = []
         gi = []
-        for i in xrange(ss.shape[2]):
+        for i in range(ss.shape[2]):
             v = ss[:,:,i]
 
             xs = self.getInputs(v)
@@ -270,7 +270,7 @@ def demoAutoRegressionUni():
     n = len(time)
     s2 = np.empty(n)
     s2[0] = 0.1
-    for i in xrange(1,n):
+    for i in range(1,n):
         s2[i] = np.exp(-a*s2[i-1]**2) + b
 
     s3 = np.random.normal(size=len(time), scale=0.3)
@@ -291,7 +291,7 @@ def demoAutoRegressionUni():
     predTrain, residTrain = arFit.eval(dataTrain, returnResid=True)
     predTest, residTest = arFit.eval(dataTest, returnResid=True)
 
-    print arFit.rmse(dataTest)
+    print(arFit.rmse(dataTest))
 
     sepTrain = np.arange(dataTrain.shape[2])*2.0*np.max(np.abs(data))
     sepTest = np.arange(dataTest.shape[2])*2.0*np.max(np.abs(data))
@@ -404,7 +404,7 @@ def demoRecurrentAutoRegression():
     n = len(time)
     s2 = np.empty(n)
     s2[0] = 0.1
-    for i in xrange(1,n):
+    for i in range(1,n):
         s2[i] = np.exp(-a*s2[i-1]**2) + b
 
     s3 = np.random.normal(size=len(time), scale=0.3)
@@ -425,7 +425,7 @@ def demoRecurrentAutoRegression():
     predTrain, residTrain = rarFit.eval(dataTrain, returnResid=True)
     predTest, residTest = rarFit.eval(dataTest, returnResid=True)
 
-    print rarFit.rmse(dataTest)
+    print(rarFit.rmse(dataTest))
 
     sepTrain = np.arange(dataTrain.shape[2])*2.0*np.max(np.abs(data))
     sepTest = np.arange(dataTest.shape[2])*2.0*np.max(np.abs(data))

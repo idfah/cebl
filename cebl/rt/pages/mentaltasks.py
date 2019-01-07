@@ -367,7 +367,7 @@ class ConfigPanel(StandardConfigPanel):
         elif method == 'Convolutional Net':
             self.methodConfig = self.convNetPanel
         else:
-            raise Exception('Unknown method: ' + str(method))
+            raise RuntimeError('Unknown method: ' + str(method))
         self.methodConfig.Show()
 
         self.FitInside()
@@ -636,7 +636,7 @@ class MentalTasks(StandardBCIPage):
 
     def trainClassifier(self):
         if self.trainCap is None:
-            raise Exception('No data available for training.')
+            raise RuntimeError('No data available for training.')
 
         segmented = self.trainCap.segment(start=0.0, end=self.trainTrialSecs)
         segs = [segmented.selectNear(i+1.0) for i in range(len(self.choices))]
@@ -647,7 +647,7 @@ class MentalTasks(StandardBCIPage):
         # split segments
         segs = [cls.split(self.width, self.overlap) for cls in segs]
 
-        ##print 'nSplit segs: ', segs[0].getNSeg()
+        ##print('nSplit segs: ', segs[0].getNSeg())
 
         if self.method == 'Welch Power':
             self.trainWelch(segs)
@@ -658,7 +658,7 @@ class MentalTasks(StandardBCIPage):
         elif self.method == 'Convolutional Net':
             self.trainConvNet(segs)
         else:
-            raise Exception('Invalid method: %s.' % str(self.method))
+            raise RuntimeError('Invalid method: %s.' % str(self.method))
 
         self.plotPanel.showPieMenu()
 
@@ -675,7 +675,7 @@ class MentalTasks(StandardBCIPage):
             self.trainWelchNN(trainData)
 
         else:
-            raise Exception('Invalid classifier kind: %s.' % str(self.welchConfig.classifierKind))
+            raise RuntimeError('Invalid classifier kind: %s.' % str(self.welchConfig.classifierKind))
 
     def trainWelchLDA(self, trainData):
         self.stand = ml.ClassStandardizer(trainData)

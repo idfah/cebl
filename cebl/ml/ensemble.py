@@ -44,7 +44,7 @@ class Ensemble(Regression):
         self.models = []
         self.dimInds = []
 
-        for m in xrange(self.nModels):
+        for m in range(self.nModels):
             if obsPerModel is not None:
                 if self.replacement:
                     obsInd = np.random.random_integers(0,len(x)-1, size=obsPerModel)
@@ -60,7 +60,7 @@ class Ensemble(Regression):
 
             if dimPerModel is not None:
                 if xSub.ndim != 2:
-                    raise Exception('Cannot subset dimensions for x with shape ' + \
+                    raise RuntimeError('Cannot subset dimensions for x with shape ' + \
                                     str(x.shape) + '.')
 
                 dimInd = np.arange(self.nIn)
@@ -97,7 +97,7 @@ class Ensemble(Regression):
         elif method == 'median':
             return np.median(ys, axis=0)
         else:
-            raise Exception('Invalid method %s.' % str(method))
+            raise RuntimeError('Invalid method %s.' % str(method))
 
 class ClassEnsemble(Classifier):
     def __init__(self, classData, nModels=10, obsFrac=0.5,
@@ -126,7 +126,7 @@ class ClassEnsemble(Classifier):
         self.models = []
         self.dimInds = []
 
-        for m in xrange(self.nModels):
+        for m in range(self.nModels):
             classDataSub = []
             if self.obsFrac is not None:
                 for cls in classData:
@@ -145,7 +145,7 @@ class ClassEnsemble(Classifier):
 
             if dimPerModel is not None:
                 if classDataSub[0].ndim != 2:
-                    raise Exception('Cannot subset dimensions with shape ' + \
+                    raise RuntimeError('Cannot subset dimensions with shape ' + \
                                     str(classDataSub[0].shape) + '.')
 
                 dimInd = np.arange(self.nIn)
@@ -200,14 +200,14 @@ def demoClassEnsemble():
     c2Probs = model.probs(c2)
     c3Probs = model.probs(c3)
 
-    print 'c1:'
-    print model.label(c1)
-    print 'c2:'
-    print model.label(c2)
-    print model.probs(c1)
-    print 'c3:'
-    print model.label(c3)
-    print model.probs(c1)
+    print('c1:')
+    print(model.label(c1))
+    print('c2:')
+    print(model.label(c2))
+    print(model.probs(c1))
+    print('c3:')
+    print(model.label(c3))
+    print(model.probs(c1))
 
     x = np.linspace(-2.0, 4.0, 500)
     xProbs = model.probs(x)

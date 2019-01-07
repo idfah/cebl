@@ -24,7 +24,7 @@ class Filter(Page):
 
         filterListControlBox = widgets.ControlBox(self,
                 label='Available Filters', orient=wx.VERTICAL)
-        self.filterListBox = wx.ListBox(self, choices=filters.filterChoices.keys(),
+        self.filterListBox = wx.ListBox(self, choices=list(filters.filterChoices.keys()),
                 style=wx.LB_SORT | wx.LB_SINGLE)
         filterListControlBox.Add(self.filterListBox, proportion=1,
                 flag=wx.ALL | wx.EXPAND, border=10)

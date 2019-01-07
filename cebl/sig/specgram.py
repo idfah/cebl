@@ -4,12 +4,13 @@ import numpy as np
 
 from cebl import util
 
+# pylint: disable=no-name-in-module
 from .cwt import CWT
 
 from . import windows
 
 
-class SpectrogramBase(object):
+class SpectrogramBase:
     def __init__(self, freqs, powers, phases, sampRate):
         self.freqs = np.asarray(freqs)
         self.powers = np.asarray(powers)
@@ -58,7 +59,7 @@ class SpectrogramBase(object):
         elif scale == 'degrees':
             return self.phases * 180.0 / np.pi
         else:
-            raise Exception('Invalid phase scale: %s.' % str(scale))
+            raise RuntimeError('Invalid phase scale: %s.' % str(scale))
 
     def getFreqsPowers(self):
         return self.freqs, self.powers
@@ -68,7 +69,7 @@ class SpectrogramBase(object):
 
     def plotPower(self, scale='log', chanNames=None, colorbar=True, axs=None, **kwargs):
         if chanNames is None:
-            chanNames = [str(i) for i in xrange(self.nChan)]
+            chanNames = [str(i) for i in range(self.nChan)]
 
         if scale == 'linear':
             powers = self.powers
@@ -87,7 +88,7 @@ class SpectrogramBase(object):
             zlabel = 'Power (db)'
 
         else:
-            raise Exception('Invalid scale %s.' % str(scale))
+            raise RuntimeError('Invalid scale %s.' % str(scale))
 
         nRows = int(np.sqrt(self.nChan))
         if nRows*nRows < self.nChan:
@@ -95,7 +96,7 @@ class SpectrogramBase(object):
         nCols = nRows
 
         if axs is None:
-            fig = plt.figure()#figsize=(18,10))
+            fig = plt.figure()#figsize=(18, 10))
             newAxs = True
             axs = []
         else:
@@ -104,7 +105,7 @@ class SpectrogramBase(object):
 
         for i, chanName in enumerate(chanNames):
             if newAxs:
-                ax = fig.add_subplot(nRows,nCols, i+1)
+                ax = fig.add_subplot(nRows, nCols, i+1)
                 axs.append(ax)
             else:
                 ax = axs[i]
@@ -128,8 +129,8 @@ class SpectrogramBase(object):
         if colorbar:
             if newAxs:
                 fig.tight_layout()
-                #cbar = fig.colorbar(imgs[-1], norm=norm, ax=axs, pad=0.025, fraction=0.06)#, anchor=(0.0,0.1))
-                cbar = fig.colorbar(imgs[-1], norm=norm, ax=axs, pad=0.025, fraction=0.1)#, anchor=(0.0,0.1))
+                #cbar = fig.colorbar(imgs[-1], norm=norm, ax=axs, pad=0.025, fraction=0.06)#, anchor=(0.0, 0.1))
+                cbar = fig.colorbar(imgs[-1], norm=norm, ax=axs, pad=0.025, fraction=0.1)#, anchor=(0.0, 0.1))
             else:
                 cbar = axs[-1].colorbar(imgs[-1], norm=norm)
             cbar.set_label(zlabel)
@@ -157,10 +158,10 @@ class FFTSpectrogram(SpectrogramBase):
 
         # check span parameter
         if wObs > nObs:
-            raise Exception('Span of %.2f exceedes length of input %.2f.' %
+            raise RuntimeError('Span of %.2f exceedes length of input %.2f.' %
                 (span, nObs/float(sampRate)))
         if wObs < 7:
-            raise Exception('Span of %.2f is too small.', span)
+            raise RuntimeError('Span of %.2f is too small.' % span)
 
         if pad:
             # find next largest power of two
@@ -206,6 +207,8 @@ class FFTSpectrogram(SpectrogramBase):
         SpectrogramBase.__init__(self, freqs, powers, phases, sampRate)
 
 
+# wrapper around class constructors
+# pylint: disable=invalid-name
 def Spectrogram(s, method='cwt', *args, **kwargs):
     method = method.lower()
     if method == 'cwt':
@@ -213,12 +216,12 @@ def Spectrogram(s, method='cwt', *args, **kwargs):
     elif method in ('fft', 'stft', 'stfft'):
         return FFTSpectrogram(s, *args, **kwargs)
     else:
-        raise Exception('Unknown Spectrogram  estimation method: ' + str(method))
+        raise RuntimeError('Unknown Spectrogram  estimation method: ' + str(method))
 
 
 def demoCWT():
     sampRate = 256
-    freqs = np.arange(0.25,128,0.25)
+    freqs = np.arange(0.25, 128, 0.25)
     #span = 7
     span = 30
 
@@ -229,7 +232,7 @@ def demoCWT():
     s1 = np.sin(t*2.0*np.pi*20.0/float(sampRate))
     s2 = np.sin(t*2.0*np.pi*60.0/float(sampRate)) + np.random.normal(scale=0.02, size=t.size)
     s3 = np.cumsum(np.random.normal(scale=0.05, size=t.size))
-    s = np.vstack((s1,s2,s3)).T
+    s = np.vstack((s1, s2, s3)).T
 
     cwtSpecgram = CWTSpectrogram(s1, sampRate)
 

@@ -177,7 +177,7 @@ class PieMenu(GraphicsPanel):
         elif style.lower() == 'jump':
             self.highlightJump.add(choice)
         else:
-            raise Exception('Unknown highlight style %s.' % style)
+            raise RuntimeError('Unknown highlight style %s.' % style)
 
         if refresh:
             self.refresh()
@@ -277,7 +277,7 @@ class PieMenu(GraphicsPanel):
 
         # for each cell
         for i,choice in enumerate(self.choices):
-        #in xrange(len(self.angles)-1):
+        #in range(len(self.angles)-1):
             gc.PushState()
 
             # set color for filling cell

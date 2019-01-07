@@ -144,7 +144,7 @@ class TextStim(Page):
             #    nTrials = 1
             #else:
             #    nTrials = 5
-            #self.stims = sum([list(np.random.permutation(mtasks)) for i in xrange(nTrials)], [])
+            #self.stims = sum([list(np.random.permutation(mtasks)) for i in range(nTrials)], [])
 
             if self.protocol.startswith('motortasks practice'):
                 self.stims = ['Left', 'Right']
@@ -173,7 +173,7 @@ when one of the following cues appears. When the screen is blank, relax and thin
             #    nTrials = 1
             #else:
             #    nTrials = 3
-            #self.stims = sum([list(np.random.permutation(mtasks)) for i in xrange(nTrials)], [])
+            #self.stims = sum([list(np.random.permutation(mtasks)) for i in range(nTrials)], [])
 
             #if self.protocol.startswith('mentaltasks practice'):
             #    self.stims = ['Count', 'Rotate', 'Song', 'Fist']
@@ -202,7 +202,7 @@ when one of the following cues appears. When the screen is blank, relax and thin
 'Song'   sing a favorite song silently to yourself'''
 
         else:
-            raise Exception('Invalid protocol: ' % protocol)
+            raise RuntimeError('Invalid protocol: ' % protocol)
 
     def toggleRunning(self, event=None):
         if self.isRunning():
@@ -237,7 +237,7 @@ when one of the following cues appears. When the screen is blank, relax and thin
             curStim = ''
             self.src.setMarker(0.0)
 
-            #print 'stopping'
+            #print('stopping')
             self.stop()
             self.startButton.SetLabel('Start')
             self.startButton.Enable()
@@ -270,7 +270,7 @@ when one of the following cues appears. When the screen is blank, relax and thin
                 sign = 1
             self.nextBlank = True
 
-            #print curStim[0], curStim
+            #print(curStim[0], curStim)
             self.src.setMarkerChr(curStim[0], sign)
 
         self.stimArea.setStimText(curStim)

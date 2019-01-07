@@ -48,7 +48,7 @@ def readBDF(fileName, verbose=False):
     idCode, nextByte = unpackStrings(binaryData, nextByte, 7)
 
     if idCode != 'BIOSEMI':
-        raise Exception('readBDF:  idCode is', idcode, 'which is not BIOSEMI. Cannot read this file.')
+        raise RuntimeError('readBDF:  idCode is', idcode, 'which is not BIOSEMI. Cannot read this file.')
 
     subjectId, nextByte = unpackStrings(binaryData, nextByte, 80)
     if verbose: print('subjectId is', subjectId)    
@@ -113,7 +113,7 @@ def readBDF(fileName, verbose=False):
     if verbose: print('sampRates are', sampRates)
 
     if not np.all(np.isclose(sampRates, sampRates[0])):
-        raise Exception('readBDF: Chan sample rates are not all the same. They are', sampRates)
+        raise RuntimeError('readBDF: Chan sample rates are not all the same. They are', sampRates)
     sampRate = int(sampRates[0])
 
     nextByte = (nChan + 1) * 256  # first byte past header

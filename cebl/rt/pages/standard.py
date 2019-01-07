@@ -91,6 +91,7 @@ class StandardPage(Page):
                         minSize[1]+systemSettings.GetMetric(wx.SYS_HSCROLL_Y))
             configPaneAuiInfo.BestSize(bestSize)
 
+
         # add config pane to aui manager
         self.auiManager.AddPane(self.configPanel, configPaneAuiInfo)
 
@@ -323,7 +324,7 @@ class StandardBCIPage(StandardPage):
 
     def setTrained(self, trained=True):
         if self.isRunning():
-            raise Exception('Cannot change state while running!')
+            raise RuntimeError('Cannot change state while running!')
 
         self.trained = trained
         if self.trained:
@@ -335,7 +336,7 @@ class StandardBCIPage(StandardPage):
 
     def requireRetrain(self):
         if self.isRunning():
-            raise Exception('Cannot change state while running!')
+            raise RuntimeError('Cannot change state while running!')
 
         if self.trained:
             self.trained = False

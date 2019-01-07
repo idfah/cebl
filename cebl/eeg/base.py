@@ -1,7 +1,7 @@
 """Module containing EEG base class and related routines.
 """
 
-class EEGBase(object):
+class EEGBase:
     """Base class for all EEG types.
     """
     def __init__(self, nObs, nChan, sampRate=256.0, chanNames=None, deviceName=''):
@@ -41,6 +41,8 @@ class EEGBase(object):
         return self
 
     def getNChan(self):
+        """Get the number of channels in the eeg data.
+        """
         return self.nChan
 
     def getChanNames(self, chans=None):
@@ -63,7 +65,7 @@ class EEGBase(object):
         chanNames = []
         lowerChanNames = [c.lower() for c in self.chanNames]
         for c in chans:
-            if isinstance(c,str):
+            if isinstance(c, str):
                 if c.lower() in lowerChanNames:
                     i = lowerChanNames.index(c.lower())
                     chanNames.append(self.chanNames[i])
@@ -85,10 +87,10 @@ class EEGBase(object):
                         then the channel names are set to '1', '2', ... 'nChan'.
         """
         if chanNames is None:
-            chanNames = [str(i) for i in xrange(self.nChan)]
+            chanNames = [str(i) for i in range(self.nChan)]
 
         if len(chanNames) != self.nChan:
-            raise Exception('Length of chanNames ' + str(len(chanNames)) + \
+            raise RuntimeError('Length of chanNames ' + str(len(chanNames)) + \
                             ' does not match number of channels ' + str(self.nChan))
 
         self.chanNames = list(chanNames)
@@ -113,7 +115,7 @@ class EEGBase(object):
         chanIndices = []
         lowerChanNames = [c.lower() for c in self.chanNames]
         for c in chans:
-            if isinstance(c,str):
+            if isinstance(c, str):
                 if c.lower() in lowerChanNames:
                     chanIndices.append(lowerChanNames.index(c.lower()))
                 else:
@@ -140,7 +142,11 @@ class EEGBase(object):
         return self
 
     def getNObs(self):
+        """Get the number of observations in the eeg data.
+        """
         return self.nObs
 
     def getNSec(self):
+        """Get the number of seconds in the eeg data.
+        """
         return self.nSec

@@ -109,18 +109,18 @@ class QuadraticDiscriminantAnalysis(Classifier):
             #try:
             #    cvi = np.linalg.inv(cv)
             #except np.linalg.LinAlgError as e:
-            #    raise Exception('Failed to invert covariance matrix, consider using shrinkage.')
+            #    raise RuntimeError('Failed to invert covariance matrix, consider using shrinkage.')
 
             try:
                 cvi = sp.linalg.pinvh(cv)
             except Exception as e:
-                raise Exception('Failed to invert covariance matrix, consider using shrinkage.')
+                raise RuntimeError('Failed to invert covariance matrix, consider using shrinkage.')
 
             self.invCovs.append(cvi)
 
             sign, logDet = np.linalg.slogdet(cv)
             if sign == 0:
-                raise Exception('Covariance matrix has zero determinant, consider using shrinkage.')
+                raise RuntimeError('Covariance matrix has zero determinant, consider using shrinkage.')
 
             #self.intercepts[i] = logDet - 2.0*logPriors[i]
 
@@ -151,7 +151,7 @@ class QuadraticDiscriminantAnalysis(Classifier):
         dv = np.zeros((nObs,self.nCls), dtype=self.dtype)
 
         # could probably vectorize this? XXX - idfah
-        for i in xrange(self.nCls):
+        for i in range(self.nCls):
             zm = x - self.means[i]
             dv[:,i] = np.sum(zm.dot(self.invCovs[i]) * zm, axis=1)
         dv *= -0.5
@@ -246,19 +246,19 @@ def demoQDA2d():
     greenLabel = model.label(green)
     blueLabel  = model.label(blue)
 
-    print 'red labels\n-------'
-    print redLabel
-    print redLabel.shape
-    print '\ngreen labels\n-------'
-    print greenLabel
-    print greenLabel.shape
-    print '\nblue labels\n-------'
-    print blueLabel
-    print blueLabel.shape
+    print('red labels\n-------')
+    print(redLabel)
+    print(redLabel.shape)
+    print('\ngreen labels\n-------')
+    print(greenLabel)
+    print(greenLabel.shape)
+    print('\nblue labels\n-------')
+    print(blueLabel)
+    print(blueLabel.shape)
 
-    print 'ca: ', model.ca(data)
-    print 'bca: ', model.bca(data)
-    print 'confusion:\n', model.confusion(data)
+    print('ca: ', model.ca(data))
+    print('bca: ', model.bca(data))
+    print('confusion:\n', model.confusion(data))
 
     # first figure shows training data and class intersections
     fig = plt.figure()
@@ -440,7 +440,7 @@ class LinearDiscriminantAnalysis(Classifier):
             #if cov is None:
             #    cov = np.cov(cls, rowvar=False)
             #    covCache[key] = cov
-            #    #print 'cache miss'
+            #    #print('cache miss')
             #self.avgCov += cov
 
         # average covariance over number of classes
@@ -455,16 +455,16 @@ class LinearDiscriminantAnalysis(Classifier):
         #try:
         #    self.invCov = np.linalg.inv(self.avgCov)
         #except np.linalg.LinAlgError as e:
-        #    raise Exception('Failed to invert covariance matrix, consider using shrinkage.')
+        #    raise RuntimeError('Failed to invert covariance matrix, consider using shrinkage.')
 
         try:
             self.invCov = sp.linalg.pinvh(self.avgCov)
         except Exception as e:
-            raise Exception('Failed to invert covariance matrix, consider using shrinkage.')
+            raise RuntimeError('Failed to invert covariance matrix, consider using shrinkage.')
 
         sign, self.logDet = np.linalg.slogdet(self.avgCov)
         if sign == 0:
-            raise Exception('Covariance matrix has zero determinant, consider using shrinkage.')
+            raise RuntimeError('Covariance matrix has zero determinant, consider using shrinkage.')
 
         # model coefficients
         # (ndim,nCls) = (ndim,ndim) x (ndim,nCls)
@@ -472,7 +472,7 @@ class LinearDiscriminantAnalysis(Classifier):
 
         # model intercepts (nCls,)
         #self.intercepts = np.array([-0.5 * means[cls,:].dot(self.weights[:,cls]) + logPriors[cls]
-        #                  for cls in xrange(self.nCls)])
+        #                  for cls in range(self.nCls)])
         self.intercepts = -0.5 * np.sum(self.weights * means.T, axis=0) + logPriors
 
     def parameters(self):
@@ -588,16 +588,16 @@ def demoLDA2d():
     greenLabel = model.label(green)
     blueLabel  = model.label(blue)
 
-    print 'red labels\n-------'
-    print redLabel
-    print '\ngreen labels\n-------'
-    print greenLabel
-    print '\nblue labels\n-------'
-    print blueLabel
+    print('red labels\n-------')
+    print(redLabel)
+    print('\ngreen labels\n-------')
+    print(greenLabel)
+    print('\nblue labels\n-------')
+    print(blueLabel)
 
-    print 'ca: ', model.ca(data)
-    print 'bca: ', model.bca(data)
-    print 'confusion:\n', model.confusion(data)
+    print('ca: ', model.ca(data))
+    print('bca: ', model.bca(data))
+    print('confusion:\n', model.confusion(data))
 
     # first figure shows training data and class intersections
     fig = plt.figure()

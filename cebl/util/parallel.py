@@ -1,7 +1,10 @@
+"""Parallel processing utilities.
+"""
+
 import multiprocessing as mp
 
 
-class ReadWriteLock(object):
+class ReadWriteLock:
     """Read-Write lock with writer preference.
     """
     def __init__(self):
@@ -37,7 +40,7 @@ class ReadWriteLock(object):
     def getWriteLock(self):
         return _RWWriteLock(self)
 
-class _CountLock(object):
+class _CountLock:
     def __init__(self, lock):
         self.lock = lock
         self.counter = mp.Value('i', 0)

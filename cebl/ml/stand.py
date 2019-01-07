@@ -3,7 +3,7 @@ import numpy as np
 from cebl import util
 
 
-class Standardizer(object):
+class Standardizer:
     def __init__(self, x, method='zmus'):
         """
 
@@ -19,7 +19,7 @@ class Standardizer(object):
         elif method == 'range':
             self.initRange(x)
         else:
-            raise Exception('Unknown method: %s.' % method)
+            raise RuntimeError('Unknown method: %s.' % method)
 
     def initZmus(self, x):
         x = np.asarray(x)
@@ -30,7 +30,7 @@ class Standardizer(object):
 
         # best way to handle this? XXX - idfah
         if np.any(np.isclose(self.scale, 0.0)):
-            print 'Standardizer Warning: Some dimensions are constant, capping zeros.'
+            print('Standardizer Warning: Some dimensions are constant, capping zeros.')
             self.scale = util.capZero(self.scale)
 
     def initRange(self, x):

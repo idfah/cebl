@@ -74,7 +74,7 @@ class AutoRegressiveClassifier3(Classifier):
             self.center = np.mean([np.median(te, axis=0) for te in trainErrors], axis=0)
 
         else:
-            raise Exception('Invalid center method %s.' % str(center))
+            raise RuntimeError('Invalid center method %s.' % str(center))
 
     def modelErrors(self, ss, *args, **kwargs):
         errors = [np.vstack([mdl.rmse(s, *args, **kwargs) for s in ss]) for mdl in self.models]
@@ -147,8 +147,8 @@ def demoARC():
     s2 = np.sin(2.0*x[None,:] + np.random.uniform(-np.pi, np.pi, size=(ns2,1)))
     s2 += np.random.normal(size=s2.shape, scale=0.8)
 
-    print s1.shape
-    print s2.shape
+    print(s1.shape)
+    print(s2.shape)
 
     trainData = [s1[:(ns1//2)], s2[:(ns2//2)]]
     testData = [s1[(ns1//2):], s2[(ns2//2):]]
@@ -159,20 +159,20 @@ def demoARC():
 
     model = ARC(trainData, order=order)
 
-    print 'Training Performance:'
-    print '======='
-    print 'Labels: ', model.labelKnown(trainData)
-    print 'CA:     ', model.ca(trainData)
-    print 'BCA:    ', model.bca(trainData)
-    print 'AUC:    ', model.auc(trainData)
-    print
-    print 'Test Performance:'
-    print '======='
-    print 'Labels: ', model.labelKnown(testData)
-    print 'CA:     ', model.ca(testData)
-    print 'BCA:    ', model.bca(testData)
-    print 'AUC:    ', model.auc(testData)
-    print
+    print('Training Performance:')
+    print('=======')
+    print('Labels: ', model.labelKnown(trainData))
+    print('CA:     ', model.ca(trainData))
+    print('BCA:    ', model.bca(trainData))
+    print('AUC:    ', model.auc(trainData))
+    print()
+    print('Test Performance:')
+    print('=======')
+    print('Labels: ', model.labelKnown(testData))
+    print('CA:     ', model.ca(testData))
+    print('BCA:    ', model.bca(testData))
+    print('AUC:    ', model.auc(testData))
+    print()
 
     fig = plt.figure(figsize=(20,6))
     axSigs = fig.add_subplot(1,3, 1)
@@ -263,8 +263,8 @@ def demoRARC():
     s2 = np.sin(2.0*x[None,:] + np.random.uniform(-np.pi, np.pi, size=(ns2,1)))
     s2 += np.random.normal(size=s2.shape, scale=0.8)
 
-    print s1.shape
-    print s2.shape
+    print(s1.shape)
+    print(s2.shape)
 
     trainData = [s1[:(ns1//2)], s2[:(ns2//2)]]
     testData = [s1[(ns1//2):], s2[(ns2//2):]]
@@ -275,20 +275,20 @@ def demoRARC():
 
     model = RARC(trainData, nRes=512)
 
-    print 'Training Performance:'
-    print '======='
-    print 'Labels: ', model.labelKnown(trainData)
-    print 'CA:     ', model.ca(trainData)
-    print 'BCA:    ', model.bca(trainData)
-    print 'AUC:    ', model.auc(trainData)
-    print
-    print 'Test Performance:'
-    print '======='
-    print 'Labels: ', model.labelKnown(testData)
-    print 'CA:     ', model.ca(testData)
-    print 'BCA:    ', model.bca(testData)
-    print 'AUC:    ', model.auc(testData)
-    print
+    print('Training Performance:')
+    print('=======')
+    print('Labels: ', model.labelKnown(trainData))
+    print('CA:     ', model.ca(trainData))
+    print('BCA:    ', model.bca(trainData))
+    print('AUC:    ', model.auc(trainData))
+    print()
+    print('Test Performance:')
+    print('=======')
+    print('Labels: ', model.labelKnown(testData))
+    print('CA:     ', model.ca(testData))
+    print('BCA:    ', model.bca(testData))
+    print('AUC:    ', model.auc(testData))
+    print()
 
     fig = plt.figure(figsize=(20,6))
     axSigs = fig.add_subplot(1,3, 1)

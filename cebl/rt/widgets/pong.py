@@ -7,7 +7,7 @@ from .wxgraphics import *
 __all__ = ['Pong',]
 
 
-class PongObject(object):
+class PongObject:
     def __init__(self):
         self.coords = np.array([0.0,0.0])
         self.velocity = np.array([0.0,0.0])

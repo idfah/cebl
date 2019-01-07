@@ -1,3 +1,6 @@
+"""Shuffling utilities.
+"""
+
 import numpy as np
 
 
@@ -22,7 +25,7 @@ def blockShuffle(x, n, axis=None):
 
     if axis is None:
         if (x.size % n) != 0:
-            raise Exception('x.size = %d is not a multiple of n = %d.' % (x.size, n))
+            raise RuntimeError('x.size = %d is not a multiple of n = %d.' % (x.size, n))
 
         shp = x.shape
 
@@ -34,7 +37,7 @@ def blockShuffle(x, n, axis=None):
 
     else:
         if (x.shape[axis] % n) != 0:
-            raise Exception('x.shape[%d] = %d is not a multiple of n = %d.' % \
+            raise RuntimeError('x.shape[%d] = %d is not a multiple of n = %d.' % \
                 (axis, x.shape[axis], n))
 
         lax = x.shape[axis]

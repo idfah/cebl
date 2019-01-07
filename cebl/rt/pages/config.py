@@ -44,7 +44,7 @@ class Config(Page):
 
         # source selector
         sourceControlBox = widgets.ControlBox(self.scrolledPanel, label='Source', orient=wx.VERTICAL)
-        choices = sorted(self.srcPanels.keys(), key=lambda k: k.lower(), reverse=True)
+        choices = sorted(list(self.srcPanels.keys()), key=lambda k: k.lower(), reverse=True)
         self.sourceComboBox = wx.ComboBox(self.scrolledPanel, id=wx.ID_ANY, choices=choices,
             value=self.src.getName(), style=wx.CB_READONLY)
         self.sourceComboBox.Bind(wx.EVT_COMBOBOX, self.selectSource, self.sourceComboBox)
@@ -126,7 +126,7 @@ class Config(Page):
 
         ## # create text controls
         ## self.chanTextCtrls = []
-        ## for c in xrange(16):
+        ## for c in range(16):
         ##     curChanTextCtrl = wx.TextCtrl(self.scrolledPanel)
         ##     self.chanTextCtrls.append(curChanTextCtrl)
         ##     leftChanSizer.Add(curChanTextCtrl, proportion=0,
@@ -139,7 +139,7 @@ class Config(Page):
         ## rightChanSizer = wx.BoxSizer(orient=wx.VERTICAL)
 
         ## # create text controls
-        ## for c in xrange(16):
+        ## for c in range(16):
         ##     curChanTextCtrl = wx.TextCtrl(self.scrolledPanel)
         ##     self.chanTextCtrls.append(curChanTextCtrl)
         ##     rightChanSizer.Add(curChanTextCtrl, proportion=0,
@@ -151,7 +151,7 @@ class Config(Page):
         self.chanSizer = wx.GridSizer(40, 2, 10, 10)
         #self.chanSizer = wx.BoxSizer(orient=wx.VERTICAL)
 
-        self.chanTextCtrls = [wx.TextCtrl(self.scrolledPanel) for i in xrange(40*2)]
+        self.chanTextCtrls = [wx.TextCtrl(self.scrolledPanel) for i in range(40*2)]
         self.chanSizer.AddMany(self.chanTextCtrls)
         #for ctc in self.chanTextCtrls:
         #    self.chanSizer.Add(ctc, proportion=0, flag=wx.TOP | wx.LEFT | wx.RIGHT, border=2)

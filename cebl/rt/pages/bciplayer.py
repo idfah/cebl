@@ -68,7 +68,7 @@ class ConfigPanel(StandardConfigPanel):
         path = os.path.expanduser(self.mediaPathTextCtrl.GetValue())
 
         if not os.path.isdir(path):
-            raise Exception('Path %s is not a valid directory!' % str(path))
+            raise RuntimeError('Path %s is not a valid directory!' % str(path))
 
         self.pg.mplayer.setCWD(self.mediaPathTextCtrl.GetValue())
 
@@ -533,7 +533,7 @@ class BCIPlayer(StandardBCIPage):
 
     def trainClassifier(self):
         if self.trainCap is None:
-            raise Exception('No data available for training.')
+            raise RuntimeError('No data available for training.')
 
         self.plotPanel.plotERP(self.trainCap)
 
@@ -544,22 +544,22 @@ class BCIPlayer(StandardBCIPage):
         cap = self.bandpass(self.trainCap)
         seg = cap.segment(start=self.windowStart, end=self.windowEnd)
         seg = self.downsample(seg)
-        print 'nSeg: ', seg.getNSeg()
+        print('nSeg: ', seg.getNSeg())
 
         targ = seg.select(matchFunc=lambda mark: self.markToStim(mark) == 'Play')
         nTarg = targ.getNSeg()
-        #print 'nTarg: ', nTarg
+        #print('nTarg: ', nTarg)
 
         #nonTarg = seg.select(matchFunc=lambda mark: self.markToStim(mark) == 'Backward')
         nonTarg = seg.select(matchFunc=lambda mark: self.markToStim(mark) != 'Play')
         nNonTarg = nonTarg.getNSeg()
-        #print 'nNonTarg: ', nNonTarg
+        #print('nNonTarg: ', nNonTarg)
 
         classData = [targ.chanEmbed(), nonTarg.chanEmbed()]
 
         self.standardizer = ml.Standardizer(np.vstack(classData))
         classData = [self.standardizer.apply(cls) for cls in classData]
-        #print 'classData shape', [cls.shape for cls in classData]
+        #print('classData shape', [cls.shape for cls in classData])
 
         if self.classifierKind == 'Linear Discriminant':
             self.trainLDA(classData, dialog)
@@ -572,7 +572,7 @@ class BCIPlayer(StandardBCIPage):
         elif self.classifierKind == 'Neural Network':
             self.trainNN(classData, dialog)
         else:
-            raise Exception('Invalid classifier kind: %s.' % str(self.classifierKind))
+            raise RuntimeError('Invalid classifier kind: %s.' % str(self.classifierKind))
 
         self.plotPanel.showMPlayer()
 
@@ -589,10 +589,10 @@ class BCIPlayer(StandardBCIPage):
 
         for fold, trainData, validData in partitionGenerator:
             dialog.Update(fold, 'Validation Fold: %d' % fold)
-            #print 'fold: ', fold
+            #print('fold: ', fold)
 
             for i, sh in enumerate(shrinkages):
-                #print 'shrinkage: ', sh
+                #print('shrinkage: ', sh)
                 classifier = ml.LDA(trainData, shrinkage=sh)
 
                 trainAUC[i] += classifier.auc(trainData)
@@ -603,11 +603,11 @@ class BCIPlayer(StandardBCIPage):
         trainAUC /= self.nFold
         validAUC /= self.nFold
 
-        print 'train AUC: ', trainAUC
-        print 'valid AUC: ', validAUC
+        print('train AUC: ', trainAUC)
+        print('valid AUC: ', validAUC)
 
         bestShrinkage = shrinkages[np.argmax(validAUC)]
-        print 'best shrinkage: ', bestShrinkage
+        print('best shrinkage: ', bestShrinkage)
 
         self.classifier = ml.LDA(classData, shrinkage=bestShrinkage)
 
@@ -643,11 +643,11 @@ class BCIPlayer(StandardBCIPage):
         trainAUC /= self.nFold
         validAUC /= self.nFold
 
-        print 'train AUC: ', trainAUC
-        print 'valid AUC: ', validAUC
+        print('train AUC: ', trainAUC)
+        print('valid AUC: ', validAUC)
 
         bestK = ks[np.argmax(validAUC)]
-        print 'best K: ', bestK
+        print('best K: ', bestK)
 
         self.classifier = ml.KNN(classData, k=bestK, distMetric=metric)
 
@@ -671,9 +671,9 @@ class BCIPlayer(StandardBCIPage):
                 self.trainFrac, self.nFold)
 
         for fold, trainData, validData in partitionGenerator:
-            #print 'trainData shape: ', [cls.shape for cls in trainData]
-            #print 'validData shape: ', [cls.shape for cls in validData]
-            #print 'validData shape: ', [cls.shape for cls in validData]
+            #print('trainData shape: ', [cls.shape for cls in trainData])
+            #print('validData shape: ', [cls.shape for cls in validData])
+            #print('validData shape: ', [cls.shape for cls in validData])
             dialog.Update(fold, 'Validation Fold: %d' % fold)
 
             for i, pen in enumerate(penalties):
@@ -691,11 +691,11 @@ class BCIPlayer(StandardBCIPage):
         trainAUC /= self.nFold
         validAUC /= self.nFold
 
-        print 'train AUC: ', trainAUC
-        print 'valid AUC: ', validAUC
+        print('train AUC: ', trainAUC)
+        print('valid AUC: ', validAUC)
 
         bestPenalty = penalties[np.argmax(validAUC)]
-        print 'best penalty: ', bestPenalty
+        print('best penalty: ', bestPenalty)
 
         s = np.random.get_state()
         np.random.seed(seed)
@@ -843,7 +843,7 @@ class BCIPlayer(StandardBCIPage):
             self.mplayer.preview()
             wx.CallLater(1000.0*2.0, self.pieMenu.zeroBars)
         else:
-            raise Exception('Invalid choice: %s.' % str(choice))
+            raise RuntimeError('Invalid choice: %s.' % str(choice))
 
     def mplayerFinished(self, event=None):
         if self.isRunning():

@@ -22,10 +22,9 @@ class CommonSpatialPatterns(STrans):
         s1 = self.prep(s1)
         s2 = self.prep(s2)
 
-        if False: # maybe faster and more stable?
+        if True: # maybe faster and more stable?
             u, d, v = np.linalg.svd(np.vstack((s1,s2)), full_matrices=False)
-            #dInv = np.sqrt(0.5*(s1.shape[0]+s2.shape[0]-2)) / d[:,None]
-            dInv = 1.0 / d[:,None] # think about this XXX - idfah
+            dInv = np.sqrt(0.5*(s1.shape[0]+s2.shape[0]-2)) / d[:,None]
 
             c1 = s1.T.dot(s1)
             c2 = s2.T.dot(s2)
@@ -105,8 +104,8 @@ def demoCSP():
     csp1 = cspFilt.transform(s1)#, comp=(2,), remove=True)
     csp2 = cspFilt.transform(s2)#, comp=(2,), remove=True)
 
-    print csp1.var(axis=0)
-    print csp2.var(axis=0)
+    print(csp1.var(axis=0))
+    print(csp2.var(axis=0))
 
     axCSP1 = fig.add_subplot(4,1, 3)
     axCSP1.plot(csp1 + util.colsep(csp1))

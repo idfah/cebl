@@ -126,7 +126,7 @@ class Replay(Source):
                 if self.loadFile() == wx.ID_CANCEL:
                     wx.LogError('Failed to load data!')
                     # maybe play some default data instead of bombing? XXX - idfah
-                    raise Exception('Critical file load canceled.')
+                    raise RuntimeError('Critical file load canceled.')
             except Exception:
                 raise
 

@@ -10,7 +10,8 @@ from cebl.rt import widgets
 from cebl.rt.sources.source import Source, SourceConfigPanel
 
 
-ms = ctypes.cdll.LoadLibrary(os.path.dirname(__file__) + '/libmindset24r.so')
+#ms = ctypes.cdll.LoadLibrary(os.path.dirname(__file__) + '/libmindset24r.so')
+ms = ctypes.cdll.LoadLibrary(os.path.dirname(__file__) + '/libmindset24r.cpython-36m-x86_64-linux-gnu.so')
 
 ms.ms_Open.argtypes = [ctypes.POINTER(ctypes.c_char)]
 ms.ms_ReadNextDataBlock.argtypes = [ctypes.POINTER(ctypes.c_double), ctypes.c_int]
@@ -146,11 +147,11 @@ class Mindset24R(Source):
             if not self.connected:
                 ms.ms_Open(ctypes.c_char_p(self.deviceName))
                 if ms.ms_Ready() < 0:
-                    raise Exception('The mindset24r is not ready.')
+                    raise RuntimeError('The mindset24r is not ready.')
                 self.connected = True
         except Exception as e:
             self.connected = False
-            raise Exception('Failed to connect to mindset24r: ' + str(e))
+            raise RuntimeError('Failed to connect to mindset24r: ' + str(e))
 
     def disconnect(self):
         wx.LogMessage(self.getName() + ': disconnecting.')
@@ -158,7 +159,7 @@ class Mindset24R(Source):
             if self.connected:
                 ms.ms_Close()
         except Exception as e:
-            raise Exception('Failed to disconnect from mindset24r: ' + str(e))
+            raise RuntimeError('Failed to disconnect from mindset24r: ' + str(e))
         finally:
             self.connected = False
 
@@ -170,14 +171,14 @@ class Mindset24R(Source):
             ms.ms_SetSampleRate(self.sampRateKey)
             self.sampRate = ms.ms_ActualSampleRate(self.sampRateKey)
         except Exception as e:
-            raise Exception('Failed to configure mindset24r: ' + str(e))
+            raise RuntimeError('Failed to configure mindset24r: ' + str(e))
 
     def query(self):
         try:
             self.connect()
             self.configure()
         except Exception as e:
-            raise Exception('Failed to query mindset24r: ' + str(e))
+            raise RuntimeError('Failed to query mindset24r: ' + str(e))
         finally:
             self.disconnect()
 
@@ -207,7 +208,7 @@ class Mindset24R(Source):
             if tryCount < 10:
                 tryCount += 1
             else:
-                raise Exception('Failed to keep up with mindset buffer.')
+                raise RuntimeError('Failed to keep up with mindset buffer.')
 
         return data
 
@@ -229,7 +230,7 @@ class Mindset24R(Source):
         elif sampRate == 1024:
             self.sampRateKey = SAMPLERATE1024
         else:
-            raise Exception('Invalid sample rate ' + str(sampRate))
+            raise RuntimeError('Invalid sample rate ' + str(sampRate))
 
     def setBlockSize(self, blockSize=768):
         if blockSize == 96:
@@ -241,7 +242,7 @@ class Mindset24R(Source):
         elif blockSize == 768:
             self.blockSizeKey = BLOCKSIZE768
         else:
-            raise Exception('Invalid block size ' + str(blockSize))
+            raise RuntimeError('Invalid block size ' + str(blockSize))
 
     def __repr__(self):
         r = Source.__repr__(self)

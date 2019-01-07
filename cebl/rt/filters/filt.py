@@ -15,7 +15,7 @@ class FilterConfigPanel(wx.Panel):
         self.SetSizer(self.sizer)
         self.Layout()
 
-class Filter(object):
+class Filter:
     # need to be able to handle different dtypes XXX - idfah
     def __init__(self, inSampRate, inChans, name=None, configPanelClass=FilterConfigPanel):
         self.inSampRate = inSampRate
@@ -76,7 +76,7 @@ class Filter(object):
         """
         return self.configPanelClass(parent=parent, pg=pg, flt=self, *args, **kwargs)
 
-class FilterChain(object):
+class FilterChain:
     def __init__(self, src):
         self.src = src
         self.filters = []

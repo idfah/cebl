@@ -232,7 +232,7 @@ class ERPTest(Source):
 
     def setMarker(self, marker):
         if np.isclose(marker, self.trigger.value):
-            #print 'resetting erp'
+            #print('resetting erp')
             self.erpReset()
 
         Source.setMarker(self, marker)

@@ -135,7 +135,7 @@ def scg(optable,
     iteration = 0
 
     if verbose:
-        print '%d %6f' % (iteration, error)
+        print('%d %6f' % (iteration, error))
 
     if callback is not None:
         callback(optable, iteration, paramTrace, errorTrace, success)
@@ -200,13 +200,13 @@ def scg(optable,
             success = False
             params[...] = paramsStart
             if verbose:
-                print 'No success'
+                print('No success')
 
         # increment iteration counter
         iteration += 1
 
         if verbose:
-            print '%d %6f' % (iteration, error)
+            print('%d %6f' % (iteration, error))
 
         if callback is not None:
             callback(optable, iteration, paramTrace, errorTrace)
@@ -253,7 +253,7 @@ def scg(optable,
             direction = gamma * direction - grad
 
     if verbose:
-        print reason
+        print(reason)
 
     # save result into a dictionary
     result = {}

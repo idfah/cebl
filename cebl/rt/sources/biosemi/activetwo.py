@@ -10,7 +10,8 @@ from cebl.rt import widgets
 from cebl.rt.sources.source import Source, SourceConfigPanel
 
 
-bs = ctypes.cdll.LoadLibrary(os.path.dirname(__file__) + '/libactivetwo.so')
+#bs = ctypes.cdll.LoadLibrary(os.path.dirname(__file__) + '/libactivetwo.so')
+bs = ctypes.cdll.LoadLibrary(os.path.dirname(__file__) + '/libactivetwo.cpython-36m-x86_64-linux-gnu.so')
 
 bs.bs_poll.argtypes = [ctypes.POINTER(ctypes.c_double),]
 
@@ -143,7 +144,7 @@ class ActiveTwo(Source):
         try:
             if not self.connected:
                 if bs.bs_open():
-                    raise Exception('Failed to open ActiveTwo.')
+                    raise RuntimeError('Failed to open ActiveTwo.')
 
                 self.connected = True
 
@@ -156,7 +157,7 @@ class ActiveTwo(Source):
         try:
             if self.connected:
                 if bs.bs_close():
-                    raise Exception('Failed to close ActiveTwo.')
+                    raise RuntimeError('Failed to close ActiveTwo.')
 
         except Exception as e:
             raise
@@ -166,14 +167,14 @@ class ActiveTwo(Source):
 
     def configure(self):
         if bs.bs_setScansPerPoll(self.pollSize*2):
-            raise Exception('Failed to set pollSize.')
+            raise RuntimeError('Failed to set pollSize.')
         #if bs.bs_setScansPerPoll(self.pollSize):
-        #    raise Exception('Failed to set pollSize.')
+        #    raise RuntimeError('Failed to set pollSize.')
 
         # only speedmode 4 is supported for now XXX - idfah
         # need to be able to change number of channels after initializing source XXX - idfah
         if bs.bs_setSpeedMode(4):
-            raise Exception('Failed to set speedMode.')
+            raise RuntimeError('Failed to set speedMode.')
 
     def query(self):
         try:
@@ -181,7 +182,7 @@ class ActiveTwo(Source):
             self.connect()
 
         except Exception as e:
-            raise Exception('Failed to query ActiveTwo: ' + str(e))
+            raise RuntimeError('Failed to query ActiveTwo: ' + str(e))
 
         finally:
             self.disconnect()
@@ -195,7 +196,7 @@ class ActiveTwo(Source):
             self.connect()
 
             if bs.bs_start():
-                raise Exception('Failed to start ActiveTwo acquisition.')
+                raise RuntimeError('Failed to start ActiveTwo acquisition.')
 
         except Exception as e:
             self.disconnect()
@@ -203,7 +204,7 @@ class ActiveTwo(Source):
 
     def afterRun(self):
         if bs.bs_stop():
-            raise Exception('Failed to stop ActiveTwo acquisition.')
+            raise RuntimeError('Failed to stop ActiveTwo acquisition.')
 
         self.disconnect()
 
@@ -218,7 +219,7 @@ class ActiveTwo(Source):
         data = np.zeros((2*self.pollSize, 2+self.nDataChan+self.nAuxChan), dtype=np.float64)
 
         if bs.bs_poll(data.ctypes.data_as(ctypes.POINTER(ctypes.c_double))):
-            raise Exception('Failed to poll ActiveTwo.')
+            raise RuntimeError('Failed to poll ActiveTwo.')
 
         return data[::2,self.chanMask] # ::2 is a hack to downsample XXX - idfah
 

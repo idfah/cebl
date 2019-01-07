@@ -6,7 +6,7 @@ from cebl.util.clsm import *
 from . import label
 
 
-class Classifier(object):
+class Classifier:
     """Base class for classifiers.
     """
     def __init__(self, nIn, nCls):
@@ -84,7 +84,7 @@ class Classifier(object):
         elif method == 'union':
             return self.labelUnion(x, *args, **kwargs)
         else:
-            raise Exception('Unknown method.')
+            raise RuntimeError('Unknown method.')
 
     def labelSingle(self, x, *args, **kwargs):
         dv = self.discrim(x, *args, **kwargs)

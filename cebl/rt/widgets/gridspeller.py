@@ -1,9 +1,7 @@
 """Text-stimulus widgets that present text stimuli to the screen.
 """
 
-import copy
 import numpy as np
-import string
 import wx
 
 from cebl import util
@@ -13,16 +11,16 @@ from .wxgraphics import DrawablePanel
 
 grid = util.Holder()
 
-grid.enter = u'\u21B5'
-grid.back  = u'\u232B'
-grid.space = u'__'
-grid.upper = u'\u21E7'
-grid.lower = u'\u21E9'
-grid.ellip = u'\u2026'
-grid.left  = u'\u2190'
-grid.right = u'\u2192'
-grid.up    = u'\u2191'
-grid.down  = u'\u2193'
+grid.enter = '\u21B5'
+grid.back  = '\u232B'
+grid.space = '__'
+grid.upper = '\u21E7'
+grid.lower = '\u21E9'
+grid.ellip = '\u2026'
+grid.left  = '\u2190'
+grid.right = '\u2192'
+grid.up    = '\u2191'
+grid.down  = '\u2193'
 
 grid.num   = '123'
 grid.etc   = 'Etc'
@@ -37,10 +35,10 @@ class GridSpeller(DrawablePanel):
     """
 
     def __init__(self, parent, copyText='',
-                 gridColor=(120,120,120), highlightColor=(240,240,240),
-                 unhighlightColor=(40,40,40), selectColor=(255,102,0),
-                 copyColor=(255,0,0), feedColor=(255,255,0),
-                 gridFont=None, feedFont=None, *args, **kwargs):
+                 gridColor=(120, 120, 120), highlightColor=(240, 240, 240),
+                 unhighlightColor=(40, 40, 40), selectColor=(255, 102, 0),
+                 copyColor=(255, 0, 0), feedColor=(255, 255, 0),
+                 gridFont=None, feedFont=None, **kwargs):
         """Initialize a new GridSpeller widget.
 
         Args:
@@ -70,7 +68,7 @@ class GridSpeller(DrawablePanel):
                                 If None (default) then a default font will be
                                 chosen automatically.
 
-            args, kwargs:       Additional arguments passed to DrawablePanel
+            kwargs:             Additional arguments passed to DrawablePanel
                                 base class.
         """
         self.initDefaultFonts()
@@ -92,7 +90,7 @@ class GridSpeller(DrawablePanel):
 
         self.feedFont = feedFont
         if feedFont is None:
-                self.feedFont = self.defaultFeedFont
+            self.feedFont = self.defaultFeedFont
 
         self.feedText = ''
 
@@ -100,7 +98,7 @@ class GridSpeller(DrawablePanel):
         self.nRows, self.nCols = self.grid.shape
         self.marked = np.zeros_like(self.grid, dtype=np.int)
 
-        DrawablePanel.__init__(self, parent=parent, *args, **kwargs)
+        DrawablePanel.__init__(self, parent=parent, **kwargs)
 
     def initDefaultFonts(self):
         """Initialize default fonts.
@@ -176,11 +174,11 @@ class GridSpeller(DrawablePanel):
             self.refresh()
 
     def setGridEtc(self, refresh=True):
-        self.grid = np.array([['Esc',  ')',    '~',   '[',    'Hom', '|'],
-                              ['Tab',  '(',    'Ins', ']',    'End', '/'],
-                              ['Ctl',  '}',    'Del', '<',   'Pgu',  '\\'],
-                              ['Alt',  '{',    'Win', '>',   'Pgd',  '\''],
-                              [grid.left, grid.right, grid.up, grid.down, '`',   '\"'],
+        self.grid = np.array([['Esc', ')', '~',   '[', 'Hom', '|'],
+                              ['Tab', '(', 'Ins', ']', 'End', '/'],
+                              ['Ctl', '}', 'Del', '<', 'Pgu', '\\'],
+                              ['Alt', '{', 'Win', '>', 'Pgd', '\''],
+                              [grid.left, grid.right, grid.up, grid.down, '`', '\"'],
                               [grid.lower, grid.num, grid.upper, grid.sym, grid.back, grid.enter]])
 
         self.gridLayout = grid.etc
@@ -189,11 +187,11 @@ class GridSpeller(DrawablePanel):
             self.refresh()
 
     def setGridSym(self, refresh=True):
-        self.grid = np.array([[ u'\U0001F44D', u'\U0001F4D6',  u'\U0001F60C', u'\U0001F615', u'\U0001F60E', u'\u2615'    ],
-                              [ u'\U0001F44E', u'\U0001F4FA',  u'\U0001F603', u'\U0001F61C', u'\u26C8',     u'\U0001F354'],
-                              [ u'\u267F',     u'\u260E',      u'\U0001F61E', u'\U0001F622', u'\u263C',     u'\U0001F355'],
-                              [ u'\u266B',     u'\u26A0',      u'\U0001F620', u'\U0001F60D', u'\U0001F319', u'\U0001F36D'],
-                              [ u'\U0001F3AE',  u'\U0001F48A', u'\U0001F62E', u'\U0001F607', u'\U0001F320', u'\U0001F377'],
+        self.grid = np.array([['\U0001F44D', '\U0001F4D6', '\U0001F60C', '\U0001F615', '\U0001F60E', '\u2615'    ],
+                              ['\U0001F44E', '\U0001F4FA', '\U0001F603', '\U0001F61C', '\u26C8',     '\U0001F354'],
+                              ['\u267F',     '\u260E',     '\U0001F61E', '\U0001F622', '\u263C',     '\U0001F355'],
+                              ['\u266B',     '\u26A0',     '\U0001F620', '\U0001F60D', '\U0001F319', '\U0001F36D'],
+                              ['\U0001F3AE', '\U0001F48A', '\U0001F62E', '\U0001F607', '\U0001F320', '\U0001F377'],
                               [grid.lower, grid.num, grid.etc, grid.upper, grid.back, grid.enter]], dtype=np.unicode)
 
         self.gridLayout = grid.sym
@@ -205,7 +203,8 @@ class GridSpeller(DrawablePanel):
         return self.grid[row,col]
 
     def getGridLocation(self, symbol):
-        return np.where(self.grid == unicode(symbol))
+        #return np.where(self.grid == unicode(symbol))
+        return np.where(self.grid == symbol)
 
     def getCopyColor(self):
         return self.copyColor
@@ -265,7 +264,7 @@ class GridSpeller(DrawablePanel):
             symbol:   A string or instruction.
         """
         if symbol is None:
-            return
+            return False
 
         isText = False
 
@@ -393,7 +392,7 @@ class GridSpeller(DrawablePanel):
         if how.shape == self.marked.shape:
             self.marked = how.copy()
         else:
-            raise Exception('Shape of how %s does not match grid shape %s.' %\
+            raise RuntimeError('Shape of how %s does not match grid shape %s.' %\
                             (str(how.show), str(self.marked.shape)))
 
         if refresh:
@@ -430,15 +429,15 @@ class GridSpeller(DrawablePanel):
 
         # figuring out what is the y-offset for the grid of symbols
         yOffset = self.winHeight*32/340.0
-        if len(self.copyText) == 0:
+        if not self.copyText:
             yOffset = self.winHeight * 14/340.0
 
         # figuring out the distances between each symbol horizontaly and vertically
         dx = (self.winWidth+0.0)/(self.nCols+1)
         dy = (self.winHeight-yOffset)/(self.nRows+1)
 
-        for i in xrange(self.nRows):
-            for j in xrange(self.nCols):
+        for i in range(self.nRows):
+            for j in range(self.nCols):
                 # select the color and font for the next symbol
                 mark = self.marked[i,j]
 
@@ -457,7 +456,7 @@ class GridSpeller(DrawablePanel):
                     self.gridFont.SetWeight(wx.FONTWEIGHT_BOLD)
 
                 else:
-                    raise Exception('Invalid mark value %d.' % mark)
+                    raise RuntimeError('Invalid mark value %d.' % mark)
 
                 dc.SetFont(self.gridFont)
 
@@ -479,7 +478,7 @@ class GridSpeller(DrawablePanel):
             dc:     wx.DC drawing context.  Calling the methods of dc will
                     modify the drawing accordingly.
         """
-        if len(self.copyText) == 0:
+        if not self.copyText:
             return
 
         dx = (self.winWidth+0.0)/(self.nCols+1)
@@ -487,9 +486,9 @@ class GridSpeller(DrawablePanel):
         dc.SetFont(self.feedFont)
         dc.SetTextForeground(self.copyColor)
 
-        #dc.DrawText(self.copyText, dx*0.7,4)
+        #dc.DrawText(self.copyText, dx*0.7, 4)
         cornerWidth, cornerHeight = dc.GetTextExtent(self.grid[0,0])
-        dc.DrawText(self.copyText, dx-cornerWidth/2.0,4)
+        dc.DrawText(self.copyText, dx-cornerWidth/2.0, 4)
 
     def drawFeed(self, dc):
         """Draw the feedback message.
@@ -503,7 +502,7 @@ class GridSpeller(DrawablePanel):
 
         yOffset = 27*self.winHeight/340.0
 
-        if len(self.copyText) == 0:
+        if not self.copyText:
             yOffset = 4
 
         dx = (self.winWidth+0.0)/(self.nCols+1)
@@ -511,6 +510,6 @@ class GridSpeller(DrawablePanel):
         dc.SetFont(self.feedFont)
         dc.SetTextForeground(self.feedColor)
 
-        #dc.DrawText(self.feedText,dx*0.7, yOffset)
+        #dc.DrawText(self.feedText, dx*0.7, yOffset)
         cornerWidth, cornerHeight = dc.GetTextExtent(self.grid[0,0])
-        dc.DrawText(self.feedText,dx-cornerWidth/2.0, yOffset)
+        dc.DrawText(self.feedText, dx-cornerWidth/2.0, yOffset)

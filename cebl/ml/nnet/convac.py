@@ -32,7 +32,7 @@ class ConvolutionalNetworkAccum(Classifier, optim.Optable):
         self.nHidden = nHidden
 
         self.layerDims = [(self.nIn*self.convWidths[0]+1, self.nConvHiddens[0]),]
-        for l in xrange(1, self.nConvLayers):
+        for l in range(1, self.nConvLayers):
             ni = self.nConvHiddens[l-1] * self.convWidths[l] + 1
             no = self.nConvHiddens[l]
             self.layerDims.append((ni, no))
@@ -52,7 +52,7 @@ class ConvolutionalNetworkAccum(Classifier, optim.Optable):
             self.initLanczos(filtOrder)
 
         elif not self.poolMethod in ('stride', 'average'):
-            raise Exception('Invalid poolMethod %s.' % str(self.poolMethod))
+            raise RuntimeError('Invalid poolMethod %s.' % str(self.poolMethod))
 
         self.transFunc = transFunc if util.isiterable(transFunc) \
                 else (transFunc,) * (len(self.layerDims)-1)
@@ -101,7 +101,7 @@ class ConvolutionalNetworkAccum(Classifier, optim.Optable):
         self.filtOrder = filtOrder
 
         if self.filtOrder % 2 != 0:
-             raise Exception('Invalid filtOrder: ' + str(self.filtOrder) +
+             raise RuntimeError('Invalid filtOrder: ' + str(self.filtOrder) +
                  ' Must be an even integer.')
 
         radius = self.filtOrder // 2
@@ -245,7 +245,7 @@ class ConvolutionalNetworkAccum(Classifier, optim.Optable):
             return votes.sum(axis=1)
 
         else:
-            raise Exception('Invalid discrim accum method: ' + str(accum))
+            raise RuntimeError('Invalid discrim accum method: ' + str(accum))
 
     def probs(self, x, squash='softmax', accum='prod'):
         x = util.segmat(x)
@@ -268,7 +268,7 @@ class ConvolutionalNetworkAccum(Classifier, optim.Optable):
             return dv / dv.sum(axis=1)[:,None]
 
         else:
-            raise Exception('Invalid probs squash method: ' + str(squash))
+            raise RuntimeError('Invalid probs squash method: ' + str(squash))
 
     def penaltyError(self):
         if self.penalty is None:
@@ -422,7 +422,7 @@ class ConvolutionalNetworkAccum(Classifier, optim.Optable):
             delta = util.segdot(delta, self.hw[:-1].T)
 
         # backward pass for convolutional layers
-        for l in xrange(self.nConvLayers-1, -1, -1):
+        for l in range(self.nConvLayers-1, -1, -1):
             c1 = c1s[l]
             cPrime = cPrimes[l]
             poolSize = self.poolSize[l]
@@ -489,11 +489,11 @@ def demoCNA():
     def gauss_map(n, a=0.62, b=-0.5):
         v = np.empty(n)
         v[0] = np.random.uniform(0.05, 0.15)
-        for i in xrange(1,n):
+        for i in range(1,n):
             v[i] = np.exp(-a*v[i-1]**2) + b
         return v
-    ###s1 = np.vstack([gauss_map(len(x), a=6.2) for i in xrange(ns)])[:,:,None]
-    ###s2 = np.vstack([gauss_map(len(x), a=6.0) for i in xrange(ns)])[:,:,None]
+    ###s1 = np.vstack([gauss_map(len(x), a=6.2) for i in range(ns)])[:,:,None]
+    ###s2 = np.vstack([gauss_map(len(x), a=6.0) for i in range(ns)])[:,:,None]
 
     if False:
         x = np.linspace(0.0, 6*np.pi, 256)
@@ -545,10 +545,10 @@ def demoCNA():
         trainData = [s1[:(ns//2)], s2[:(ns//2)]]
         testData = [s1[(ns//2):], s2[(ns//2):]]
 
-    print s1.shape
-    print s2.shape
+    print(s1.shape)
+    print(s2.shape)
 
-    print trainData[0].shape, trainData[1].shape
+    print(trainData[0].shape, trainData[1].shape)
 
     standardizer = stand.ClassSegStandardizer(trainData)
     trainData = standardizer.apply(trainData)
@@ -562,24 +562,24 @@ def demoCNA():
                  #optimFunc=optim.sciopt, method='Powell', maxIter=1000)
                  precision=1.0e-10, accuracy=0.0, pTrace=True, eTrace=True)
 
-    print 'Training Performance:'
-    print '======='
-    print 'Labels: ', model.labelKnown(trainData)
-    print 'ProbsA: ', model.probs(trainData[0])
-    print 'ProbsB: ', model.probs(trainData[1])
-    print 'CA:     ', model.ca(trainData)
-    print 'BCA:    ', model.bca(trainData)
-    print 'AUC:    ', model.auc(trainData)
-    print
-    print 'Test Performance:'
-    print '======='
-    print 'Labels: ', model.labelKnown(testData)
-    print 'ProbsA: ', model.probs(testData[0])
-    print 'ProbsB: ', model.probs(testData[1])
-    print 'CA:     ', model.ca(testData)
-    print 'BCA:    ', model.bca(testData)
-    print 'AUC:    ', model.auc(testData)
-    print
+    print('Training Performance:')
+    print('=======')
+    print('Labels: ', model.labelKnown(trainData))
+    print('ProbsA: ', model.probs(trainData[0]))
+    print('ProbsB: ', model.probs(trainData[1]))
+    print('CA:     ', model.ca(trainData))
+    print('BCA:    ', model.bca(trainData))
+    print('AUC:    ', model.auc(trainData))
+    print()
+    print('Test Performance:')
+    print('=======')
+    print('Labels: ', model.labelKnown(testData))
+    print('ProbsA: ', model.probs(testData[0]))
+    print('ProbsB: ', model.probs(testData[1]))
+    print('CA:     ', model.ca(testData))
+    print('BCA:    ', model.bca(testData))
+    print('AUC:    ', model.auc(testData))
+    print()
 
     fig = plt.figure(figsize=(20,6))
     axSigs = fig.add_subplot(3,3, 1)
@@ -603,7 +603,7 @@ def demoCNA():
 
     cs1 = model.evalConvs(trainData[0])
     cs2 = model.evalConvs(trainData[1])
-    #for i in xrange(model.nConvLayers):
+    #for i in range(model.nConvLayers):
     for i in (0,1):
         axConvs = fig.add_subplot(3,3, 4+i)
         c1 = cs1[i][0,:,:]
@@ -626,7 +626,7 @@ def demoCNA():
     axProbs.plot(p1, color='blue', linewidth=2)
     axProbs.plot(p2, color='red', linewidth=2)
 
-    print 'nParams: ', model.parameters().size
+    print('nParams: ', model.parameters().size)
 
     #for l,cw in enumerate(model.cws):
     #    plt.figure()

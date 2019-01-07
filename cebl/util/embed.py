@@ -1,7 +1,8 @@
+"""Sliding windows and time-delay embedding.
+"""
+
 import numpy as np
 import numpy.lib.stride_tricks as npst
-
-from .arr import colmat
 
 
 def slidingWindow(s, span, stride=None, axis=0):
@@ -51,14 +52,14 @@ def timeEmbed(s, lags=1, stride=1, axis=0):
         if axis == -1:
             axis = 1
         if axis == 1:
-            s = s.reshape((1,-1))
+            s = s.reshape((1, -1))
         elif axis == 0:
-            s = s.reshape((-1,1))
+            s = s.reshape((-1, 1))
 
     emb = slidingWindow(s, span=lags+1, stride=stride, axis=axis)
 
     # wrap negative axes
-    if axis < 0 and axis >= -s.ndim:
+    if 0 > axis >= -s.ndim:
         axis = axis % s.ndim
 
     # if last axis then wrap back

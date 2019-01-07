@@ -4,7 +4,7 @@ from cebl import util
 from cebl.util.errm import *
 
 
-class Regression(object):
+class Regression:
     def __init__(self, nIn, nOut):
         self.nIn = nIn
         self.nOut = nOut

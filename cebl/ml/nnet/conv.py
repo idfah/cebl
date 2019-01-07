@@ -33,14 +33,14 @@ class ConvolutionalNetwork(Classifier, optim.Optable):
 
         self.poolMethod = poolMethod.lower()
         if not self.poolMethod in ('stride', 'average'):
-            raise Exception('Invalid poolMethod %s.' % str(self.poolMethod))
+            raise RuntimeError('Invalid poolMethod %s.' % str(self.poolMethod))
 
         self.poolSize = poolSize if util.isiterable(poolSize) \
                 else (poolSize,) * self.nConvLayers
         assert len(self.poolSize) == self.nConvLayers
 
         self.layerDims = [(self.nIn*self.convWidths[0]+1, self.nConvHiddens[0]),]
-        for l in xrange(1, self.nConvLayers):
+        for l in range(1, self.nConvLayers):
             ni = self.nConvHiddens[l-1] * self.convWidths[l] + 1
             no = self.nConvHiddens[l]
             self.layerDims.append((ni, no))
@@ -299,7 +299,7 @@ class ConvolutionalNetwork(Classifier, optim.Optable):
         widths = list(self.convWidths[1:]) + [None,]
 
         # backward pass for convolutional layers
-        for l in xrange(self.nConvLayers-1, -1, -1):
+        for l in range(self.nConvLayers-1, -1, -1):
             c1 = c1s[l]
             cPrime = cPrimes[l]
             poolSize = self.poolSize[l]
@@ -351,11 +351,11 @@ def demoCN():
     def gauss_map(n, a=0.62, b=-0.5):
         v = np.empty(n)
         v[0] = np.random.uniform(0.05, 0.15)
-        for i in xrange(1,n):
+        for i in range(1,n):
             v[i] = np.exp(-a*v[i-1]**2) + b
         return v
-    ###s1 = np.vstack([gauss_map(len(x), a=6.2) for i in xrange(ns)])[:,:,None]
-    ###s2 = np.vstack([gauss_map(len(x), a=6.0) for i in xrange(ns)])[:,:,None]
+    ###s1 = np.vstack([gauss_map(len(x), a=6.2) for i in range(ns)])[:,:,None]
+    ###s2 = np.vstack([gauss_map(len(x), a=6.0) for i in range(ns)])[:,:,None]
 
     if False:
         x = np.linspace(0.0, 6*np.pi, 256)
@@ -411,10 +411,10 @@ def demoCN():
         #trainData = [s1[::2], s2[::2]]
         #testData = [s1[1::2], s2[1::2]]
 
-    print s1.shape
-    print s2.shape
+    print(s1.shape)
+    print(s2.shape)
 
-    print trainData[0].shape, trainData[1].shape
+    print(trainData[0].shape, trainData[1].shape)
 
     standardizer = stand.ClassSegStandardizer(trainData)
     trainData = standardizer.apply(trainData)
@@ -425,20 +425,20 @@ def demoCN():
                optimFunc=optim.scg, maxIter=1000, transFunc=transfer.lecun,
                precision=1.0e-16, accuracy=0.0, pTrace=True, eTrace=True)
 
-    print 'Training Performance:'
-    print '======='
-    print 'Labels: ', model.labelKnown(trainData)
-    print 'CA:     ', model.ca(trainData)
-    print 'BCA:    ', model.bca(trainData)
-    print 'AUC:    ', model.auc(trainData)
-    print
-    print 'Test Performance:'
-    print '======='
-    print 'Labels: ', model.labelKnown(testData)
-    print 'CA:     ', model.ca(testData)
-    print 'BCA:    ', model.bca(testData)
-    print 'AUC:    ', model.auc(testData)
-    print
+    print('Training Performance:')
+    print('=======')
+    print('Labels: ', model.labelKnown(trainData))
+    print('CA:     ', model.ca(trainData))
+    print('BCA:    ', model.bca(trainData))
+    print('AUC:    ', model.auc(trainData))
+    print()
+    print('Test Performance:')
+    print('=======')
+    print('Labels: ', model.labelKnown(testData))
+    print('CA:     ', model.ca(testData))
+    print('BCA:    ', model.bca(testData))
+    print('AUC:    ', model.auc(testData))
+    print()
 
     nCol = max(model.nConvLayers, 3)
 
@@ -464,7 +464,7 @@ def demoCN():
 
     cs1 = model.evalConvs(trainData[0])
     cs2 = model.evalConvs(trainData[1])
-    for i in xrange(model.nConvLayers):
+    for i in range(model.nConvLayers):
         axConvs = fig.add_subplot(3,nCol, nCol+1+i)
         c1 = cs1[i][0,:,:]
         c2 = cs2[i][0,:,:]
@@ -479,7 +479,7 @@ def demoCN():
         responses = np.array(responses)
         axRespon.plot(freqs.T, np.abs(responses).T)
 
-    print 'nParams: ', model.parameters().size
+    print('nParams: ', model.parameters().size)
 
     #for l,cw in enumerate(model.cws):
     #    plt.figure()

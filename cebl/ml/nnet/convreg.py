@@ -33,7 +33,7 @@ class ConvolutionalNetworkRegression(Regression, optim.Optable):
         self.nHidden = nHidden
 
         self.layerDims = [(self.nIn*self.convWidths[0]+1, self.nConvHiddens[0]),]
-        for l in xrange(1, self.nConvLayers):
+        for l in range(1, self.nConvLayers):
             ni = self.nConvHiddens[l-1] * self.convWidths[l] + 1
             no = self.nConvHiddens[l]
             self.layerDims.append((ni, no))
@@ -259,7 +259,7 @@ class ConvolutionalNetworkRegression(Regression, optim.Optable):
             delta = util.segdot(delta, self.hw[:-1].T)
 
         # backward pass for convolutional layers
-        for l in xrange(self.nConvLayers-1, -1, -1):
+        for l in range(self.nConvLayers-1, -1, -1):
             c1 = c1s[l]
             cPrime = cPrimes[l]
 
@@ -311,7 +311,7 @@ def demoCNR():
     xTest = x[:ns2]
     gTest = g[:ns2]
 
-    print x.shape, g.shape
+    print(x.shape, g.shape)
 
     #model = CNR(x=xTrain, g=gTrain, convs=((1,11),(1,9),(1,7)), nHidden=None,
     #            optimFunc=optim.scg, maxIter=100, transFunc=transfer.linear,
@@ -321,7 +321,7 @@ def demoCNR():
                 precision=1.0e-7, accuracy=0.0, pTrace=True, eTrace=True, verbose=True)
 
     yTest = model.eval(xTest)
-    print yTest.shape, yTest.dtype
+    print(yTest.shape, yTest.dtype)
 
     trim = (len(t) - yTest.shape[1]) // 2
     tTrim = t[:(len(t)-trim)]
@@ -349,7 +349,7 @@ def demoCNR():
     axPTrace.plot(pTrace)
 
     cs = model.evalConvs(xTest)
-    for i in xrange(model.nConvLayers):
+    for i in range(model.nConvLayers):
         axConvs = fig.add_subplot(model.nConvLayers,3, 4+i)
         c = cs[i][0,:,:]
         axConvs.plot(c+util.colsep(c), color='blue', linewidth=2, alpha=0.25)
@@ -362,7 +362,7 @@ def demoCNR():
         #responses = np.array(responses)
         #axRespon.plot(freqs.T, np.abs(responses).T)
 
-    print 'nParams: ', model.parameters().size
+    print('nParams: ', model.parameters().size)
 
     fig.tight_layout()
 

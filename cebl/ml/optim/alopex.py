@@ -100,7 +100,7 @@ def alopex(optable, stepSize=0.0075, tempInit=10000, tempIter=20,
     iteration = 0
 
     if verbose:
-        print '%d %6f' % (iteration, error)
+        print('%d %6f' % (iteration, error))
 
     if callback is not None:
         callback(optable, iteration, paramTrace, errorTrace)
@@ -130,7 +130,7 @@ def alopex(optable, stepSize=0.0075, tempInit=10000, tempIter=20,
         iteration += 1
 
         if verbose:
-            print '%d %6f' % (iteration, error)
+            print('%d %6f' % (iteration, error))
 
         if callback is not None:
             callback(optable, iteration, paramTrace, errorTrace)
@@ -184,14 +184,14 @@ def alopex(optable, stepSize=0.0075, tempInit=10000, tempIter=20,
             corrRun = 0.0
 
             if verbose:
-                print 'Cooling: %f' % temp
+                print('Cooling: %f' % temp)
 
         # probability of taking negative step
         # is drawn from the Boltzman Distribution
         probs[...] = 1.0 / util.capZero(1.0 + np.exp(-corr/temp))
 
     if verbose:
-        print reason
+        print(reason)
 
     # save result into a dictionary
     result = {}
@@ -294,7 +294,7 @@ def alopexb(optable, stepSize=0.005, forgetFactor=0.5,
     iteration = 0
 
     if verbose:
-        print '%d %6f' % (iteration, error)
+        print('%d %6f' % (iteration, error))
 
     if callback is not None:
         callback(optable, iteration, paramTrace, errorTrace)
@@ -324,7 +324,7 @@ def alopexb(optable, stepSize=0.005, forgetFactor=0.5,
         iteration += 1
 
         if verbose:
-            print '%d %6f' % (iteration, error)
+            print('%d %6f' % (iteration, error))
 
         if callback is not None:
             callback(optable, iteration, paramTrace, errorTrace)
@@ -371,7 +371,7 @@ def alopexb(optable, stepSize=0.005, forgetFactor=0.5,
         probs[...] = 1.0 / util.capZero(1.0 + np.exp(-corr/corrRun))
 
     if verbose:
-        print reason
+        print(reason)
 
     # save result into a dictionary
     result = {}

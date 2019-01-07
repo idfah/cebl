@@ -412,7 +412,7 @@ class PieERN(StandardBCIPage):
 
     def trainClassifier(self):
         if self.trainCap is None:
-            raise Exception('No data available for training.')
+            raise RuntimeError('No data available for training.')
 
         dialog = wx.ProgressDialog('Training Classifier',
                     'Featurizing', maximum=self.nFold+1,
@@ -424,26 +424,26 @@ class PieERN(StandardBCIPage):
 
         assert segs[0].getNSeg() == self.nTrainTrial
 
-        ##print 'nSegs:'
+        ##print('nSegs:')
         ##for sg in segs:
-        ##    print sg.getNSeg(), sg.data.shape
+        ##    print(sg.getNSeg(), sg.data.shape)
 
         freqs, trainData = self.powerize(segs)
 
         self.plotPanel.plotFeatures(trainData, freqs, self.choices,
                                     self.trainCap.getChanNames())
 
-        ##print trainData[0].mean(axis=0)
-        ##print trainData[0].mean(axis=0).shape
-        ##print trainData[1].mean(axis=0)
-        ##print trainData[1].mean(axis=0).shape
+        ##print(trainData[0].mean(axis=0))
+        ##print(trainData[0].mean(axis=0).shape)
+        ##print(trainData[1].mean(axis=0))
+        ##print(trainData[1].mean(axis=0).shape)
 
         if self.classifierKind == 'lda':
             self.trainLDA(trainData, dialog)
         elif self.classifierKind == 'nn':
             self.trainNN(trainData, dialog)
         else:
-            raise Exception('Invalid classifier kind: %s.' % str(self.classifierKind))
+            raise RuntimeError('Invalid classifier kind: %s.' % str(self.classifierKind))
 
         self.plotPanel.showPieMenu()
 
@@ -583,9 +583,9 @@ class PieERN(StandardBCIPage):
 
         assert segs.getNSeg() == 1
 
-        ##print 'test nSeg: ', segs.nSeg
-        ##print segs.data.shape
-        ##print ''
+        ##print('test nSeg: ', segs.nSeg)
+        ##print(segs.data.shape)
+        ##print('')
 
         freqs, testData = self.powerize((segs,))
 

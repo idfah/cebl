@@ -1,20 +1,20 @@
 """Self-organizing map.
 """
+import time
 
 import matplotlib.pyplot as plt
 import numpy as np
 import scipy.spatial.distance as spdist
-import time
 
 from cebl import util
 
 
-class SelfOrganizingMap(object):
+class SelfOrganizingMap:
     """Self-Organizing Map (SOM).
     """
-    def __init__(self, x, latticeSize=(64,64), maxIter=5000,
+    def __init__(self, x, latticeSize=(64, 64), maxIter=5000,
                  distMetric='euclidean', learningRate=0.02, learningRateFinal=None,
-                 radius=None, radiusFinal=None, weightRange=(0.0,1.0),
+                 radius=None, radiusFinal=None, weightRange=(0.0, 1.0),
                  callback=None, verbose=False):
         """Construct a new Self-Organizing Map (SOM).
 
@@ -52,9 +52,9 @@ class SelfOrganizingMap(object):
 
         # should support generic neighborhood function? XXX - idfah
         def neighborFunc(grid, center, sigma):
-            # grid: (ls,ls,2)
-            # center: (ns,2)
-            # return: (ns,ls,ls)
+            # grid: (ls, ls, 2)
+            # center: (ns, 2)
+            # return: (ns, ls, ls)
             sumSqrs = np.power(grid - center, 2.0).sum(axis=-1)
             return np.exp(-sumSqrs / (2.0*sigma**2))
         self.neighborFunc = neighborFunc
@@ -106,7 +106,7 @@ class SelfOrganizingMap(object):
         if self.callback is not None:
             self.callback(0, self.weights, self.learningRate, self.radius)
 
-        for iteration in xrange(1,self.maxIter+1):
+        for iteration in range(1, self.maxIter+1):
             curObs = x[np.random.randint(0, nObs)]
 
             curLearningRate = self.learningRate + self.learningRateDecay * iteration
@@ -120,7 +120,7 @@ class SelfOrganizingMap(object):
                 neighborHood[...,None] * (curObs[None,None,:] - self.weights)
 
             if self.verbose:
-                print '%d %.3f %.3f' % (iteration, curLearningRate, curRadius)
+                print('%d %.3f %.3f' % (iteration, curLearningRate, curRadius))
 
             if self.callback is not None:
                 self.callback(iteration, self.weights, curLearningRate, curRadius)
@@ -129,35 +129,35 @@ class SOM(SelfOrganizingMap):
     pass
 
 def demoSOM():
-    #data = np.random.random((5000,3))
+    #data = np.random.random((5000, 3))
     #data =  np.array(
-    #    ((1.0,0.0,0.0),
-    #     (0.0,1.0,0.0),
-    #     (0.0,0.0,1.0),
-    #     (1.0,1.0,0.0),
-    #     (1.0,0.0,1.0),
-    #     (0.0,1.0,1.0),
-    #     (1.0,1.0,1.0),
-    #     (0.0,0.0,0.0)))
+    #    ((1.0, 0.0, 0.0),
+    #     (0.0, 1.0, 0.0),
+    #     (0.0, 0.0, 1.0),
+    #     (1.0, 1.0, 0.0),
+    #     (1.0, 0.0, 1.0),
+    #     (0.0, 1.0, 1.0),
+    #     (1.0, 1.0, 1.0),
+    #     (0.0, 0.0, 0.0)))
 
     n = 1000
-    v = np.random.uniform(0.85, 1.0, size=(12,n))
+    v = np.random.uniform(0.85, 1.0, size=(12, n))
     z = np.zeros(n)
 
     data = np.vstack((
-        np.array((v[0], z,    z   )).T,
-        np.array((z,    v[1], z   )).T,
-        np.array((z,    z,    v[2])).T,
-        np.array((v[3], v[4], z   )).T,
-        np.array((v[5], z,    v[6])).T,
-        np.array((z,    v[7], v[8])).T,
-        np.array((v[9], v[10],v[11])).T))
-        #np.array((z,    z,    z   )).T))
+        np.array((v[0], z,     z   )).T,
+        np.array((z,    v[1],  z   )).T,
+        np.array((z,    z,     v[2])).T,
+        np.array((v[3], v[4],  z   )).T,
+        np.array((v[5], z,     v[6])).T,
+        np.array((z,    v[7],  v[8])).T,
+        np.array((v[9], v[10], v[11])).T))
+        #np.array((z,    z,     z   )).T))
 
     def animFunc(iteration, weights, learningRate, radius):
         if iteration == 0:
-            animFunc.fig = plt.figure(figsize=(10,10))
-            animFunc.ax = animFunc.fig.add_subplot(1,1,1)
+            animFunc.fig = plt.figure(figsize=(10, 10))
+            animFunc.ax = animFunc.fig.add_subplot(1, 1, 1)
             animFunc.wimg = animFunc.ax.imshow(weights,
                     interpolation='none', origin='lower', animated=True)
 
@@ -180,14 +180,9 @@ def demoSOM():
             plt.savefig('frame-%04d.png' % animFunc.frame, dpi=200)
             animFunc.frame += 1
 
-    som = SOM(data, latticeSize=(32,32), maxIter=20000,
+    som = SOM(data, latticeSize=(32, 32), maxIter=20000,
               radius=16, radiusFinal=0.05, learningRate=0.05, learningRateFinal=0.005,
               callback=animFunc, verbose=True)
-
-    rgb = np.vstack((
-        np.array((1.0, 0.0, 0.0)),
-        np.array((0.0, 1.0, 0.0)),
-        np.array((0.0, 0.0, 1.0))))
 
     #bindex = np.vstack((
     #    som.getBMUIndices(r),
@@ -203,7 +198,7 @@ def demoSOM():
 
     animFunc.ax.set_xlim(xlim)
     animFunc.ax.set_ylim(ylim)
-    
+
 if __name__ == '__main__':
     demoSOM()
     plt.show()

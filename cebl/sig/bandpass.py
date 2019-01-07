@@ -2,12 +2,12 @@ import matplotlib.pyplot as plt
 import numpy as np
 import scipy.signal as spsig
 
-from . import windows
-
 from cebl import util
 
+from . import windows
 
-class BandpassFilterBase(object):
+
+class BandpassFilterBase:
     """Base class for all bandpass filters.
     This class must be extended in order to construct an actual filter.
     """
@@ -33,24 +33,24 @@ class BandpassFilterBase(object):
         """
         self.dtype = dtype
 
-        self.lowFreq   = lowFreq
-        self.highFreq  = highFreq
-        self.sampRate  = sampRate
+        self.lowFreq = lowFreq
+        self.highFreq = highFreq
+        self.sampRate = sampRate
 
         self.nyquist = sampRate * 0.5
 
         self.low = lowFreq / self.nyquist
         if self.low > 1.0:
-            raise Exception('Invalid lowFreq: ' + str(lowFreq) + '. Above nyquist rate.')
+            raise RuntimeError('Invalid lowFreq: ' + str(lowFreq) + '. Above nyquist rate.')
         if self.low < 0.0:
-            raise Exception('Invalid lowFreq: ' + str(lowFreq) + '. Not positive.')
+            raise RuntimeError('Invalid lowFreq: ' + str(lowFreq) + '. Not positive.')
 
         self.high = highFreq / self.nyquist
         if self.high != np.Inf:
             if self.high > 1.0:
-                raise Exception('Invalid highFreq: ' + str(highFreq) + '. Above nyquist rate.')
+                raise RuntimeError('Invalid highFreq: ' + str(highFreq) + '. Above nyquist rate.')
             if self.high < 0.0:
-                raise Exception('Invalid highFreq: ' + str(highFreq) + '. Not positive.')
+                raise RuntimeError('Invalid highFreq: ' + str(highFreq) + '. Not positive.')
 
         if np.isclose(self.low, 0.0) and self.high == np.inf:
             self.bandType = 'allpass'
@@ -65,16 +65,16 @@ class BandpassFilterBase(object):
         elif self.low > 0.0 and self.high != np.Inf and self.high < self.low:
             self.bandType = 'bandstop'
         else:
-            raise Exception('Invalid filter corners: ' +
+            raise RuntimeError('Invalid filter corners: ' +
                     str(lowFreq) + ', ' + str(highFreq) + '.')
 
     def frequencyResponse(self, freqs=None):
-        raise NotImplementedException('frequencyResponse not implemented.')
+        raise NotImplementedError('frequencyResponse not implemented.')
 
     def filter(self, s, axis=0):
-        raise NotImplementedException('filter not implemented.')
+        raise NotImplementedError('filter not implemented.')
 
-    def plotFreqResponse(self, freqs=None, scale='linear', 
+    def plotFreqResponse(self, freqs=None, scale='linear',
                          showCorners=True,
                          label='Frequency Response',
                          ax=None, **kwargs):
@@ -82,7 +82,7 @@ class BandpassFilterBase(object):
         """
         if ax is None:
             fig = plt.figure()
-            ax = fig.add_subplot(1,1,1)
+            ax = fig.add_subplot(1, 1, 1)
 
         freqs, responses = self.frequencyResponse(freqs=freqs)
         freqs = freqs * self.sampRate * 0.5 / np.pi
@@ -98,8 +98,8 @@ class BandpassFilterBase(object):
             responseMags = 10.0*np.log10(util.capZero(responseMags**2))
             ax.set_ylabel('Gain (dB)')
         else:
-            raise Exception('Invalid scale: ' + str(scale) + '.')
-        
+            raise RuntimeError('Invalid scale: ' + str(scale) + '.')
+
         lines = ax.plot(freqs, responseMags,
                         label=label, **kwargs)
 
@@ -127,7 +127,7 @@ class BandpassFilterBase(object):
                 color='orange', linestyle=':', label='Half Amplitude')
             result['halfAmpLines'] = halfAmpLines
 
-            cornerLines = ax.vlines((self.lowFreq,self.highFreq),
+            cornerLines = ax.vlines((self.lowFreq, self.highFreq),
                 mn, mx, color='violet', linestyle='--', label='Corners')
             result['cornerLines'] = cornerLines
 
@@ -144,7 +144,7 @@ class BandpassFilterBase(object):
         """
         if ax is None:
             fig = plt.figure()
-            ax = fig.add_subplot(1,1,1)
+            ax = fig.add_subplot(1, 1, 1)
 
         freqs, responses = self.frequencyResponse(freqs=freqs)
         freqs = freqs * self.sampRate * 0.5 / np.pi
@@ -160,7 +160,7 @@ class BandpassFilterBase(object):
             ax.set_ylabel('Phase (Degrees)')
             responseAngles = responseAngles*180.0 / np.pi
         else:
-            raise Exception('Invalid scale: ' + str(scale) + '.')
+            raise RuntimeError('Invalid scale: ' + str(scale) + '.')
 
         lines = ax.plot(freqs, responseAngles,
                         label=label, **kwargs)
@@ -168,7 +168,7 @@ class BandpassFilterBase(object):
         result = {'ax': ax, 'lines': lines}
 
         if showCorners:
-            cornerLines = ax.vlines((self.lowFreq,self.highFreq),
+            cornerLines = ax.vlines((self.lowFreq, self.highFreq),
                 np.min(responseAngles), np.max(responseAngles),
                 color='violet', linestyle='--', label='Corners')
             result['cornerLines'] = cornerLines
@@ -188,8 +188,8 @@ class BandpassFilterIIR(BandpassFilterBase):
         """
         BandpassFilterBase.__init__(self, lowFreq, highFreq, sampRate, dtype=dtype)
 
-        self.order     = order
-        self.filtType  = filtType.lower()
+        self.order = order
+        self.filtType = filtType.lower()
         self.zeroPhase = zeroPhase
 
         if self.bandType not in ('allpass', 'allstop'):
@@ -202,7 +202,7 @@ class BandpassFilterIIR(BandpassFilterBase):
             elif self.bandType == 'bandstop':
                 self.Wn = (self.high, self.low)
             else:
-                raise Exception('Invalid bandType: ' + str(self.bandType))
+                raise RuntimeError('Invalid bandType: ' + str(self.bandType))
 
             self.numCoef, self.denomCoef = spsig.iirfilter(order, self.Wn,
                 ftype=filtType, btype=self.bandType, **kwargs)
@@ -213,7 +213,8 @@ class BandpassFilterIIR(BandpassFilterBase):
             self.initZi()
 
     def initZi(self):
-        # lfilter_zi does not preserve dtype of arguments, bug that should  be reported XXX - idfah
+        # lfilter_zi does not preserve dtype of arguments,
+        # bug that should  be reported XXX - idfah
         # if above was fixed, use don't need astype below
         self.zi = spsig.lfilter_zi(self.numCoef, self.denomCoef).astype(self.dtype, copy=False)
 
@@ -239,11 +240,11 @@ class BandpassFilterIIR(BandpassFilterBase):
 
         numCoef = self.numCoef
         denomCoef = self.denomCoef
-        
+
         if self.zeroPhase:
             # http://www.mathworks.com/matlabcentral/newsreader/view_thread/245017
-            numCoef = np.convolve(numCoef,numCoef[::-1])
-            denomCoef = np.convolve(denomCoef,denomCoef[::-1])
+            numCoef = np.convolve(numCoef, numCoef[::-1])
+            denomCoef = np.convolve(denomCoef, denomCoef[::-1])
 
         # freqz does not preserve dtype of arguments, report bug XXX - idfah
         return spsig.freqz(numCoef, denomCoef, worN=freqs)
@@ -256,16 +257,15 @@ class BandpassFilterIIR(BandpassFilterBase):
         if self.bandType == 'allstop':
             return np.zeros_like(s)
 
-        """ Should be very close to filtfilt, padding? XXX - idfah
-        if self.zeroPhase:
-            rev = [slice(None),]*s.ndim
-            rev[axis] = slice(None,None,-1)
+        ## #Should be very close to filtfilt, padding? XXX - idfah
+        ## if self.zeroPhase:
+        ##     rev = [slice(None),]*s.ndim
+        ##     rev[axis] = slice(None, None, -1)
 
-            #ziScaled = self.scaleZi(s[rev], axis)
+        ##     #ziScaled = self.scaleZi(s[rev], axis)
 
-            y, newZi = spsig.lfilter(self.numCoef, self.denomCoef, s[rev], axis=axis, zi=newZi)
-            y = y[rev]
-        """
+        ##     y, newZi = spsig.lfilter(self.numCoef, self.denomCoef, s[rev], axis=axis, zi=newZi)
+        ##     y = y[rev]
 
         # if zeroPhase and signal is shorter than padlen (default in filtfilt function)
         if self.zeroPhase and \
@@ -280,8 +280,9 @@ class BandpassFilterIIR(BandpassFilterBase):
 
             # even padding to help reduce edge effects
             nPad = 3*max(len(self.numCoef), len(self.denomCoef))
-            sPad = np.apply_along_axis(np.pad, axis, s, pad_width=nPad, mode='reflect') # edge for constant padding
-            slc = [slice(nPad,-nPad) if i == axis else slice(None) for i in range(s.ndim)]
+            # XXX could use edge for constant padding?
+            sPad = np.apply_along_axis(np.pad, axis, s, pad_width=nPad, mode='reflect')
+            slc = [slice(nPad, -nPad) if i == axis else slice(None) for i in range(s.ndim)]
 
             y, newZi = spsig.lfilter(self.numCoef, self.denomCoef, sPad, axis=axis, zi=ziScaled)
 
@@ -289,8 +290,8 @@ class BandpassFilterIIR(BandpassFilterBase):
 
 class BandpassFilterIIRStateful(BandpassFilterIIR):
     def __init__(self, *args, **kwargs):
-        if ('zeroPhase' in kwargs) and (kwargs['zeroPhase'] == True):
-            raise Exception('Stateful IIR filter cannot have linear phase.')
+        if ('zeroPhase' in kwargs) and (kwargs['zeroPhase'] is True):
+            raise RuntimeError('Stateful IIR filter cannot have linear phase.')
 
         BandpassFilterIIR.__init__(self, *args, zeroPhase=False, **kwargs)
         self.ziSaved = False
@@ -307,27 +308,32 @@ class BandpassFilterIIRStateful(BandpassFilterIIR):
             self.zi = self.scaleZi(s, axis)
             self.ziSaved = True
 
-        y, self.zi = spsig.lfilter(nc, dc, s, axis=axis, zi=self.zi)
+        y, self.zi = spsig.lfilter(self.numCoef, self.denomCoef, s, axis=axis, zi=self.zi)
         return y
 
 def demoBandpassFilterIIR():
-    order =  5
+    order = 5
     sampRate = 256.0
     nyquist = sampRate / 2.0
     lowFreq = 1.5
     highFreq = 45.0
     zeroPhase = True
 
-    butter = BandpassFilter(lowFreq, highFreq, sampRate, order, filtType='butter', zeroPhase=zeroPhase)
-    #cheby1 = BandpassFilter(0.0, highFreq, sampRate, order, filtType='cheby1', rp=1.0, zeroPhase=zeroPhase)
-    cheby2 = BandpassFilter(lowFreq, highFreq, sampRate, order, filtType='cheby2', rs=20.0, zeroPhase=zeroPhase)
-    ellip  = BandpassFilter(lowFreq, highFreq, sampRate, order, filtType='ellip', rp=1.0, rs=20.0, zeroPhase=zeroPhase)
-    bessel = BandpassFilter(lowFreq, highFreq, sampRate, order, filtType='bessel', zeroPhase=zeroPhase)
+    butter = BandpassFilter(lowFreq, highFreq, sampRate, order,
+                            filtType='butter', zeroPhase=zeroPhase)
+    #cheby1 = BandpassFilter(0.0, highFreq, sampRate, order,
+    #                        filtType='cheby1', rp=1.0, zeroPhase=zeroPhase)
+    cheby2 = BandpassFilter(lowFreq, highFreq, sampRate, order,
+                            filtType='cheby2', rs=20.0, zeroPhase=zeroPhase)
+    ellip = BandpassFilter(lowFreq, highFreq, sampRate, order,
+                           filtType='ellip', rp=1.0, rs=20.0, zeroPhase=zeroPhase)
+    bessel = BandpassFilter(lowFreq, highFreq, sampRate, order,
+                            filtType='bessel', zeroPhase=zeroPhase)
 
-    fig = plt.figure(figsize=(18,10))
+    fig = plt.figure(figsize=(18, 10))
     fig.canvas.set_window_title('IIR Bandpass Filter Demo')
-    axLn = fig.add_subplot(2,2, 1)
-    axDb = fig.add_subplot(2,2, 2)
+    axLn = fig.add_subplot(2, 2, 1)
+    axDb = fig.add_subplot(2, 2, 2)
 
     for ax, scale in zip((axLn, axDb), ('linear', 'db')):
         butter.plotFreqResponse(showCorners=False, scale=scale, label='Butterworth', ax=ax, linewidth=2)
@@ -345,8 +351,8 @@ def demoBandpassFilterIIR():
     axDb.set_ylim((-100.0, 0.0))
     axDb.set_title('Power Response')
 
-    axPh = fig.add_subplot(2,2, 3)
-    scale='radians'
+    axPh = fig.add_subplot(2, 2, 3)
+    scale = 'radians'
     butter.plotPhaseResponse(showCorners=False, scale=scale, label='Butterworth', ax=axPh, linewidth=2)
     #cheby1.plotPhaseResponse(showCorners=False, scale=scale, label='Chebyshev-I', ax=axPh, linewidth=2)
     cheby2.plotPhaseResponse(showCorners=False, scale=scale, label='Chebyshev-II', ax=axPh, linewidth=2)
@@ -368,7 +374,7 @@ def demoBandpassFilterIIR():
     sep = -np.arange(0, 5)*2.0
     chirpAll = np.vstack((chirpButter, chirpCheby2, chirpEllip, chirpBessel, chirp)).T + sep
 
-    axCh = fig.add_subplot(2,2, 4)
+    axCh = fig.add_subplot(2, 2, 4)
     axCh.plot(f, chirpAll)
     axCh.vlines(lowFreq, 1, -9, color='violet', linestyle='--')
     axCh.vlines(highFreq, 1, -9, color='violet', linestyle='--')
@@ -393,12 +399,12 @@ class BandpassFilterFIR(BandpassFilterBase):
         BandpassFilterBase.__init__(self, lowFreq, highFreq, sampRate, dtype)
 
         if order % 2 != 0:
-            raise Exception('Invalid order: ' + str(order) +
+            raise RuntimeError('Invalid order: ' + str(order) +
                 ' Must be an even integer.')
 
         self.order = order
         self.radius = order//2
-        self.taps = np.linspace(-self.radius,self.radius, self.order+1)
+        self.taps = np.linspace(-self.radius, self.radius, self.order+1)
 
         self.filtType = filtType.lower()
         if self.filtType == 'lanczos':
@@ -410,7 +416,7 @@ class BandpassFilterFIR(BandpassFilterBase):
         elif self.filtType == 'sinc-hann':
             self.initImpulseResponse(windows.hann(self.order+1))
         else:
-            raise Exception('Invalid filtType: ' + str(filtType))
+            raise RuntimeError('Invalid filtType: ' + str(filtType))
 
     def initImpulseResponse(self, window):
         if self.bandType == 'allpass':
@@ -442,7 +448,7 @@ class BandpassFilterFIR(BandpassFilterBase):
                 windows.kroneckerDelta(self.order+1))
 
         else:
-            raise Exception('Invalid bandType: ' + str(self.bandType))
+            raise RuntimeError('Invalid bandType: ' + str(self.bandType))
 
         self.impulseResponse = self.impulseResponse.astype(self.dtype, copy=False)
 
@@ -451,7 +457,7 @@ class BandpassFilterFIR(BandpassFilterBase):
 
     def filter(self, s, axis=0, mode='same'):
         return np.apply_along_axis(lambda v:
-                    np.convolve(v, self.impulseResponse, mode='same'), axis=axis, arr=s)
+                    np.convolve(v, self.impulseResponse, mode=mode), axis=axis, arr=s)
 
 def demoBandpassFilterFIR():
     order = 20
@@ -465,10 +471,10 @@ def demoBandpassFilterFIR():
     sincHam = BandpassFilter(lowFreq, highFreq, sampRate, order, filtType='sinc-hamming')
     lanczos = BandpassFilter(lowFreq, highFreq, sampRate, order, filtType='lanczos')
 
-    fig = plt.figure(figsize=(18,10))
+    fig = plt.figure(figsize=(18, 10))
     fig.canvas.set_window_title('FIR Bandpass Filter Demo')
-    axLn = fig.add_subplot(2,2, 1)
-    axDb = fig.add_subplot(2,2, 2)
+    axLn = fig.add_subplot(2, 2, 1)
+    axDb = fig.add_subplot(2, 2, 2)
 
     for ax, scale in zip((axLn, axDb), ('linear', 'db')):
         sincBla.plotFreqResponse(showCorners=True, scale=scale, label='Sinc-Blackman', ax=ax, linewidth=2)
@@ -485,8 +491,8 @@ def demoBandpassFilterFIR():
     axDb.set_ylim((-100.0, 0.0))
     axDb.set_title('Power Response')
 
-    axPh = fig.add_subplot(2,2, 3)
-    scale='radians'
+    axPh = fig.add_subplot(2, 2, 3)
+    scale = 'radians'
     sincBla.plotPhaseResponse(showCorners=False, scale=scale, label='Sinc-Blackman', ax=axPh, linewidth=2)
     sincHan.plotPhaseResponse(showCorners=False, scale=scale, label='Sinc-Hann', ax=axPh, linewidth=2)
     sincHam.plotPhaseResponse(showCorners=False, scale=scale, label='Sinc-Hamming', ax=axPh, linewidth=2)
@@ -506,7 +512,7 @@ def demoBandpassFilterFIR():
     sep = -np.arange(0, 5)*2.0
     chirpAll = np.vstack((chirpSincBla, chirpSincHan, chirpSincHam, chirpLanczos, chirp)).T + sep
 
-    axCh = fig.add_subplot(2,2, 4)
+    axCh = fig.add_subplot(2, 2, 4)
     axCh.plot(f, chirpAll)
     axCh.vlines(lowFreq, 1, -9, color='violet', linestyle='--')
     axCh.vlines(highFreq, 1, -9, color='violet', linestyle='--')
@@ -522,18 +528,29 @@ def demoBandpassFilterFIR():
     fig.tight_layout()
 
 
+# wrapper around class constructors
+# pylint: disable=invalid-name
 def BandpassFilter(lowFreq, highFreq, sampRate=1.0, order=None, filtType='butter', **kwargs):
     filtType = filtType.lower()
     if filtType in ('butter', 'cheby1', 'cheby2', 'ellip', 'bessel'):
-        if order is None: order = 3
+        if order is None:
+            order = 3
+
         return BandpassFilterIIR(lowFreq=lowFreq, highFreq=highFreq,
                     sampRate=sampRate, order=order, filtType=filtType, **kwargs)
+
     elif filtType in ('lanczos', 'sinc-blackman', 'sinc-hamming', 'sinc-hann'):
-        if order is None: order = 20
+        if order is None:
+            order = 20
+
         return BandpassFilterFIR(lowFreq=lowFreq, highFreq=highFreq,
                     sampRate=sampRate, order=order, filtType=filtType, **kwargs)
+
     else:
-        raise Exception('Invalid filter type: ' + str(filtType) + '.')
+        raise RuntimeError('Invalid filter type: ' + str(filtType) + '.')
+
+def BP(*args, **kwargs):
+    return BandpassFilter(*args, **kwargs)
 
 
 if __name__ == '__main__':

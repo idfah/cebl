@@ -31,12 +31,12 @@ if sys.platform.startswith('linux'):
             extra_compile_args = extra_compile_args))
 
     # fast tanh in c
-    c_modules.append(
-        setuptools.Extension('cebl.util.fasttanh',
-            sources = ['cebl/util/fasttanh.c'],
-            libraries = ['pthread', 'gomp'],
-            include_dirs = [np.get_include()],
-            extra_compile_args = extra_compile_args + ['-fopenmp',]))
+    ## c_modules.append(
+    ##     setuptools.Extension('cebl.util.fasttanh',
+    ##         sources = ['cebl/util/fasttanh.c'],
+    ##         libraries = ['pthread', 'gomp'],
+    ##         include_dirs = [np.get_include()],
+    ##         extra_compile_args = extra_compile_args + ['-fopenmp',]))
 
 # cython extension modules
 cython_modules = []
@@ -68,13 +68,25 @@ cython_modules.append(
         sources = ['cebl/sig/cwt.pyx'],
         extra_compile_args = extra_compile_args))
 
+## # g.tec g.MOBILab+
+## cython_modules.append(
+##     setuptools.Extension('cebl.rt.sources.gtec.gmobilab.gmobilab',
+##     sources = ['cebl/rt/sources/gtec/gmobilab/gmobilab.pyx'],
+##     extra_compile_args = extra_compile_args))
+##
+## # g.tec g.Nautilus
+## cython_modules.append(
+##     setuptools.Extension('cebl.rt.sources.gtec.gnautilus.gnautilus',
+##     sources = ['cebl/rt/sources/gtec/gnautilus/gnautilus.pyx'],
+##     extra_compile_args = extra_compile_args))
+
 # all extension modules
 ext_modules = c_modules + cythonize(cython_modules)
 
 # extract version from startup script
 # this is all hacky - XXX idfah
-version = subprocess.check_output(['scripts/cebl', '--version'])
-version = '.'.join(version.split('.')[0:3])
+version = subprocess.check_output(['scripts/cebl', '--version']).decode()
+version = '.'.join(version.split('.')[:3])
 
 setuptools.setup(
     name='CEBL',

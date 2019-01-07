@@ -1,5 +1,6 @@
+matplotlib
 numpy
+pylibftdi
 scipy
 serial
-pylibftdi
 wxpython

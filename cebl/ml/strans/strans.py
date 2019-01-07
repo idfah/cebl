@@ -4,7 +4,7 @@ import numpy as np
 from cebl import util
 
 
-class STrans(object):
+class STrans:
     """Base class for linear, spatial signal transforms.
     """
     def __init__(self, s, lags=0, demean=True):

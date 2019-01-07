@@ -1,6 +1,5 @@
-import numpy as np
-import numpy.lib.stride_tricks as npst
 import hashlib
+import numpy as np
 
 
 def accum(x, n, accumf=np.sum, truncate=True, axis=None):
@@ -31,7 +30,7 @@ def accum(x, n, accumf=np.sum, truncate=True, axis=None):
         The accumulated matrix.
 
     Examples:
-        >>> x = np.reshape((1,)*(4*3*3), (4,3,3))
+        >>> x = np.reshape((1,)*(4*3*3), (4, 3, 3))
         >>> x
         array([[[1, 1, 1],
                 [1, 1, 1],
@@ -92,7 +91,7 @@ def accum(x, n, accumf=np.sum, truncate=True, axis=None):
         # truncate remaining elements
         if truncate:
             s = [slice(None),]*len(x.shape)
-            s[axis] = slice(0,nObs-(nObs%n))
+            s[axis] = slice(0, nObs-(nObs%n))
             x = x[s]
 
         # pad with zeros in case of one-dimensional array
@@ -101,18 +100,18 @@ def accum(x, n, accumf=np.sum, truncate=True, axis=None):
 
         # pad with zeros in case of multi-dimensional array
         else:
-            ps = list(x.shape)
-            ps[axis] = n-(nObs%n)
-            pad = np.zeros(ps, dtype=x.dtype)
+            padShape = list(x.shape)
+            padShape[axis] = n-(nObs%n)
+            pad = np.zeros(padShape, dtype=x.dtype)
             x = np.concatenate((x, pad), axis=axis)
 
     # separate axis to accumulate
-    ss = list(x.shape)
-    ss.insert(axis+1, n)
-    ss[axis] = x.shape[axis]//n
-    #ss = x.shape[:axis] + (x.shape[axis]//n,) + \
+    sepShape = list(x.shape)
+    sepShape.insert(axis+1, n)
+    sepShape[axis] = x.shape[axis]//n
+    #sepShape = x.shape[:axis] + (x.shape[axis]//n,) + \
     #    (n,) + x.shape[(axis+1):]
-    sep = x.reshape(ss)
+    sep = x.reshape(sepShape)
 
     # accumf into new shape
     return accumf(sep, axis=axis+1)
@@ -155,7 +154,7 @@ def bias(x, value=1, axis=-1):
         >>> util.bias(a, axis=None)
         array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 1])
 
-        >>> a = np.random.random((3,2))
+        >>> a = np.random.random((3, 2))
         >>> util.bias(a, axis=0)
         array([[ 0.5734496 ,  0.41789283],
                [ 0.15415034,  0.99381062],
@@ -193,8 +192,8 @@ def bias(x, value=1, axis=-1):
 
     xb = np.empty(xbShape, dtype=dtype)
 
-    xSlices = [slice(None) if i != axis else slice(None,-1) for i in xrange(xb.ndim)]
-    bSlices = [slice(-1,None) if i == axis else slice(None) for i in xrange(xb.ndim)]
+    xSlices = [slice(None) if i != axis else slice(None, -1) for i in range(xb.ndim)]
+    bSlices = [slice(-1, None) if i == axis else slice(None) for i in range(xb.ndim)]
 
     xb[xSlices] = x
     xb[bSlices] = value
@@ -319,13 +318,13 @@ def segdot(x1, x2):
     assert x1.ndim == 3
     assert x2.ndim == 2
 
-    return x1.reshape((-1,x1.shape[-1])).dot(x2).reshape((x1.shape[0],-1,x2.shape[-1]))
+    return x1.reshape((-1, x1.shape[-1])).dot(x2).reshape((x1.shape[0], -1, x2.shape[-1]))
 
 def softmaxM1(x):
     mx = np.max((np.max(x), 0.0))
     emx = capZero(np.exp(-mx))
     terms = capZero(np.exp(x-mx))
-    denom = (emx + np.sum(terms, axis=1)).reshape((-1,1))
+    denom = (emx + np.sum(terms, axis=1)).reshape((-1, 1))
     return np.hstack((terms/denom, emx/denom))
     
 def logSoftmaxM1(x):
@@ -334,7 +333,7 @@ def logSoftmaxM1(x):
     emx = capZero(np.exp(-mx))
 
     terms = capZero(np.exp(xmx))
-    denom = (emx + np.sum(terms, axis=1)).reshape((-1,1))
+    denom = (emx + np.sum(terms, axis=1)).reshape((-1, 1))
 
     logDenom = np.log(capZero(denom))
 
@@ -343,7 +342,7 @@ def logSoftmaxM1(x):
 def softmax(x):
     mx = np.max((np.max(x), 0.0))
     terms = capZero(np.exp(x-mx))
-    denom = np.sum(terms, axis=1).reshape((-1,1))
+    denom = np.sum(terms, axis=1).reshape((-1, 1))
     return terms/denom
 
 def logSoftmax(x):
@@ -351,7 +350,7 @@ def logSoftmax(x):
     xmx = x - mx
 
     terms = capZero(np.exp(xmx))
-    denom = np.sum(terms, axis=1).reshape((-1,1))
+    denom = np.sum(terms, axis=1).reshape((-1, 1))
 
     logDenom = np.log(capZero(denom))
 

@@ -123,7 +123,7 @@ def alopex(optable,
     iteration = 0
 
     if verbose:
-        print '%d %6f' % (iteration, error)
+        print('%d %6f' % (iteration, error))
 
     if callback is not None:
         callback(optable, iteration, paramTrace, errorTrace)
@@ -167,7 +167,7 @@ def alopex(optable,
         iteration += 1
 
         if verbose:
-            print '%d %6f' % (iteration, error)
+            print('%d %6f' % (iteration, error))
 
         if callback is not None:
             callback(optable, iteration, paramTrace, errorTrace)
@@ -225,14 +225,14 @@ def alopex(optable,
             corrRun = 0.0
 
             if verbose:
-                print 'Cooling: %f' % temp
+                print('Cooling: %f' % temp)
 
         # probability of taking negative step
         # is drawn from the Boltzman Distribution
         probs[...] = 1.0 / (1.0 + np.exp(-corr/temp))
 
     if verbose:
-        print reason
+        print(reason)
 
     # save result into a dictionary
     result = {}
@@ -369,7 +369,7 @@ def alopexas(optable,
     iteration = 0
 
     if verbose:
-        print '%d %6f' % (iteration, error)
+        print('%d %6f' % (iteration, error))
 
     if callback is not None:
         callback(optable, iteration, paramTrace, errorTrace)
@@ -398,7 +398,7 @@ def alopexas(optable,
         iteration += 1
 
         if verbose:
-            print '%d %6f' % (iteration, error)
+            print('%d %6f' % (iteration, error))
 
         if callback is not None:
             callback(optable, iteration, paramTrace, errorTrace)
@@ -459,7 +459,7 @@ def alopexas(optable,
             steps[adaptNeg] *= stepDown
 
             paramsPrev = params.copy()
-            print steps
+            print(steps)
 
             # new temperature is average correlation
             # since the previous temperature update
@@ -469,14 +469,14 @@ def alopexas(optable,
             corrRun = 0.0
 
             if verbose:
-                print 'Cooling: %f' % temp
+                print('Cooling: %f' % temp)
 
         # probability of taking negative step
         # is drawn from the Boltzman Distribution
         probs[...] = 1.0 / (1.0 + np.exp(-corr/temp))
 
     if verbose:
-        print reason
+        print(reason)
 
     # save result into a dictionary
     result = {}
@@ -605,7 +605,7 @@ def alopexb(optable,
     iteration = 0
 
     if verbose:
-        print '%d %6f' % (iteration, error)
+        print('%d %6f' % (iteration, error))
 
     if callback is not None:
         callback(optable, iteration, paramTrace, errorTrace)
@@ -648,7 +648,7 @@ def alopexb(optable,
         iteration += 1
 
         if verbose:
-            print '%d %6f' % (iteration, error)
+            print('%d %6f' % (iteration, error))
 
         if callback is not None:
             callback(optable, iteration, paramTrace, errorTrace)
@@ -699,7 +699,7 @@ def alopexb(optable,
         probs[...] = 1.0 / (1.0 + np.exp(-corr/corrRun))
 
     if verbose:
-        print reason
+        print(reason)
 
     # save result into a dictionary
     result = {}
@@ -756,7 +756,7 @@ def arcticFox(optable,
     iteration = 0
 
     if verbose:
-        print '%d %6f %6f' % (iteration, stepSize, error)
+        print('%d %6f %6f' % (iteration, stepSize, error))
 
     if callback is not None:
         callback(optable, iteration, paramTrace, errorTrace)
@@ -798,7 +798,7 @@ def arcticFox(optable,
         iteration += 1
 
         if verbose:
-            print '%d %6f %6f' % (iteration, curStepSize, error)
+            print('%d %6f %6f' % (iteration, curStepSize, error))
 
         if callback is not None:
             callback(optable, iteration, paramTrace, errorTrace)
@@ -831,7 +831,7 @@ def arcticFox(optable,
                  (forgetFactor * (de * dw)))
 
     if verbose:
-        print reason
+        print(reason)
 
     # save result into a dictionary
     result = {}
