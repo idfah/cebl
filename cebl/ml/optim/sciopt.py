@@ -93,8 +93,13 @@ def demoScioptBFGS():
     rosen = tests.Rosen(optimFunc=sciopt, method='BFGS', verbose=True)
     rosen.plot()
 
+def demoScioptCG():
+    rosen = tests.Rosen(optimFunc=sciopt, method='CG', verbose=True)
+    rosen.plot()
+
 
 if __name__ == '__main__':
-    demoScioptPowell()
+    #demoScioptPowell()
     #demoScioptBFGS()
+    demoScioptCG()
     plt.show()

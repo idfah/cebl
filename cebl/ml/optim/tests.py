@@ -3,6 +3,68 @@ import matplotlib.cm as pltcm
 from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
 
+class Quad():
+    def __init__(self, optimFunc,
+                 initialSolution=None, *args, **kwargs):
+        if initialSolution is None:
+            self.solution = np.array((-0.9, -0.8))
+        else:
+            self.solution = np.asarray(initialSolution)
+
+        self.train(optimFunc, *args, **kwargs)
+
+    def train(self, optimFunc, *args, **kwargs):
+        self.trainResult = optimFunc(self, *args, pTrace=True, **kwargs)
+
+    def parameters(self):
+        return self.solution
+
+    def eval(self, points):
+        xs = points[:,0]
+        ys = points[:,1]
+
+        return xs**2 + 5.0 * ys**2
+
+    def error(self):
+        x = self.solution[0]
+        y = self.solution[1]
+        return self.eval(self.solution[None,:])
+
+    def gradient(self, returnError=False):
+        x = self.solution[0]
+        y = self.solution[1]
+        dx = 2.0 * x
+        dy = 10.0 * y
+
+        grad = np.array((dx,dy))
+
+        if returnError:
+            return self.error(), grad
+        else:
+            return grad
+
+    def plot(self, n=200, rng=(-1.0,1.0, -1.0,1.0)):
+        x = np.linspace(rng[0], rng[1], n)
+        y = np.linspace(rng[2], rng[3], n)
+
+        xx, yy = np.meshgrid(x, y)
+
+        points = np.vstack((xx.ravel(), yy.ravel())).T
+        values = self.eval(points)
+        zz = values.reshape((xx.shape[0], yy.shape[1]))
+
+        fig = plt.figure()
+        axCont = fig.add_subplot(1,1,1)
+        axCont.contour(x, y, zz, 20, color='black')
+        #axCont.scatter(0.0, 0.0, color='black', marker='o', s=300, linewidth=3)
+
+        paramTrace = np.array(self.trainResult['pTrace'])
+        axCont.plot(paramTrace[:,0], paramTrace[:,1], color='red', marker='o', linewidth=2)
+
+        axCont.set_xlabel(r'$w_1$')
+        axCont.set_ylabel(r'$w_2$')
+
+        fig.tight_layout()
 
 class Rosen():
     def __init__(self, optimFunc, a=1.0, b=100.0,
