@@ -13,10 +13,11 @@ def roc(classProbs):
     probs = np.concatenate([cls[:,1] for cls in classProbs])
     labels = np.ones(probs.size, dtype=np.bool)
     labels[:classProbs[0].shape[0]] = False
-    
+
     idx = np.argsort(probs, kind='mergesort')[::-1]
     labels = labels[idx]
-   
+
+    # pylint: disable=singleton-comparison
     fprCum = np.cumsum(labels == False)
     fprTotal = np.sum(labels == False).astype(probs.dtype)
     fpr = (fprCum / fprTotal) if fprTotal > 0.0 else np.zeros_like(probs)
@@ -26,7 +27,7 @@ def roc(classProbs):
     tpr = (tprCum / tprTotal) if tprTotal > 0.0 else np.zeros_like(probs)
 
     return fpr, tpr
-    
+
 #def auc(classProbs):
 #    if len(classProbs) > 2:
 #        raise RuntimeError('auc is only valid for two-class problems.')
@@ -35,7 +36,7 @@ def roc(classProbs):
 #    return np.sum((fpr[1:] - fpr[:-1]) * tpr[1:])
 
 def auc(classProbs):
-    """Area under the roc curve
+    """Area under the roc curve.
     """
 
     if len(classProbs) > 2:
@@ -91,7 +92,7 @@ def ca(classLabels):
 def confusion(classLabels, normalize=True):
     """Find the confusion matrix using predicted class labels with
     known true labels.
-    
+
     Args:
         classLabels:    A list with length equal to the number of classes
                         with one element per class.  Each element of
@@ -116,8 +117,8 @@ def confusion(classLabels, normalize=True):
     Examples:
         >>> from cebl import util
         >>> import numpy as np
-        
-        >>> a = [[0,0,0,1], [1,1,1,1,1,0], [2,2]]
+
+        >>> a = [[0, 0, 0, 1], [1, 1, 1, 1, 1, 0], [2, 2]]
 
         >>> con = util.confusion(a)
 
@@ -160,7 +161,7 @@ def itrSimple(accuracy, nCls, decisionRate):
     return decisionRate * (left + middle + right)
 
 def itr(classLabels, decisionRate=60.0):
-    """Information transfer rate in bits per minute
+    """Information transfer rate in bits-per-minute
 
     Args:
         classLabels:    A list with length equal to the number of classes
@@ -175,7 +176,7 @@ def itr(classLabels, decisionRate=60.0):
 
     Refs:
         @book{pierce1980,
-          title={An introduction to information theory: symbols, signals \& noise},
+          title={An introduction to information theory: symbols, signals \\& noise},
           author={Pierce, John},
           isbn={0486240614},
           pages={145--165},
@@ -185,7 +186,8 @@ def itr(classLabels, decisionRate=60.0):
 
         @article{wolpaw1998326,
           title={{EEG}-based communication: improved accuracy by response verification},
-          author={Wolpaw, Jonathan and Ramoser, Herbert and McFarland, Dennis and Pfurtscheller, Gert},
+          author={Wolpaw, Jonathan and Ramoser, Herbert and McFarland,
+                  Dennis and Pfurtscheller, Gert},
           journal={{IEEE} Transactions on Rehabilitation Engineering},
           volume={6},
           number={3},
@@ -201,5 +203,7 @@ def itr(classLabels, decisionRate=60.0):
     return itrSimple(accuracy, nCls, decisionRate)
 
 def lloss(probs, g):
+    """Log loss.
+    """
     logLike = np.log(capZero(probs))
     return -np.mean(g*logLike)

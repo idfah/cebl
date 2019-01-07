@@ -1,4 +1,4 @@
-"""Error metrics.
+"""Regression error metrics.
 """
 
 import numpy as np
@@ -18,21 +18,33 @@ def lpnorm(x, y=None, p=2, axis=None):
         return np.sum(np.abs(v)**p, axis=axis)**(1.0/p)
 
 def sae(y, g=0.0, axis=None):
+    """Sum absolute error.
+    """
     return np.sum(np.abs(y-g), axis=axis)
 
 def sse(y, g=0.0, axis=None):
+    """Sum squared error.
+    """
     return np.sum((y-g)**2, axis=axis)
-    
+
 def mae(y, g=0.0, axis=None):
+    """Mean absolute error.
+    """
     return np.mean(np.abs(y-g), axis=axis)
 
 def mse(y, g=0.0, axis=None):
+    """Mean squared error.
+    """
     return np.mean((y-g)**2, axis=axis)
 
 def rmse(y, g=0.0, axis=None):
+    """Root mean squared error.
+    """
     return np.sqrt(np.mean((y-g)**2, axis=axis))
 
 def nrmse(y, g=0.0, mn=None, mx=None, axis=None):
+    """Normalized root mean squared error.
+    """
     r = y-g
     if mn is None:
         mn = np.min(r, axis=axis)

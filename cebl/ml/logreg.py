@@ -22,7 +22,7 @@ class LogisticRegression(Classifier, optim.Optable):
 
         Args:
             classData:      Training data.  This is a numpy array or list of numpy
-                            arrays with shape (nCls,nObs[,nIn]).  If the
+                            arrays with shape (nCls, nObs[,nIn]).  If the
                             dimensions index is missing the data is assumed to
                             be one-dimensional.
 
@@ -58,7 +58,7 @@ class LogisticRegression(Classifier, optim.Optable):
 
         Args:
             classData:      Training data.  This is a numpy array or list of numpy
-                            arrays with shape (nCls,nObs[,nIn]).  If the
+                            arrays with shape (nCls, nObs[,nIn]).  If the
                             dimensions index is missing the data is assumed to
                             be one-dimensional.
 
@@ -86,7 +86,7 @@ class LogisticRegression(Classifier, optim.Optable):
             x:  Input data.  A numpy array with shape (nObs[,nIn]).
 
         Returns:
-            Numpy array with shape (nObs,nIn) containing the probability values.
+            Numpy array with shape (nObs, nIn) containing the probability values.
         """
         x = util.colmat(x)
 
@@ -138,7 +138,7 @@ def demoLogisticRegression1d():
     c1 = np.random.normal(loc=-1.0, scale=0.3, size=60)
     c2 = np.random.normal(loc=0.0, scale=0.3, size=30)
     c3 = np.random.normal(loc=2.0, scale=0.7, size=90)
-    classData = [c1,c2,c3]
+    classData = [c1, c2, c3]
 
     model = LogisticRegression(classData, verbose=True)
 
@@ -163,22 +163,22 @@ def demoLogisticRegression1d():
 
 def demoLogisticRegression2d():
     # covariance matrix for each training class
-    cov = [[1,-0.8],
-           [-0.8,1]]
+    cov = [[1, -0.8],
+           [-0.8, 1]]
 
     # red data
     red = np.random.multivariate_normal(
-        (-1,-1), cov, 500)
+        (-1, -1), cov, 500)
 
     # green data
     green = np.random.multivariate_normal(
-        (0,0), cov, 300)
+        (0, 0), cov, 300)
 
     # blue data
     blue = np.random.multivariate_normal(
-        (1,1), cov, 400)
+        (1, 1), cov, 400)
 
-    classData = [red,green,blue]
+    classData = [red, green, blue]
 
     # min and max training values
     mn = np.min(np.vstack(classData), axis=0)
@@ -192,9 +192,9 @@ def demoLogisticRegression2d():
     #plt.colorbar()
 
     # find class labels
-    redLabel   = model.label(red) # one at a time
+    redLabel = model.label(red) # one at a time
     greenLabel = model.label(green)
-    blueLabel  = model.label(blue)
+    blueLabel = model.label(blue)
 
     print('red labels\n-------')
     print(redLabel)
@@ -209,7 +209,7 @@ def demoLogisticRegression2d():
 
     # first figure shows training data and class intersections
     fig = plt.figure()
-    ax = fig.add_subplot(2,2,1)
+    ax = fig.add_subplot(2, 2, 1)
 
     # training data
     ax.scatter(red[:,0],   red[:,1],   color="red")
@@ -218,19 +218,19 @@ def demoLogisticRegression2d():
 
     # generate grid over training data
     sw = 0.02
-    sx = np.arange(mn[0],mx[0], sw)
-    sy = np.arange(mn[1],mx[1], sw)
-    x,y = np.meshgrid(sx,sy, copy=False)
+    sx = np.arange(mn[0], mx[0], sw)
+    sy = np.arange(mn[1], mx[1], sw)
+    x, y = np.meshgrid(sx, sy, copy=False)
 
     # get probability densities and labels for values in grid
     z = np.vstack((x.reshape((-1,)), y.reshape((-1,)))).T
     probs = model.probs(z)
 
     # red, green, blue and max probability densities
-    pRed   = np.reshape(probs[:,0,None], x.shape)
+    pRed = np.reshape(probs[:,0,None], x.shape)
     pGreen = np.reshape(probs[:,1,None], x.shape)
-    pBlue  = np.reshape(probs[:,2,None], x.shape)
-    pMax   = np.reshape(np.max(probs, axis=1), x.shape)
+    pBlue = np.reshape(probs[:,2,None], x.shape)
+    pMax = np.reshape(np.max(probs, axis=1), x.shape)
 
     # class intersections
     diffRG = pRed   - pGreen
@@ -241,48 +241,50 @@ def demoLogisticRegression2d():
     ax.contour(x, y, diffGB, colors='black', levels=(0,))
 
     # second figure shows 3d plots of probability densities
-    ax = fig.add_subplot(2,2,2, projection='3d')
+    ax = fig.add_subplot(2, 2, 2, projection='3d')
 
     # straight class colors for suface plots
-    color = np.reshape([pRed,pGreen,pBlue], (3, x.shape[0],x.shape[1]))
-    color = color.swapaxes(1,2).T
+    color = np.reshape([pRed, pGreen, pBlue], (3, x.shape[0], x.shape[1]))
+    color = color.swapaxes(1, 2).T
 
     # flip colors to fade to white
-    zro        = np.zeros_like(x)
-    colorFlip  = np.ones((3, x.shape[0], x.shape[1]))
-    colorFlip -= (np.array((zro,pRed,pRed)) +
-                  np.array((pGreen,zro,pGreen)) +
-                  np.array((pBlue,pBlue,zro)))
+    zro = np.zeros_like(x)
+    colorFlip = np.ones((3, x.shape[0], x.shape[1]))
+    colorFlip -= (
+        np.array((zro, pRed, pRed)) +
+        np.array((pGreen, zro, pGreen)) +
+        np.array((pBlue, pBlue, zro))
+    )
     colorFlip -= np.min(colorFlip)
     colorFlip /= np.max(colorFlip)
-    colorFlip  = colorFlip.swapaxes(1,2).T
+    colorFlip = colorFlip.swapaxes(1, 2).T
 
     # probability density surface
-    #surf = ax.plot_surface(x,y, pMax, cmap=matplotlib.cm.jet, linewidth=0)
-    surf = ax.plot_surface(x,y, pMax, facecolors=colorFlip,
+    #surf = ax.plot_surface(x, y, pMax, cmap=matplotlib.cm.jet, linewidth=0)
+    surf = ax.plot_surface(x, y, pMax, facecolors=colorFlip,
                            linewidth=0.02, shade=True)
     surf.set_edgecolor('black') # add edgecolor back in, bug?
 
     # third figure shows contours and color image of probability densities
-    ax = fig.add_subplot(2,2,3)
+    ax = fig.add_subplot(2, 2, 3)
 
-    #ax.pcolor(x,y,pMax)
+    #ax.pcolor(x, y, pMax)
     ax.imshow(colorFlip, origin='lower',
-              extent=(mn[0],mx[0],mn[1],mx[1]), aspect='auto')
+              extent=(mn[0], mx[0], mn[1], mx[1]), aspect='auto')
 
     # contours 
     nLevel = 4
     cs = ax.contour(x, y, pMax, colors='black',
-                    levels=np.linspace(np.min(pMax),np.max(pMax),nLevel))
+                    levels=np.linspace(np.min(pMax), np.max(pMax), nLevel))
     cs.clabel(fontsize=6)
 
     # fourth figure
-    ax = fig.add_subplot(2,2,4, projection='3d')
+    ax = fig.add_subplot(2, 2, 4, projection='3d')
 
     labels = model.label(z)
-    lMax   = np.reshape(labels, x.shape)
+    lMax = np.reshape(labels, x.shape)
 
-    surf = ax.plot_surface(x,y, lMax, facecolors=colorFlip,
+    surf = ax.plot_surface(x, y, lMax, facecolors=colorFlip,
                            linewidth=0.02)#, antialiased=False)
     surf.set_edgecolor('black')
 
@@ -327,7 +329,7 @@ class LogisticRegressionElastic(LogisticRegression):
         penMask[-1,:] = 0.0
 
         grad = (util.bias(x).T.dot(delta) +
-            self.elastic * 2.0 * self.penalty * penMask * self.weights/self.weights.size + # L2-norm penalty
+            self.elastic * 2.0 * self.penalty * penMask * self.weights / self.weights.size + # L2-norm penalty
             (1.0-self.elastic) * self.penalty * penMask * np.sign(self.weights) / self.weights.size) # L1-norm penalty
 
         gf = grad.ravel()

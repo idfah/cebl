@@ -1,7 +1,9 @@
+"""Linear regression.
+"""
 import matplotlib.pyplot as plt
 import numpy as np
 import scipy as sp
-from scipy import linalg as splinalg
+import scipy.linalg
 
 from cebl import util
 
@@ -10,6 +12,8 @@ from . import paraminit as pinit
 from .regression import Regression
 
 class RidgeRegression(Regression):
+    """Ridge regression, a.k.a linear least-squares regression with L2-norm weight decay.
+    """
     def __init__(self, x, g, penalty=0.0, pseudoInv=True):
         Regression.__init__(self, util.colmat(x).shape[1],
                             util.colmat(g).shape[1])
@@ -34,7 +38,7 @@ class RidgeRegression(Regression):
         b = x1.T @ g
 
         if self.pseudoInv is None:
-            if np.linalg.cond(a) < 1.0/np.finfo(self.dtype).eps:
+            if np.linalg.cond(a) < 1.0 / np.finfo(self.dtype).eps:
                 pseudoInv = True
             else:
                 pseudoInv = False
@@ -73,7 +77,7 @@ def demoRidgeRegression1dQuad():
     y = (x-3)**2
 
     fig = plt.figure()
-    ax = fig.add_subplot(1,1,1)
+    ax = fig.add_subplot(1, 1, 1)
 
     ax.plot(x, y, marker='o', color='black')
 
@@ -81,7 +85,7 @@ def demoRidgeRegression1dQuad():
 
     ax.plot(x, linearModel.eval(x), color='green')
 
-    x2 = x.repeat(2).reshape((-1,2))
+    x2 = x.repeat(2).reshape((-1, 2))
     x2[:,1] **= 2
     quadraticModel = RidgeRegression(x2, y)
 
@@ -93,7 +97,7 @@ def demoRidgeRegression1d():
     y += np.random.normal(scale=0.3, size=y.size)
 
     fig = plt.figure()
-    ax = fig.add_subplot(1,1,1)
+    ax = fig.add_subplot(1, 1, 1)
 
     ax.scatter(x, y)
 
@@ -205,11 +209,11 @@ def demoLinearRegressionElastic():
     x1 = np.linspace(-1.0, 1.0, n) + np.random.normal(scale=0.1, size=n) + 10.0
     x2 = np.linspace(1.0, -1.0, n) + np.random.normal(scale=0.1, size=n)
     x3 = np.random.normal(scale=0.1, size=n)
-    x = np.vstack((x1,x2,x3)).T
+    x = np.vstack((x1, x2, x3)).T
 
     g1 = np.linspace(-1.0, 1.0, n) + np.random.normal(scale=0.1, size=n)
     g2 = np.linspace(1.0, -1.0, n) + np.random.normal(scale=0.1, size=n)
-    g = np.vstack((g1,g2)).T
+    g = np.vstack((g1, g2)).T
 
     model = LRE(x, g, elastic=0.0, penalty=0.7, verbose=True, optimFunc=optim.rprop,
                 weightInitFunc=lambda size: np.random.uniform(-0.1, 0.1, size=size),
@@ -218,7 +222,7 @@ def demoLinearRegressionElastic():
     y = model.eval(x)
 
     fig = plt.figure()
-    axLines = fig.add_subplot(1,2,1)
+    axLines = fig.add_subplot(1, 2, 1)
 
     #ax.scatter(x, g1, color='red')
     #ax.scatter(x, g2, color='green')
@@ -226,14 +230,14 @@ def demoLinearRegressionElastic():
 
     axLines.plot(y, color='green')
 
-    axWeights = fig.add_subplot(1,2,2)
+    axWeights = fig.add_subplot(1, 2, 2)
     img = axWeights.imshow(np.abs(model.weights), aspect='auto', interpolation='none')
     cbar = plt.colorbar(img)
     cbar.set_label('Weight Magnitude')
 
-    axWeights.set_xticks((0,1))
+    axWeights.set_xticks((0, 1))
     axWeights.set_xticklabels(('y1', 'y2'))
-    axWeights.set_yticks((0,1,2,3))
+    axWeights.set_yticks((0, 1, 2, 3))
     axWeights.set_yticklabels(('x1', 'x2', 'x3', 'bias'))
 
     print(model.weights)

@@ -90,7 +90,7 @@ class GridSpeller(DrawablePanel):
 
         self.feedFont = feedFont
         if feedFont is None:
-                self.feedFont = self.defaultFeedFont
+            self.feedFont = self.defaultFeedFont
 
         self.feedText = ''
 

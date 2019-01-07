@@ -1,3 +1,5 @@
+"""Convert between various labeled data formats.
+"""
 import numpy as np
 
 from cebl import util
@@ -9,7 +11,7 @@ def vectorFromList(classData, combined=False):
         [np.asarray(cls).shape[0] for cls in classData])
 
     if combined:
-        return np.hstack((x,vector[:,None]))
+        return np.hstack((x, vector[:,None]))
     else:
         return x, vector
 
@@ -63,7 +65,7 @@ def indicatorsFromList(classData, conf=1.0, combined=False):
 
 def makeVector(col, returnKeys=False):
     keys = np.unique(col)
-    table = {k:i for i,k in enumerate(keys)}
+    table = {k:i for i, k in enumerate(keys)}
     vector = np.array([table[c] for c in col])
 
     if returnKeys:
@@ -71,7 +73,7 @@ def makeVector(col, returnKeys=False):
     else:
         return vector
 
-def makeIndicators(col, returnKeys=False, *args, **kwargs):
+def makeIndicators(col, *args, returnKeys=False, **kwargs):
     keys, vector = makeVector(col, returnKeys=True)
     indicators = indicatorsFromVector(vector, *args, **kwargs)
 

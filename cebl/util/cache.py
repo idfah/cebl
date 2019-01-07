@@ -52,10 +52,10 @@ class Cache:
         return value in self.store
 
     def __repr__(self):
-        return repr([i for i in self.store.iteritems()])
+        return repr([i for i in self.store.items()])
 
     def __str__(self):
-        return str([i for i in self.store.iteritems()])
+        return str([i for i in self.store.items()])
 
     def __len__(self):
         return len(self.store)
