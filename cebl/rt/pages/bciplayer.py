@@ -47,7 +47,7 @@ class ConfigPanel(StandardConfigPanel):
 
     def initMediaPath(self):
         mediaPathControlBox = widgets.ControlBox(self, label='Media Path', orient=wx.HORIZONTAL)
-        
+
         self.mediaPathTextCtrl = wx.TextCtrl(parent=self, style=wx.TE_PROCESS_ENTER)
         self.mediaPathTextCtrl.SetValue(self.pg.defaultMusicDir)
         mediaPathControlBox.Add(self.mediaPathTextCtrl, proportion=1,
@@ -391,7 +391,7 @@ class BCIPlayer(StandardBCIPage):
         if not os.path.isdir(os.path.expanduser(self.defaultMusicDir)):
             self.defaultMusicDir = '~'
 
-        self.classifierChoices = ('Linear Discriminant', 
+        self.classifierChoices = ('Linear Discriminant',
                                   'K-Nearest Euclidean',
                                   'K-Nearest Cosine',
                                   'Linear Logistic',
@@ -411,7 +411,7 @@ class BCIPlayer(StandardBCIPage):
         self.isi = 0.550
 
         self.trainCap = None
-        
+
     def initCurStimList(self):
         self.curStimList = copy.copy(self.choices)
         np.random.shuffle(self.curStimList)

@@ -90,7 +90,7 @@ class FloatingFrame(wx.Frame):
         wx.Frame.__init__(self, *args, **kwargs)
         #self.Bind(wx.EVT_KEY_UP, self.onKeyUp)
         self.Bind(events.EVT_FULLSCREEN, self.toggleFullScreen)
-        
+
     #def onKeyUp(self, event):
     #    key = event.GetKeyCode()
     #    if key == wx.WXK_F11:

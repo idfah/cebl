@@ -41,7 +41,7 @@ class WelchConfigPanel(wx.Panel):
                 flag=wx.ALL | wx.EXPAND, border=10)
         featureSizer.Add(spanControlBox, proportion=1,
                 flag=wx.LEFT | wx.BOTTOM | wx.RIGHT | wx.EXPAND, border=10)
-        
+
         # radio buttons for turning log transform on and off
         logTransControlBox = widgets.ControlBox(self, label='Log Trans', orient=wx.HORIZONTAL)
 
@@ -374,7 +374,7 @@ class ConfigPanel(StandardConfigPanel):
         self.pg.requireRetrain()
 
     def initLayout(self):
-        self.initStandardLayout() 
+        self.initStandardLayout()
 
         self.FitInside()
         self.autoregPanel.Hide()
@@ -790,7 +790,7 @@ class MentalTasks(StandardBCIPage):
         dialog.Destroy()
 
         resultText = (('Best Num Iterations: %f\n' % bestIter) +
-                      ('Best Mean Training CA: %f\n' % bestMeanTrnCA) + 
+                      ('Best Mean Training CA: %f\n' % bestMeanTrnCA) +
                       ('Best Mean Validation CA: %f\n' % bestMeanValCA) +
                       ('Final Training CA: %f\n' % trainCA) +
                       ('Confusion Matrix:\n' + str(trainConfusion) + '\n') +
@@ -850,7 +850,7 @@ class MentalTasks(StandardBCIPage):
         dialog.Destroy()
 
         resultText = (('Best Order: %f\n' % bestOrder) +
-                      ('Best Mean Training CA: %f\n' % bestMeanTrnCA) + 
+                      ('Best Mean Training CA: %f\n' % bestMeanTrnCA) +
                       ('Best Mean Validation CA: %f\n' % bestMeanValCA) +
                       ('Final Training CA: %f\n' % trainCA) +
                       ('Confusion Matrix:\n' + str(trainConfusion) + '\n') +

@@ -352,7 +352,7 @@ def demoQDA2d():
     ax.imshow(colorFlip, origin='lower',
               extent=(mn[0], mx[0], mn[1], mx[1]), aspect='auto')
 
-    # contours 
+    # contours
     nLevel = 6
     cs = ax.contour(x, y, pMax, colors='black',
                     levels=np.linspace(np.min(pMax), np.max(pMax), nLevel))
@@ -690,7 +690,7 @@ def demoLDA2d():
     ax.imshow(colorFlip, origin='lower',
               extent=(mn[0], mx[0], mn[1], mx[1]), aspect='auto')
 
-    # contours 
+    # contours
     nLevel=6
     cs = ax.contour(x, y, pMax, colors='black',
                     levels=np.linspace(np.min(pMax), np.max(pMax), nLevel))

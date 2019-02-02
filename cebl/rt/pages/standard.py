@@ -297,7 +297,7 @@ class StandardBCIPage(StandardPage):
         self.trainButton = wx.Button(self.toolbar, label='Train')
         self.toolbar.AddControl(self.trainButton, label='Train')
         self.Bind(wx.EVT_BUTTON, self.toggleTrain, self.trainButton)
-        
+
         # button to re-train classifier
         self.retrainButton = wx.Button(self.toolbar, label='Retrain')
         self.retrainButton.Disable()

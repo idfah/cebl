@@ -256,7 +256,7 @@ class IdleTextStim(TextStim):
             parent:         wx parent object.
 
             stim:           String containing the idle stimulus.
-    
+
             args, kwargs:   Additional arguments passed to TextStim
                             base class.
         """

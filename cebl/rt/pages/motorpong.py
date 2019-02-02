@@ -42,7 +42,7 @@ class WelchConfigPanel(wx.Panel):
                 flag=wx.ALL | wx.EXPAND, border=10)
         featureSizer.Add(spanControlBox, proportion=1,
                 flag=wx.LEFT | wx.BOTTOM | wx.RIGHT | wx.EXPAND, border=10)
-        
+
         # radio buttons for turning log transform on and off
         logTransControlBox = widgets.ControlBox(self, label='Log Trans', orient=wx.HORIZONTAL)
 
@@ -161,7 +161,7 @@ class ConfigPanel(StandardConfigPanel):
 
         choiceControlBox.Add(choiceGridSizer, proportion=1,
                              flag=wx.ALL | wx.EXPAND, border=0)
-        
+
         self.sizer.Add(choiceControlBox, proportion=0, flag=wx.ALL | wx.EXPAND, border=10)
 
     def setChoices(self, event):
@@ -365,7 +365,7 @@ class ConfigPanel(StandardConfigPanel):
         self.pg.requireRetrain()
 
     def initLayout(self):
-        self.initStandardLayout() 
+        self.initStandardLayout()
 
         self.FitInside()
         self.autoregPanel.Hide()
@@ -397,8 +397,8 @@ class PlotPanel(wx.Panel):
         self.featureCanvas = FigureCanvas(parent=self, id=wx.ID_ANY, figure=self.featureFig)
 
     def initPongGame(self):
-        self.pongGame = widgets.Pong(self) 
-        
+        self.pongGame = widgets.Pong(self)
+
         # for some reason pongGame.Hide() is not called in showPieMenu. I don't know why
         self.pongGame.Hide()
 
@@ -492,7 +492,7 @@ class MotorPong(StandardBCIPage):
         self.trainButton = wx.Button(self.toolbar, label='Train')
         self.toolbar.AddControl(self.trainButton, label='Train')
         self.Bind(wx.EVT_BUTTON, self.toggleTrain, self.trainButton)
-        
+
         # button to re-train classifier
         self.retrainButton = wx.Button(self.toolbar, label='Retrain')
         self.retrainButton.Disable()

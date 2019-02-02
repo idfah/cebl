@@ -1,6 +1,5 @@
 import wx
 
-from cebl.rt import sources
 from cebl.rt import widgets
 from cebl.rt import filters
 

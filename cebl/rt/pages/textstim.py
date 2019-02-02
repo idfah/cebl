@@ -1,11 +1,11 @@
 import copy
-import numpy as np
 import string
 import time
+
+import numpy as np
 import wx
 from wx.lib.agw import aui
 
-from cebl import util
 from cebl.rt import widgets
 
 from .page import Page
@@ -15,7 +15,7 @@ class TextStim(Page):
     def __init__(self, *args, **kwargs):
         self.initConfig()
 
-        Page.__init__(self, name='TextStim', *args, **kwargs)
+        Page.__init__(self, name="TextStim", *args, **kwargs)
 
         self.initAui()
         self.initToolbar()
@@ -29,17 +29,17 @@ class TextStim(Page):
     def initToolbar(self):
         self.toolbar = aui.AuiToolBar(self)
 
-        self.startButton = wx.Button(self.toolbar, label='Start')
-        self.toolbar.AddControl(self.startButton, label='Run')
+        self.startButton = wx.Button(self.toolbar, label="Start")
+        self.toolbar.AddControl(self.startButton, label="Run")
         self.Bind(wx.EVT_BUTTON, self.toggleRunning, self.startButton)
 
         self.subjectTextCtrl = wx.TextCtrl(self.toolbar)
-        self.subjectTextCtrl.SetValue('s')
-        self.toolbar.AddControl(self.subjectTextCtrl, label='Subject')
+        self.subjectTextCtrl.SetValue("s")
+        self.toolbar.AddControl(self.subjectTextCtrl, label="Subject")
 
         self.protocolComboBox = wx.ComboBox(self.toolbar, choices=self.protocols,
                 value=self.protocol, style=wx.CB_READONLY)
-        self.toolbar.AddControl(self.protocolComboBox, label='Protocol')
+        self.toolbar.AddControl(self.protocolComboBox, label="Protocol")
         self.Bind(wx.EVT_COMBOBOX, self.setProtocolFromComboBox, self.protocolComboBox)
 
         #self.toolbar.Realize()
@@ -51,25 +51,25 @@ class TextStim(Page):
         self.stimFont = wx.Font(pointSize=196, family=wx.FONTFAMILY_SWISS,
                             style=wx.FONTSTYLE_NORMAL, weight=wx.FONTWEIGHT_NORMAL)
 
-        self.protocols = ('3minutes', 'letter practice b',
-                          'letter b', 'letter d', 'letter p',
-                          'letter m', 'letter t', 'letter x',
-                          'motortasks practice',
-                          'motortasks trial1', 'motortasks trial2',
-                          'mentaltasks practice',
-                          'mentaltasks trial1',
-                          'mentaltasks trial2',
-                          'mentaltasks trial3',
-                          'mentaltasks trial4',
-                          'mentaltasks trial5')
+        self.protocols = ("3minutes", "letter practice b",
+                          "letter b", "letter d", "letter p",
+                          "letter m", "letter t", "letter x",
+                          "motortasks practice",
+                          "motortasks trial1", "motortasks trial2",
+                          "mentaltasks practice",
+                          "mentaltasks trial1",
+                          "mentaltasks trial2",
+                          "mentaltasks trial3",
+                          "mentaltasks trial4",
+                          "mentaltasks trial5")
         self.nProtocols = len(self.protocols)
 
-        self.setProtocol('3minutes')
+        self.setProtocol("3minutes")
 
         self.startPause = 2.0
 
     def initTextStim(self):
-        self.stimArea = widgets.TextStim(self, stimText='',
+        self.stimArea = widgets.TextStim(self, stimText="",
             stimColor=self.stimColor, stimFont=self.stimFont)
 
         self.stimTimer = wx.Timer(self)
@@ -78,12 +78,12 @@ class TextStim(Page):
     def initLayout(self):
         """Initialize layout of main page and initialize layout.
         """
-        toolbarAuiInfo = (aui.AuiPaneInfo().Name('toolbar').Caption(self.name + ' Tools')
+        toolbarAuiInfo = (aui.AuiPaneInfo().Name("toolbar").Caption(self.name + " Tools")
             .ToolbarPane().Top().CloseButton(False).LeftDockable(False).RightDockable(False))
         self.auiManager.AddPane(self.toolbar, toolbarAuiInfo)
         self.toolbar.Realize()
 
-        stimPaneAuiInfo = aui.AuiPaneInfo().Name('stim').Caption(self.name + 'Stimulus').CenterPane()
+        stimPaneAuiInfo = aui.AuiPaneInfo().Name("stim").Caption(self.name + "Stimulus").CenterPane()
         self.auiManager.AddPane(self.stimArea, stimPaneAuiInfo)
 
         self.auiManager.Update()
@@ -91,118 +91,118 @@ class TextStim(Page):
     def setProtocol(self, protocol):
         self.protocol = protocol
 
-        if self.protocol == '3minutes':
-            self.letter = ''
+        if self.protocol == "3minutes":
+            self.letter = ""
 
-            self.stims = ['*',]
+            self.stims = ["*",]
 
             self.si = 3*60.0
             self.isi = 0.0
 
-            self.instructions = 'Relax and look at the\n\n%s for 3 minutes.' % self.stims[0]
+            self.instructions = "Relax and look at the\n\n%s for 3 minutes." % self.stims[0]
 
-        elif self.protocol.startswith('letter'):
+        elif self.protocol.startswith("letter"):
             self.letter = self.protocol[-1]
 
-            if self.protocol.startswith('letter practice'):
-                chars = 'bdpfnpdpbddsbakbbdb'
+            if self.protocol.startswith("letter practice"):
+                chars = "bdpfnpdpbddsbakbbdb"
 
-            elif self.letter in ('b', 'd', 'p'):
-                chars = 'bdpfnpdpbddsbakbbdbmbbpadtdtbdpvdnpbddpp' +\
-                        'bsppdimddppdbpbbbdpbdpdpkibdpfdpeebpbbpv' +\
-                        'vddbpdbcbpdpbbykcdpp'
+            elif self.letter in ("b", "d", "p"):
+                chars = "bdpfnpdpbddsbakbbdbmbbpadtdtbdpvdnpbddpp" + \
+                        "bsppdimddppdbpbbbdpbdpdpkibdpfdpeebpbbpv" + \
+                        "vddbpdbcbpdpbbykcdpp"
 
-            elif self.letter == 'm':
-                chars = 'zijovpmmlhvyummpcmthtdmbpkmimnuomtnmbsq' +\
-                        'mglcmmanmqgluakqmnoumhfmimrjfjlmhrntmyjw'
+            elif self.letter == "m":
+                chars = "zijovpmmlhvyummpcmthtdmbpkmimnuomtnmbsq" + \
+                        "mglcmmanmqgluakqmnoumhfmimrjfjlmhrntmyjw"
 
-            elif self.letter == 't':
-                chars = 'tbmdfaootfrsqyjptotutrslttxpfejtqontmtdh' +\
-                        'pwhtrweesqvaprbatmtztlrztktsutthtwpvtvne'
+            elif self.letter == "t":
+                chars = "tbmdfaootfrsqyjptotutrslttxpfejtqontmtdh" + \
+                        "pwhtrweesqvaprbatmtztlrztktsutthtwpvtvne"
 
-            elif self.letter == 'x':
-                chars = 'fjgxaxgunxzuyrxkqphxiddoyxqcccacxbtxxtxv' +\
-                        'ecplmunxrxcxxzbexyfztojwmxybxnxhtpwxxwrz'
+            elif self.letter == "x":
+                chars = "fjgxaxgunxzuyrxkqphxiddoyxqcccacxbtxxtxv" + \
+                        "ecplmunxrxcxxzbexyfztojwmxybxnxhtpwxxwrz"
 
             else:
                 stims = string.ascii_lowercase*3
 
             self.stims = list(chars)
-                
+
             self.si = 0.100
             self.isi = 0.750
 
-            self.instructions =\
-                ('Count the number of times the letter\n\n%s' % self.letter) +\
-                ' appears in the center of the screen.'
+            self.instructions = \
+                ("Count the number of times the letter\n\n%s" % self.letter) + \
+                " appears in the center of the screen."
 
-        elif self.protocol.startswith('motortasks'):
-            self.letter = ''
+        elif self.protocol.startswith("motortasks"):
+            self.letter = ""
 
-            #mtasks = ['Left', 'Right']
-            #if self.protocol.startswith('motortasks practice'):
+            #mtasks = ["Left", "Right"]
+            #if self.protocol.startswith("motortasks practice"):
             #    nTrials = 1
             #else:
             #    nTrials = 5
             #self.stims = sum([list(np.random.permutation(mtasks)) for i in range(nTrials)], [])
 
-            if self.protocol.startswith('motortasks practice'):
-                self.stims = ['Left', 'Right']
+            if self.protocol.startswith("motortasks practice"):
+                self.stims = ["Left", "Right"]
             else:
-                self.stims = ['Right', 'Right',
-                              'Left', 'Right',
-                              'Left', 'Left',
-                              'Right', 'Left']
+                self.stims = ["Right", "Right",
+                              "Left", "Right",
+                              "Left", "Left",
+                              "Right", "Left"]
 
             self.si = 10.0
             self.isi = 5.0
 
-            self.instructions ='''In your mind only, please perform one of the following tasks
+            self.instructions = '''In your mind only, please perform one of the following tasks
 when one of the following cues appears. When the screen is blank, relax and think of nothing.
 
 
-'Left'  think about repeatedly raising and lowering your left arm over your head.
+"Left"  think about repeatedly raising and lowering your left arm over your head.
 
-'Right'  think about repeatedly raising and lowering your right arm over your head.'''
+"Right"  think about repeatedly raising and lowering your right arm over your head.'''
 
-        elif self.protocol.startswith('mentaltasks'):
-            self.letter = ''
+        elif self.protocol.startswith("mentaltasks"):
+            self.letter = ""
 
-            #mtasks = ['Count', 'Fist', 'Rotate', 'Song']
-            #if self.protocol.startswith('mentaltasks practice'):
+            #mtasks = ["Count", "Fist", "Rotate", "Song"]
+            #if self.protocol.startswith("mentaltasks practice"):
             #    nTrials = 1
             #else:
             #    nTrials = 3
             #self.stims = sum([list(np.random.permutation(mtasks)) for i in range(nTrials)], [])
 
-            #if self.protocol.startswith('mentaltasks practice'):
-            #    self.stims = ['Count', 'Rotate', 'Song', 'Fist']
+            #if self.protocol.startswith("mentaltasks practice"):
+            #    self.stims = ["Count", "Rotate", "Song", "Fist"]
             #else:
-            #    self.stims = ['Count', 'Song', 'Rotate', 'Count',
-            #                  'Fist', 'Song', 'Rotate', 'Fist',
-            #                  'Count', 'Fist', 'Rotate', 'Song',
-            #                  'Rotate', 'Count', 'Song', 'Count',
-            #                  'Fist', 'Rotate', 'Song', 'Fist']
-            self.stims = ['Count', 'Rotate', 'Song', 'Fist']
+            #    self.stims = ["Count", "Song", "Rotate", "Count",
+            #                  "Fist", "Song", "Rotate", "Fist",
+            #                  "Count", "Fist", "Rotate", "Song",
+            #                  "Rotate", "Count", "Song", "Count",
+            #                  "Fist", "Rotate", "Song", "Fist"]
+            self.stims = ["Count", "Rotate", "Song", "Fist"]
             np.random.shuffle(self.stims)
 
             self.si = 10.0
             self.isi = 5.0
 
-            self.instructions ='''In your mind only, please perform one of the following tasks
+            self.instructions = '''In your mind only, please perform one of the following tasks
 when one of the following cues appears. When the screen is blank, relax and think of nothing.
 
 
-'Count'  think about counting backwards from 100 by 3
+"Count"  think about counting backwards from 100 by 3
 
-'Fist'   think about repeatedly clenching and opening your right hand
+"Fist"   think about repeatedly clenching and opening your right hand
 
-'Rotate' think about a rotating cube suspended in air
+"Rotate" think about a rotating cube suspended in air
 
-'Song'   sing a favorite song silently to yourself'''
+"Song"   sing a favorite song silently to yourself'''
 
         else:
-            raise RuntimeError('Invalid protocol: ' % protocol)
+            raise RuntimeError("Invalid protocol: " % protocol)
 
     def toggleRunning(self, event=None):
         if self.isRunning():
@@ -210,7 +210,7 @@ when one of the following cues appears. When the screen is blank, relax and thin
             self.startButton.Disable()
         else:
             self.start()
-            self.startButton.SetLabel('Stop')
+            self.startButton.SetLabel("Stop")
 
     def setProtocolFromComboBox(self, event):
         self.setProtocol(self.protocolComboBox.GetValue())
@@ -218,7 +218,7 @@ when one of the following cues appears. When the screen is blank, relax and thin
 
     def beforeStart(self):
         instructionDialog = wx.MessageDialog(self, self.instructions,
-                    'Instructions', style=wx.OK | wx.CENTER)
+                    "Instructions", style=wx.OK | wx.CENTER)
         instructionDialog.ShowModal()
         instructionDialog.Destroy()
 
@@ -226,7 +226,7 @@ when one of the following cues appears. When the screen is blank, relax and thin
         self.nextBlank = True
         self.stopFlag = False
         self.availStims = copy.copy(self.stims)
-        self.stimArea.setStimText('')
+        self.stimArea.setStimText("")
 
         self.startTime = time.time()
 
@@ -234,18 +234,18 @@ when one of the following cues appears. When the screen is blank, relax and thin
 
     def changeStim(self, event=None):
         if self.stopFlag:
-            curStim = ''
+            curStim = ""
             self.src.setMarker(0.0)
 
-            #print('stopping')
+            #print("stopping")
             self.stop()
-            self.startButton.SetLabel('Start')
+            self.startButton.SetLabel("Start")
             self.startButton.Enable()
 
-        elif len(self.availStims) == 0:
+        elif not self.availStims:
             self.stimTimer.Start(1000.0*self.startPause, oneShot=True)
 
-            curStim = ''
+            curStim = ""
             self.stopFlag = True
             self.src.setMarker(0.0)
 
@@ -253,7 +253,7 @@ when one of the following cues appears. When the screen is blank, relax and thin
             if self.isRunning():
                 self.stimTimer.Start(1000.0*self.isi, oneShot=True)
 
-            curStim = ''
+            curStim = ""
             self.nextBlank = False
             self.src.setMarker(0.0)
 
@@ -261,7 +261,7 @@ when one of the following cues appears. When the screen is blank, relax and thin
             self.stimTimer.Start(1000.0*self.si, oneShot=True)
 
             curStim = self.availStims.pop(0)
-            if self.protocol.startswith('letter'):
+            if self.protocol.startswith("letter"):
                 if curStim == self.letter:
                     sign = 1
                 else:
@@ -276,14 +276,14 @@ when one of the following cues appears. When the screen is blank, relax and thin
         self.stimArea.setStimText(curStim)
 
     def beforeStop(self):
-        if not 'practice' in self.protocol:
+        if not "practice" in self.protocol:
             cap = self.src.getEEGSecs(time.time() - self.startTime, filter=False)
 
-            fileName = self.subjectTextCtrl.GetValue() + '-' +\
-                    self.protocol.replace(' ', '-') + '.pkl'
+            fileName = self.subjectTextCtrl.GetValue() + "-" + \
+                    self.protocol.replace(" ", "-") + ".pkl"
 
-            saveDialog = wx.FileDialog(self, message='Save EEG data.',
-                wildcard='Pickle (*.pkl)|*.pkl|All Files|*',
+            saveDialog = wx.FileDialog(self, message="Save EEG data.",
+                wildcard="Pickle (*.pkl)|*.pkl|All Files|*",
                 defaultFile=fileName,
                 style=wx.FD_SAVE | wx.FD_OVERWRITE_PROMPT)
 
@@ -292,7 +292,7 @@ when one of the following cues appears. When the screen is blank, relax and thin
                     return
                 cap.saveFile(saveDialog.GetPath())
             except Exception:
-                wx.LogError('Save failed!')
+                wx.LogError("Save failed!")
                 raise
             finally:
                 saveDialog.Destroy()
@@ -313,9 +313,9 @@ when one of the following cues appears. When the screen is blank, relax and thin
         self.setProtocol(self.protocols[nextProtoIndex])
 
     def sayThankYou(self):
-        thankYou = 'This session is complete.  Thank you for participating!!'
+        thankYou = "This session is complete.  Thank you for participating!!"
 
         thanksDialog = wx.MessageDialog(self, thankYou,
-                    'Thank You!', style=wx.OK | wx.CENTER)
+                    "Thank You!", style=wx.OK | wx.CENTER)
         thanksDialog.ShowModal()
         thanksDialog.Destroy()

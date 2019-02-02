@@ -1,4 +1,3 @@
-import numpy as np
 import wx
 from wx.lib.agw import aui
 
@@ -147,7 +146,7 @@ class ConfigPanel(StandardConfigPanel):
         rbtns[0].SetValue(True) # select first button to start
 
         # bind callbacks to each radio button with appropriate factors
-        for rbtn,factor in zip(rbtns,(1, 2, 4, 8)):
+        for rbtn, factor in zip(rbtns, (1,2,4,8)):
             # Uses lexical scoping to save ratio for each button.
             def setDecimationWrapper(event, factor=factor):
                 self.setDecimation(factor=factor)
