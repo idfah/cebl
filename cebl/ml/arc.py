@@ -5,12 +5,9 @@ from cebl import util
 
 from .classifier import Classifier
 from .autoreg import AutoRegression, RecurrentAutoRegression
-from .logreg import LogisticRegression
 from . import stand
 
 from .nnet import esn
-
-from .logreg import LogisticRegression
 from .knn import KNN
 
 
@@ -101,7 +98,7 @@ class AutoRegressiveClassifier(Classifier):
             [self.autoRegClass(ss, **autoRegKwargs) for ss in classData]
 
         #self.baselineErrors = np.empty(len(self.models))
-        #for i,mdl in enumerate(self.models):
+        #for i, mdl in enumerate(self.models):
         #    preds, resids = mdl.eval(classData[i], returnResid=True)
         #    self.baselineErrors[i] = util.rmse(resids)
 
@@ -175,7 +172,7 @@ def demoARC():
     print()
 
     fig = plt.figure(figsize=(20,6))
-    axSigs = fig.add_subplot(1,3, 1)
+    axSigs = fig.add_subplot(1, 3, 1)
     axSigs.plot(x, trainData[0][0].T, color='blue', linewidth=2, label=r'$\mathbf{sin}(x)$')
     axSigs.plot(x, trainData[0].T, color='blue', alpha=0.1, linewidth=2)
     axSigs.plot(x, 3.0+trainData[1][0].T, color='red', linewidth=2, label=r'$\mathbf{sin}(2x)$')
@@ -195,13 +192,13 @@ def demoARC():
     #trainErrors = [standardizer.apply(cls) for cls in trainErrors]
     #testErrors = [standardizer.apply(cls) for cls in testErrors]
 
-    axTrainErrs = fig.add_subplot(1,3, 2)
-    #axTrainErrs = fig.add_subplot(1,2, 1)
+    axTrainErrs = fig.add_subplot(1, 3, 2)
+    #axTrainErrs = fig.add_subplot(1, 2, 1)
     axTrainErrs.scatter(trainErrors[0][:,0], trainErrors[0][:,1], color='blue')
     axTrainErrs.scatter(trainErrors[1][:,0], trainErrors[1][:,1], color='red')
     axTrainErrs.set_title('Training Relative Modeling Errors')
-    axTrainErrs.set_xlabel('$\mathbf{sin}(x)$ model error')
-    axTrainErrs.set_ylabel('$\mathbf{sin}(2x)$ model error')
+    axTrainErrs.set_xlabel(r'$\mathbf{sin}(x)$ model error')
+    axTrainErrs.set_ylabel(r'$\mathbf{sin}(2x)$ model error')
 
     allTrainErrs = np.vstack(trainErrors)
     mn = allTrainErrs.min()
@@ -211,13 +208,13 @@ def demoARC():
     axTrainErrs.grid()
     axTrainErrs.autoscale(tight=True)
 
-    axTestErrs = fig.add_subplot(1,3, 3)
-    #axTestErrs = fig.add_subplot(1,2, 2)
+    axTestErrs = fig.add_subplot(1, 3, 3)
+    #axTestErrs = fig.add_subplot(1, 2, 2)
     axTestErrs.scatter(testErrors[0][:,0], testErrors[0][:,1], color='blue')
     axTestErrs.scatter(testErrors[1][:,0], testErrors[1][:,1], color='red')
     axTestErrs.set_title('Testing Relative Modeling Errors')
-    axTestErrs.set_xlabel('$\mathbf{sin}(x)$ model error')
-    axTestErrs.set_ylabel('$\mathbf{sin}(2x)$ model error')
+    axTestErrs.set_xlabel(r'$\mathbf{sin}(x)$ model error')
+    axTestErrs.set_ylabel(r'$\mathbf{sin}(2x)$ model error')
 
     allTestErrs = np.vstack(testErrors)
     mn = allTestErrs.min()
@@ -290,8 +287,8 @@ def demoRARC():
     print('AUC:    ', model.auc(testData))
     print()
 
-    fig = plt.figure(figsize=(20,6))
-    axSigs = fig.add_subplot(1,3, 1)
+    fig = plt.figure(figsize=(20, 6))
+    axSigs = fig.add_subplot(1, 3, 1)
     axSigs.plot(x, trainData[0][0].T, color='blue', linewidth=2, label=r'$\mathbf{sin}(x)$')
     axSigs.plot(x, trainData[0].T, color='blue', alpha=0.1, linewidth=2)
     axSigs.plot(x, 3.0+trainData[1][0].T, color='red', linewidth=2, label=r'$\mathbf{sin}(2x)$')
@@ -311,13 +308,13 @@ def demoRARC():
     #trainErrors = [standardizer.apply(cls) for cls in trainErrors]
     #testErrors = [standardizer.apply(cls) for cls in testErrors]
 
-    axTrainErrs = fig.add_subplot(1,3, 2)
-    #axTrainErrs = fig.add_subplot(1,2, 1)
+    axTrainErrs = fig.add_subplot(1, 3, 2)
+    #axTrainErrs = fig.add_subplot(1, 2, 1)
     axTrainErrs.scatter(trainErrors[0][:,0], trainErrors[0][:,1], color='blue')
     axTrainErrs.scatter(trainErrors[1][:,0], trainErrors[1][:,1], color='red')
     axTrainErrs.set_title('Training Relative Modeling Errors')
-    axTrainErrs.set_xlabel('$\mathbf{sin}(x)$ model error')
-    axTrainErrs.set_ylabel('$\mathbf{sin}(2x)$ model error')
+    axTrainErrs.set_xlabel(r'$\mathbf{sin}(x)$ model error')
+    axTrainErrs.set_ylabel(r'$\mathbf{sin}(2x)$ model error')
 
     allTrainErrs = np.vstack(trainErrors)
     mn = allTrainErrs.min()
@@ -327,13 +324,13 @@ def demoRARC():
     axTrainErrs.grid()
     axTrainErrs.autoscale(tight=True)
 
-    axTestErrs = fig.add_subplot(1,3, 3)
-    #axTestErrs = fig.add_subplot(1,2, 2)
+    axTestErrs = fig.add_subplot(1, 3, 3)
+    #axTestErrs = fig.add_subplot(1, 2, 2)
     axTestErrs.scatter(testErrors[0][:,0], testErrors[0][:,1], color='blue')
     axTestErrs.scatter(testErrors[1][:,0], testErrors[1][:,1], color='red')
     axTestErrs.set_title('Testing Relative Modeling Errors')
-    axTestErrs.set_xlabel('$\mathbf{sin}(x)$ model error')
-    axTestErrs.set_ylabel('$\mathbf{sin}(2x)$ model error')
+    axTestErrs.set_xlabel(r'$\mathbf{sin}(x)$ model error')
+    axTestErrs.set_ylabel(r'$\mathbf{sin}(2x)$ model error')
 
     allTestErrs = np.vstack(testErrors)
     mn = allTestErrs.min()

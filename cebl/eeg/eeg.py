@@ -45,7 +45,7 @@ class EEG(EEGBase):
 
             chanNames:  A list of names of the channels in the eeg data.
                         If None (default) then the channel names are set
-                        to '1', '2', ... 'nChan'.
+                        to "1", "2", ... "nChan".
 
             markers:    EEG event markers.  This is a list or tuple of floats
                         that mark events in the eeg data.  There should be one
@@ -127,7 +127,7 @@ class EEG(EEGBase):
         self.markers = self.markers.astype(self.dtype, copy=False)
 
         if len(self.markers) != self.nObs:
-            raise RuntimeError("Length of markers " + str(len(self.markers)) + \
+            raise RuntimeError("Length of markers " + str(len(self.markers)) +
                                " does not match number of observations " + str(self.nObs))
 
         return self
@@ -272,7 +272,7 @@ class EEG(EEGBase):
 
         # report which chan?  do this elsewhere? XXX - idfah
         if None in (vChan1, vChan2, hChan1, hChan2):
-            raise RuntimeError('Invalid channel name.')
+            raise RuntimeError("Invalid channel name.")
 
         if bipolar:
             veog = self.data[:, vChan1] - self.data[:, vChan2]
@@ -289,36 +289,72 @@ class EEG(EEGBase):
             model = ml.RidgeRegression(eogFilt, self.data)
 
         self.data -= model.eval(eogFilt)
-
         return self, model
 
-    def sharpen(self, coord='sphere', **kwargs):
+    def sharpen(self, coord="sphere", **kwargs):
+        """Apply a spatial sharpening transform.  Similar to the sharpen filters
+        used in image processing.  See sig.sharpen for more information.
+
+        Args:
+            coord:      String value of "2d" or "3d" or "sphere" (default)
+                        indicating the coordinate system to use for distance
+                        calculations.
+
+            **kwargs:   Additional keyword arguments to pass to sig.sharpen.
+
+        Returns:
+            This function modifies the signal data and returns self.
+        """
         locs = np.asarray([chanlocs.chanLocs3d[cn.lower()] for cn in self.getChanNames()],
                           dtype=self.dtype)
 
         coord = coord.lower()
-        if coord == '2d':
+        if coord == "2d":
             # steriographic projection
             x = locs[:, 0]
             y = locs[:, 1]
             z = locs[:, 2]
-            xy = np.vstack((x/(1.0+z), y/(1.0+z))).T
+            xy = np.vstack((x / (1.0 + z), y / (1.0 + z))).T
 
             dist = head.euclidDist(xy, xy)
 
-        elif coord == '3d':
+        elif coord == "3d":
             dist = head.euclidDist(locs, locs)
 
-        elif coord == 'sphere':
+        elif coord == "sphere":
             dist = head.sphereDist(locs, locs)
 
         else:
-            raise RuntimeError('Invalid coord %s.' % str(coord))
+            raise RuntimeError("Invalid coord %s." % str(coord))
 
         self.data = sig.sharpen(self.data, dist=dist, **kwargs)
         return self
 
     def decimate(self, factor, *args, **kwargs):
+        """Decimate by a given factor.  See sig.decimate for
+        more information.
+
+        Notes:
+            Decimation includes the application of an
+            antialiasing filter followed by downsampling.
+            If an antialiasing filter has already been
+            applied, consider using the downsample method.
+
+            This method also downsamples the markers through
+            downsampling without an antialiasing filter.
+
+        Args:
+            factor:     The factor by which to decimate the
+                        signal.  For example, a value of three
+                        will result in keeping every third
+                        signal value.
+
+            *args:      Additional arguments to pass to
+            **kwargs:   sig.decimate.
+
+        Returns:
+            This function modifies the signal data and returns self.
+        """
         self.data = sig.decimate(self.data, factor, *args, **kwargs)
         self.markers = sig.downsample(self.markers, factor)
 
@@ -329,6 +365,27 @@ class EEG(EEGBase):
         return self
 
     def downsample(self, factor):
+        """Downsample by a given factor.  See sig.downsample for
+        more information.
+
+        Notes:
+            Downsampling does not include the application of an
+            antialiasing filter.  In order to prevent aliasing
+            artifacts, consider using the decimate method or else
+            applying a lowpass filter before downsampling.
+
+        Args:
+            factor:     The factor by which to downsample the
+                        signal.  For example, a value of three
+                        will result in keeping every third
+                        signal value.
+
+            *args:      Additional arguments to pass to
+            **kwargs:   sig.downsample.
+
+        Returns:
+            This function modifies the signal data and returns self.
+        """
         self.data = sig.downsample(self.data, factor)
         self.markers = sig.downsample(self.markers, factor)
 
@@ -412,8 +469,8 @@ class EEG(EEGBase):
 
     def icaFilter(self, comp, remove=False, lags=0, returnICA=False, **kwargs):
         ica = ml.ICA(self.data, lags=lags, **kwargs)
-        if ica.reason == 'diverge':
-            raise RuntimeError('ICA training diverged.  Try a smaller learning rate.')
+        if ica.reason == "diverge":
+            raise RuntimeError("ICA training diverged.  Try a smaller learning rate.")
 
         self.data = ica.filter(self.data, comp=comp, remove=remove)
 
@@ -424,8 +481,8 @@ class EEG(EEGBase):
 
     def icaTransform(self, comp=None, remove=False, lags=0, returnICA=False, **kwargs):
         ica = ml.ICA(self.data, lags=lags, **kwargs)
-        if ica.reason == 'diverge':
-            raise RuntimeError('ICA training diverged.  Try a smaller learning rate.')
+        if ica.reason == "diverge":
+            raise RuntimeError("ICA training diverged.  Try a smaller learning rate.")
 
         newData = ica.transform(self.data, comp=comp, remove=remove)
 
@@ -519,7 +576,7 @@ class EEG(EEGBase):
         for pair in pairs:
             if len(pair) > 2:
                 raise RuntimeError(
-                    'Bipolar reference assumes pairs of electrodes but got %s.' % pair)
+                    "Bipolar reference assumes pairs of electrodes but got %s." % pair)
 
             pair = self.getChanIndices(pair)
 
@@ -529,7 +586,7 @@ class EEG(EEGBase):
         chanNames = []
         for pair in pairs:
             pair = self.getChanNames(pair)
-            chanNames.append('-'.join(pair))
+            chanNames.append("-".join(pair))
 
         self.deleteChans([r for l, r in pairs])
         self.setChanNames(chanNames)
@@ -555,7 +612,7 @@ class EEG(EEGBase):
             start = int(start*float(self.sampRate))/self.sampRate
 
             if start < 0.0:
-                raise RuntimeError('start %f is less than zero.' % start)
+                raise RuntimeError("start %f is less than zero." % start)
 
             startTrimSamp = int(start*self.sampRate)
         else:
@@ -567,7 +624,7 @@ class EEG(EEGBase):
 
             if end > self.nSec:
                 raise RuntimeError(
-                    'end %f is greater than length of data %f.' % (end, self.nSec))
+                    "end %f is greater than length of data %f." % (end, self.nSec))
 
             endTrimSamp = int((end-self.nSec)*self.sampRate)
         else:
@@ -622,17 +679,17 @@ class EEG(EEGBase):
             ax = fig.add_subplot(1, 1, 1)
 
         ax.grid()
-        ax.set_xlabel(r'Lag')
-        ax.set_ylabel(r'Correlation')
+        ax.set_xlabel(r"Lag")
+        ax.set_ylabel(r"Correlation")
 
         lines = ax.plot(np.arange(ac.shape[0]), ac, **kwargs)
 
         ax.autoscale(tight=True)
 
-        return {'ax': ax, 'lines': lines}
+        return {"ax": ax, "lines": lines}
 
     def plotCWT(self, chans=None, start=None, end=None,
-                method='cwt', colorbar=True, **kwargs):
+                method="cwt", colorbar=True, **kwargs):
         if chans is None:
             chans = self.getChanNames()
 
@@ -674,9 +731,9 @@ class EEG(EEGBase):
             ax = fig.add_subplot(plotRows, plotCols, i+1)
             axs += [ax]
 
-            im = ax.imshow(powers[:, :, i].T, interpolation='lanczos',
-                            origin='lower', cmap=pltcm.get_cmap('jet'),
-                            norm=pltLogNorm(), aspect='auto',
+            im = ax.imshow(powers[:, :, i].T, interpolation="lanczos",
+                            origin="lower", cmap=pltcm.get_cmap("jet"),
+                            norm=pltLogNorm(), aspect="auto",
                             extent=(0.0, d.shape[0]/float(self.sampRate),
                             np.min(freqs), np.max(freqs)))
             ims += [im]
@@ -686,27 +743,27 @@ class EEG(EEGBase):
 
             #plt.colorbar()
             ax.autoscale(tight=True)
-            ax.set_title('Channel: %s' % cn)
+            ax.set_title("Channel: %s" % cn)
             ax.set_xlabel("Seconds")
             ax.set_ylabel("Frequencies (Hz)")
             #locs = range(nObs)
             #if len(locs) > 20:
             #    locs = locs[0:len(locs):len(locs)/20]
-            #labels = ['{:6.0g}'.format(v/float(self.sampRate)) for v in locs]
+            #labels = ["{:6.0g}".format(v/float(self.sampRate)) for v in locs]
             #print(labels)
             #plt.xticks(locs, labels)
             #locs = range(self.nFreq)
             #if len(locs) > 20:
             #    locs = locs[0:len(locs):len(locs)/20]
-            #labels = ['{:6.2g}'.format(self.freqs[v]) for v in locs]
+            #labels = ["{:6.2g}".format(self.freqs[v]) for v in locs]
             #plt.yticks(locs, labels)
             #ax.set_title(chanNames[i])
 
             if colorbar:
                 cbar = plt.colorbar(im)
-                cbar.set_label('Power')
+                cbar.set_label("Power")
 
-        return {'axs': axs, 'ims': ims}
+        return {"axs": axs, "ims": ims}
 
     def plotPairs(self, chans=None, start=None, end=None, bins=30):
         if chans is None:
@@ -715,7 +772,7 @@ class EEG(EEGBase):
 
         startSamp = None
         if start is not None:
-            startSamp = int(start*self.sampRate)
+            startSamp = int(start * self.sampRate)
 
         endSamp = None
         if end is not None:
@@ -733,7 +790,8 @@ class EEG(EEGBase):
 
         for r in range(nDim):
             for c in range(nDim):
-                ax = fig.add_subplot(nDim, nDim, r*nDim+c+1+nDim*(nDim-(r%nDim)*2-1))
+                ax = fig.add_subplot(nDim, nDim,
+                    r * nDim + c + 1 + nDim * (nDim - (r % nDim) * 2 - 1))
                 axs.append(ax)
 
                 sx = s[:, r]
@@ -741,16 +799,16 @@ class EEG(EEGBase):
 
                 if r == c:
                     plt.hist(sx, bins=bins, normed=False)
-                    ax.set_xlim(-mx/2.0, mx/2.0)
+                    ax.set_xlim(-mx / 2.0, mx / 2.0)
                 else:
-                    ax.scatter(sx, sy, alpha=0.5, s=10, marker='.')
-                    ax.plot((-mx, mx), (-mx, mx), color='grey', linestyle='dashed')
+                    ax.scatter(sx, sy, alpha=0.5, s=10, marker=".")
+                    ax.plot((-mx, mx), (-mx, mx), color="grey", linestyle="dashed")
                     pearsonr, pearsonp = spstats.pearsonr(sx, sy)
-                    pearsons = ".%2d" % np.round(pearsonr*100)
+                    pearsons = ".%2d" % np.round(pearsonr * 100)
                     ax.text(0.9, 0.1, pearsons,
                         transform=ax.transAxes,
-                        horizontalalignment='right',
-                        verticalalignment='bottom',
+                        horizontalalignment="right",
+                        verticalalignment="bottom",
                         fontsize=8)
                     ax.set_ylim(-mx, mx)
                     ax.set_xlim(-mx, mx)
@@ -760,7 +818,7 @@ class EEG(EEGBase):
                     ax.set_xlabel(self.chanNames[c])
                     ax.set_xticks([])
                 else:
-                    #ax.set_xlabel('')
+                    #ax.set_xlabel("")
                     ax.get_xaxis().set_visible(False)
 
                 if c == 0:
@@ -769,7 +827,7 @@ class EEG(EEGBase):
                 else:
                     ax.get_yaxis().set_visible(False)
 
-        return {'fig': fig, 'axs': axs}
+        return {"fig": fig, "axs": axs}
 
     def plotPSD(self, chans=None, ax=None, psdKwargs=None, **kwargs):
         if psdKwargs is None:
@@ -813,8 +871,8 @@ class EEG(EEGBase):
             fig = plt.figure()
             ax = fig.add_subplot(1, 1, 1)
 
-        ax.set_xlabel(r'Time ($s$)')
-        ax.set_ylabel(r'Signal ($\mu V$)')
+        ax.set_xlabel(r"Time ($s$)")
+        ax.set_ylabel(r"Signal ($\mu V$)")
         if len(chans) > 1:
             ax.set_yticklabels([c for i, c in enumerate(self.chanNames) if i in chans])
             ax.set_yticks(sep)
@@ -826,11 +884,11 @@ class EEG(EEGBase):
         lines = ax.plot(time, s, **kwargs)
 
         if drawZero:
-            ax.hlines(sep, time[0], time[-1], linewidth=2, linestyle='--', color='grey')
+            ax.hlines(sep, time[0], time[-1], linewidth=2, linestyle="--", color="grey")
 
         ax.autoscale(tight=True)
 
-        return {'ax': ax, 'lines': lines, 'scale': scale, 'sep': sep}
+        return {"ax": ax, "lines": lines, "scale": scale, "sep": sep}
 
     def plotLags(self, chans=None, lags=(1, 2, 4, 8, 16, 32, 64, 128, 256), **kwargs):
         if chans is None:
@@ -843,8 +901,8 @@ class EEG(EEGBase):
         #fig.subplots_adjust(hspace=0.15, wspace=0.25,
         #        left=0.05, right=0.92, top=0.97, bottom=0.06)
 
-        if 'alpha' not in kwargs:
-            kwargs['alpha'] = 0.35
+        if "alpha" not in kwargs:
+            kwargs["alpha"] = 0.35
 
         nCols = np.ceil(np.sqrt(len(lags)))
         nRows = np.ceil(len(lags)/float(nCols))
@@ -860,8 +918,8 @@ class EEG(EEGBase):
                 lines += ax.plot(s[lag:, j], s[:-lag, j], **kwargs)
                                  #color=plt.cm.jet(j/float(s.shape[1]), alpha=0.2))
 
-            ax.set_xlabel(r'$x_t$')
-            ax.set_ylabel(r'$x_{t-%d}$' % lag)
+            ax.set_xlabel(r"$x_t$")
+            ax.set_ylabel(r"$x_{t-%d}$" % lag)
             ax.set_xticks([])
             ax.set_yticks([])
 
@@ -870,39 +928,39 @@ class EEG(EEGBase):
 
             #if i == nCols-1:
             #    leg = ax.legend(lines, self.getChanNames(chans),
-            #                    labelspacing=0.34, prop={'size': 12},
+            #                    labelspacing=0.34, prop={"size": 12},
             #                    bbox_to_anchor=(1.35, 0.8))
             if i == 0:
                 leg = ax.legend(lines, self.getChanNames(chans),
-                    loc='upper left', prop={'size': 12})
+                    loc="upper left", prop={"size": 12})
 
         for l in leg.legendHandles:
             l.set_alpha(1.0)
             l.set_linewidth(2)
 
-        return {'ax': ax, 'lines': lines, 'legend': leg}
+        return {"ax": ax, "lines": lines, "legend": leg}
 
     def saveFile(self, fileName):
         fileNameLower = fileName.lower()
-        dotSplit = fileNameLower.rsplit('.')
+        dotSplit = fileNameLower.rsplit(".")
 
         if dotSplit[-1] in util.compressedExtensions:
             fileFormat = dotSplit[-2]
         else:
             fileFormat = dotSplit[-1]
 
-        if fileFormat == 'pkl':
+        if fileFormat == "pkl":
             data = np.hstack((self.data, self.markers[:, None]))
-            with util.openCompressedFile(fileName, 'w') as fileHandle:
+            with util.openCompressedFile(fileName, "w") as fileHandle:
                 pickle.dump(data, fileHandle, protocol=pickle.HIGHEST_PROTOCOL)
         else:
-            raise RuntimeError('Unknown file format ' + str(fileFormat))
+            raise RuntimeError("Unknown file format " + str(fileFormat))
 
 class EEGFromPickledMatrix(EEG):
     def __init__(self, fileName, sampRate, chanNames=None,
                  markers=-1, transpose=False, *args, **kwargs):
-        with util.openCompressedFile(fileName, 'rb') as fileHandle:
-            data = np.asarray(pickle.load(fileHandle, encoding='bytes'))
+        with util.openCompressedFile(fileName, "rb") as fileHandle:
+            data = np.asarray(pickle.load(fileHandle, encoding="bytes"))
 
         if transpose:
             data = data.T
@@ -916,7 +974,7 @@ class EEGFromJSON(EEG):
 
         # should be able to give keys as argument XXX - idfah
 
-        fileHandle = util.openCompressedFile(fileName, 'r')
+        fileHandle = util.openCompressedFile(fileName, "r")
         jData = json.load(fileHandle)
         fileHandle.close()
 
@@ -926,26 +984,26 @@ class EEGFromJSON(EEG):
             found = False
 
             for d in jData:
-                if d['protocol'] == protocol:
+                if d["protocol"] == protocol:
                     jData = d
                     found = True
                     break
 
             if not found:
-                raise RuntimeError('Invalid protocol: %s.' % str(protocol))
+                raise RuntimeError("Invalid protocol: %s." % str(protocol))
 
-        sampRate = jData['sample rate']
-        chanNames = [str(cn) for cn in jData['channels']]
-        deviceName = jData['device']
+        sampRate = jData["sample rate"]
+        chanNames = [str(cn) for cn in jData["channels"]]
+        deviceName = jData["device"]
 
-        self.notes = jData['notes']
-        self.date = jData['date']
-        self.location = jData['location']
-        self.impairment = jData['impairment']
-        self.subjectNumber = jData['subject']
+        self.notes = jData["notes"]
+        self.date = jData["date"]
+        self.location = jData["location"]
+        self.impairment = jData["impairment"]
+        self.subjectNumber = jData["subject"]
 
-        trialName = 'trial %d' % trial
-        data = np.asarray(jData['eeg'][trialName]).T
+        trialName = "trial %d" % trial
+        data = np.asarray(jData["eeg"][trialName]).T
         markers = len(chanNames)
 
         EEG.__init__(self, data=data, sampRate=sampRate, chanNames=chanNames,
@@ -955,9 +1013,9 @@ class EEGFromBDF(EEG):
     def __init__(self, fileName, *args, **kwargs):
         info = readbdf.readBDF(fileName)
 
-        self.date = info['startDate']
-        self.time = info['startTime']
+        self.date = info["startDate"]
+        self.time = info["startTime"]
 
-        EEG.__init__(self, data=info['data'], sampRate=info['sampRate'],
-                     chanNames=info['chanNames'], deviceName='biosemi',
-                     markers=info['markers'], *args, **kwargs)
+        EEG.__init__(self, data=info["data"], sampRate=info["sampRate"],
+                     chanNames=info["chanNames"], deviceName="biosemi",
+                     markers=info["markers"], *args, **kwargs)

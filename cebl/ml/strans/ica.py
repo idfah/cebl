@@ -17,7 +17,8 @@ class IndependentComponentsAnalysis(STrans):
 
     References:
         @article{bell1995information,
-          title={An information-maximization approach to blind separation and blind deconvolution},
+          title={An information-maximization approach to blind
+                 separation and blind deconvolution},
           author={Bell, Anthony J and Sejnowski, Terrence J},
           journal={Neural computation},
           volume={7},
@@ -28,7 +29,8 @@ class IndependentComponentsAnalysis(STrans):
         }
 
         @inproceedings{girolami1997generalised,
-          title={Generalised independent component analysis through unsupervised learning with emergent bussgang properties},
+          title={Generalised independent component analysis through
+                 unsupervised learning with emergent bussgang properties},
           author={Girolami, Mark and Fyfe, C},
           booktitle={Neural Networks, 1997., International Conference on},
           volume={3},
@@ -38,7 +40,8 @@ class IndependentComponentsAnalysis(STrans):
         }
 
         @article{lee1999independent,
-          title={Independent component analysis using an extended infomax algorithm for mixed subgaussian and supergaussian sources},
+          title={Independent component analysis using an extended infomax
+                 algorithm for mixed subgaussian and supergaussian sources},
           author={Lee, Te-Won and Girolami, Mark and Sejnowski, Terrence J},
           journal={Neural computation},
           volume={11},
@@ -81,7 +84,7 @@ class IndependentComponentsAnalysis(STrans):
                 #            np.mean(y*util.tanh(y), axis=0))
 
                 k = np.sign(spstat.kurtosis(y, axis=0))
-                k[np.isclose(k,0.0)] = -1.0
+                k[np.isclose(k, 0.0)] = -1.0
 
             grad[...] = (I - k*util.tanh(y).T.dot(y) - y.T.dot(y)).T.dot(self.w) * n
 
@@ -103,7 +106,7 @@ class IndependentComponentsAnalysis(STrans):
             elif np.max(np.abs(self.w)) > 1.0e100:
                 self.reason = 'diverge'
                 break
-            
+
             if iteration >= maxIter:
                 self.reason = 'maxiter'
                 break
@@ -125,9 +128,9 @@ def demoICA():
     s1 = spsig.sawtooth(t)
     s2 = np.cos(5.0*t)
     s3 = np.random.uniform(-1.0, 1.0, size=t.size)
-    s = np.vstack((s1,s2,s3)).T
+    s = np.vstack((s1, s2, s3)).T
 
-    m = np.random.random((3,3))
+    m = np.random.random((3, 3))
     m /= m.sum(axis=0)
 
     sMixed = s.dot(m)
@@ -136,23 +139,23 @@ def demoICA():
 
     fig = plt.figure()
 
-    axOrig = fig.add_subplot(4,1, 1)
+    axOrig = fig.add_subplot(4, 1, 1)
     axOrig.plot(s+util.colsep(s))
     axOrig.set_title('Unmixed Signal')
     axOrig.autoscale(tight=True)
 
-    axMixed = fig.add_subplot(4,1, 2)
+    axMixed = fig.add_subplot(4, 1, 2)
     axMixed.plot(sMixed+util.colsep(sMixed))
     axMixed.set_title('Mixed Signal (random transform)')
     axMixed.autoscale(tight=True)
 
-    axUnmixed = fig.add_subplot(4,1, 3)
+    axUnmixed = fig.add_subplot(4, 1, 3)
     icaFilt.plotTransform(sMixed, ax=axUnmixed)
     axUnmixed.set_title('ICA Components')
     axUnmixed.autoscale(tight=True)
 
-    axCleaned = fig.add_subplot(4,1, 4)
-    icaFilt.plotFilter(sMixed, comp=(0,1,), ax=axCleaned)
+    axCleaned = fig.add_subplot(4, 1, 4)
+    icaFilt.plotFilter(sMixed, comp=(0, 1,), ax=axCleaned)
     axCleaned.set_title('Cleaned Signal (First two components kept)')
     axCleaned.autoscale(tight=True)
 

@@ -151,7 +151,7 @@ class EchoStateNetworkReservoir:
 
         iw = self.initIW(iwScale, iwConn)
         rw = self.initRW(rwScale, rwConn)
-        self.hw = np.vstack((iw,rw))
+        self.hw = np.vstack((iw, rw))
 
         if self.sparse:
             # is csc or csr faster? XXX - idfah
@@ -180,7 +180,7 @@ class EchoStateNetworkReservoir:
         self.iwConn = iwConn
 
         iw = np.random.uniform(-self.iwMult, self.iwMult,
-                    size=(self.nIn+1,self.nRes))
+                    size=(self.nIn+1, self.nRes))
         connMask = np.random.random(iw.shape) > self.iwConn
         connMask[0,0] = False
         iw[connMask] = 0.0
@@ -262,7 +262,7 @@ class EchoStateNetworkReservoir:
         if context is None:
             context = np.zeros((nSeg, self.nRes), dtype=self.dtype)
 
-        xt = np.empty((nSeg,nIn+self.nRes))
+        xt = np.empty((nSeg, nIn+self.nRes))
 
         hwT = self.hw[:-1].T
 
@@ -379,11 +379,11 @@ class EchoStateNetworkReservoir:
     def plotActDensity(self, x, ax=None, **kwargs):
         act = self.eval(x, **kwargs)
 
-        t = np.arange(0.0,4.0,0.01)
+        t = np.arange(0.0, 4.0, 0.01)
 
         if ax is None:
             fig = plt.figure()
-            ax = fig.add_subplot(1,1,1)
+            ax = fig.add_subplot(1, 1, 1)
 
         ax.set_xlabel('Density')
         ax.set_ylabel('Reservoir Activation')
@@ -391,7 +391,7 @@ class EchoStateNetworkReservoir:
         n, bins, patches = ax.hist(act.ravel(), normed=True,
                         orientation='horizontal', label='Activations')
 
-        lines = ax.plot(np.linspace(0.0,np.max(n),t.size), np.tanh(t-2.0),
+        lines = ax.plot(np.linspace(0.0, np.max(n), t.size), np.tanh(t-2.0),
                         linewidth=2, label=r'$\phi$') # label=r'$\phi='+self.phi.__name__)
         leg = ax.legend(loc='lower right')
 
@@ -405,7 +405,7 @@ class EchoStateNetworkReservoir:
 
         if ax is None:
             fig = plt.figure()
-            ax = fig.add_subplot(1,1,1)
+            ax = fig.add_subplot(1, 1, 1)
 
         img = ax.imshow(hw[self.nIn:,:], interpolation='none')
 
@@ -525,11 +525,11 @@ def demoESP():
 
     fig = plt.figure()
 
-    impulseAx = fig.add_subplot(2,1,1)
+    impulseAx = fig.add_subplot(2, 1, 1)
     impulseAx.plot(sig, color='grey', linewidth=3)
     impulseAx.plot(sigi, color='red')
 
-    actAx = fig.add_subplot(2,1,2)
+    actAx = fig.add_subplot(2, 1, 2)
     actAx.plot(act, color='black', linewidth=2)
     actAx.plot(acti, color='red')
 
@@ -547,7 +547,7 @@ def demoESNTXOR():
     horizon = 5
     transient = horizon+1
 
-    x = np.random.randint(0,2, size=n).astype(np.float32)
+    x = np.random.randint(0, 2, size=n).astype(np.float32)
     g = np.array([int(xor(x[i-horizon], x[i-horizon-1])) if i > horizon
             else 0 for i in range(len(x))], dtype=np.float32)
 
@@ -555,7 +555,7 @@ def demoESNTXOR():
               transient=transient, sideTrack=False, sparse=True, verbose=True)
 
     # redo for test data
-    x = np.random.randint(0,2, size=n)
+    x = np.random.randint(0, 2, size=n)
     g = np.array([int(xor(x[i-horizon], x[i-horizon-1])) if i > horizon
             else 0 for i in range(len(x))], dtype=np.float)
 
@@ -565,21 +565,21 @@ def demoESNTXOR():
     net.reservoir.plotWeightImg()
 
     fig = plt.figure()
-    axTarg = fig.add_subplot(2,1,1)
+    axTarg = fig.add_subplot(2, 1, 1)
     axTarg.bar(range(len(g)), g)
     axTarg.set_xlim((0, len(g)))
-    axTarg.set_ylim((0.0,1.0))
+    axTarg.set_ylim((0.0, 1.0))
 
-    axOut = fig.add_subplot(2,1,2)
+    axOut = fig.add_subplot(2, 1, 2)
     axOut.bar(range(len(g)), out)
     axOut.set_xlim((0, len(g)))
-    axOut.set_ylim((0.0,1.0))
+    axOut.set_ylim((0.0, 1.0))
 
 def demoESNSine():
-    time = np.linspace(0.0,10.0*np.pi,5000)
+    time = np.linspace(0.0, 10.0*np.pi, 5000)
     s1 = np.sin(time)
     s2 = np.cos(time)
-    s = np.vstack((s1,s2)).T
+    s = np.vstack((s1, s2)).T
 
     x = s[None,:-1]
     g = s[None,1:]
@@ -591,7 +591,7 @@ def demoESNSine():
     resid = g - pred
 
     fig = plt.figure()
-    ax = fig.add_subplot(1,1,1)
+    ax = fig.add_subplot(1, 1, 1)
 
     ax.plot(time, s, color='blue')
     ax.plot(time[1:], pred[0], color='red')

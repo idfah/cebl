@@ -23,7 +23,7 @@ class QuadraticDiscriminantAnalysis(Classifier):
 
         Args:
             classData:  Training data.  This is a numpy array or list of numpy
-                        arrays with shape (nCls,nObs[,nIn]).  If the dimensions
+                        arrays with shape (nCls, nObs[,nIn]).  If the dimensions
                         index is missing the data is assumed to be
                         one-dimensional.
 
@@ -57,7 +57,7 @@ class QuadraticDiscriminantAnalysis(Classifier):
 
         Args:
             classData:  Training data.  This is a numpy array or list of numpy
-                        arrays with shape (nCls,nObs[,nIn]).  If the dimensions
+                        arrays with shape (nCls, nObs[,nIn]).  If the dimensions
                         index is missing the data is assumed to be
                         one-dimensional.
         """
@@ -71,7 +71,7 @@ class QuadraticDiscriminantAnalysis(Classifier):
         logPriors = np.log(np.array(
                 [cls.shape[0]/float(totalObs) for cls in classData])).astype(self.dtype, copy=False)
 
-        # class means (nCls,ndim)
+        # class means (nCls, ndim)
         self.means = np.array(
                 [np.mean(cls, axis=0) for cls in classData]).astype(self.dtype, copy=False)
         self.means = util.colmat(self.means)
@@ -82,7 +82,7 @@ class QuadraticDiscriminantAnalysis(Classifier):
         # average covariance matrix
         avgCov = np.zeros((self.nIn, self.nIn), dtype=self.dtype)
 
-        for i,cls in enumerate(classData):
+        for i, cls in enumerate(classData):
             #dataZeroMean = cls - self.means[i]
             #cv = np.cov(dataZeroMean, rowvar=False).astype(self.dtype, copy=False)
             cv = np.cov(cls, rowvar=False).astype(self.dtype, copy=False)
@@ -104,7 +104,7 @@ class QuadraticDiscriminantAnalysis(Classifier):
         self.invCovs = []
         self.intercepts = np.zeros(self.nCls, dtype=self.dtype)
 
-        for i,cv in enumerate(covs):
+        for i, cv in enumerate(covs):
             ##cvi = sp.linalg.pinvh(cv)
             #try:
             #    cvi = np.linalg.inv(cv)
@@ -135,7 +135,7 @@ class QuadraticDiscriminantAnalysis(Classifier):
             x:  Input data.  A numpy array with shape (nObs[,nIn]).
 
         Returns:
-            Numpy array with shape (nObs,nCls) containing the discriminant values.
+            Numpy array with shape (nObs, nCls) containing the discriminant values.
 
         Notes:
             These values are the log of the evaluated discriminant functions
@@ -147,8 +147,8 @@ class QuadraticDiscriminantAnalysis(Classifier):
         # number of observations
         nObs = x.shape[0]
 
-        # (nObs,nCls)
-        dv = np.zeros((nObs,self.nCls), dtype=self.dtype)
+        # (nObs, nCls)
+        dv = np.zeros((nObs, self.nCls), dtype=self.dtype)
 
         # could probably vectorize this? XXX - idfah
         for i in range(self.nCls):
@@ -157,7 +157,7 @@ class QuadraticDiscriminantAnalysis(Classifier):
         dv *= -0.5
         dv += self.intercepts
 
-        # (nObs,nCls)
+        # (nObs, nCls)
         return dv
 
     def logDens(self, x):
@@ -174,7 +174,7 @@ class QuadraticDiscriminantAnalysis(Classifier):
             x:  Input data.  A numpy array with shape (nObs[,nIn]).
 
         Returns:
-            Numpy array with shape (nObs,nCls) containing the density values.
+            Numpy array with shape (nObs, nCls) containing the density values.
 
         Notes:
             This is slower and less precise than discrim.  Only use probs if you
@@ -189,7 +189,7 @@ class QuadraticDiscriminantAnalysis(Classifier):
             x:  Input data.  A numpy array with shape (nObs[,nIn]).
 
         Returns:
-            Numpy array with shape (nObs,nCls) containing the probability values.
+            Numpy array with shape (nObs, nCls) containing the probability values.
 
         Notes:
             This is less precise than discrim.  Only use probs if you
@@ -210,14 +210,14 @@ def demoQDA2d():
     """QDA Example.
     """
     # covariance matrices
-    covRed   = [[1,-0.9],
-                [-0.9,1]]
+    covRed   = [[1, -0.9],
+                [-0.9, 1]]
 
-    covGreen = [[0.8,-0.5],
-                [-0.5,0.8]]
+    covGreen = [[0.8, -0.5],
+                [-0.5, 0.8]]
 
-    covBlue  = [[0.3,0.0],
-                [0.0,0.3]]
+    covBlue  = [[0.3, 0.0],
+                [0.0, 0.3]]
 
     # red data
     red = np.random.multivariate_normal(
@@ -225,18 +225,18 @@ def demoQDA2d():
 
     # green data
     green = np.random.multivariate_normal(
-        (0,0), covGreen, 300)
+        (0, 0), covGreen, 300)
 
     # blue data
     blue = np.random.multivariate_normal(
-        (1.5,1.5), covBlue, 400)
+        (1.5, 1.5), covBlue, 400)
 
-    data = [red,green,blue]
+    data = [red, green, blue]
     #data = [cls.astype(np.float32) for cls in data]
 
     # min and max training values
-    mn = np.min(np.vstack((red,green,blue)), axis=0)
-    mx = np.max(np.vstack((red,green,blue)), axis=0)
+    mn = np.min(np.vstack((red, green, blue)), axis=0)
+    mx = np.max(np.vstack((red, green, blue)), axis=0)
 
     # train model
     model = QuadraticDiscriminantAnalysis(data)
@@ -262,7 +262,7 @@ def demoQDA2d():
 
     # first figure shows training data and class intersections
     fig = plt.figure()
-    ax = fig.add_subplot(2,2,1)
+    ax = fig.add_subplot(2, 2, 1)
 
     # training data
     ax.scatter(red[:,0],   red[:,1],   color="red")
@@ -271,9 +271,9 @@ def demoQDA2d():
 
     # generate grid over training data
     sw = 0.02
-    sx = np.arange(mn[0],mx[0], sw)
-    sy = np.arange(mn[1],mx[1], sw)
-    x,y = np.meshgrid(sx,sy)
+    sx = np.arange(mn[0], mx[0], sw)
+    sy = np.arange(mn[1], mx[1], sw)
+    x, y = np.meshgrid(sx, sy)
 
     # get probabilities and labels for values in grid
     z = np.vstack((x.reshape((-1,)), y.reshape((-1,)))).T
@@ -301,72 +301,71 @@ def demoQDA2d():
     ax.contour(x, y, diffGB, colors='black', levels=(0,))
 
     # second figure shows 3d plots of probability densities
-    ax = fig.add_subplot(2,2,2, projection='3d')
+    ax = fig.add_subplot(2, 2, 2, projection='3d')
 
     # straight class colors for suface plots
-    color = np.reshape([dRed,dGreen,dBlue], (3, x.shape[0],x.shape[1]))
-    color = color.swapaxes(1,2).T
+    color = np.reshape([dRed, dGreen, dBlue], (3, x.shape[0], x.shape[1]))
+    color = color.swapaxes(1, 2).T
 
     # flip colors to fade to white
     zro        = np.zeros_like(x)
     colorFlip  = np.ones((3, x.shape[0], x.shape[1]))
-    colorFlip -= (np.array((zro,dRed,dRed)) +
-                  np.array((dGreen,zro,dGreen)) +
-                  np.array((dBlue,dBlue,zro)))
+    colorFlip -= (np.array((zro, dRed, dRed)) +
+                  np.array((dGreen, zro, dGreen)) +
+                  np.array((dBlue, dBlue, zro)))
     colorFlip -= np.min(colorFlip)
     colorFlip /= np.max(colorFlip)
-    colorFlip  = colorFlip.swapaxes(1,2).T
+    colorFlip  = colorFlip.swapaxes(1, 2).T
 
     # probability density surface
-    #surf = ax.plot_surface(x,y, dMax, cmap=matplotlib.cm.jet, linewidth=0)
-    surf = ax.plot_surface(x,y, dMax, facecolors=colorFlip,
+    surf = ax.plot_surface(x, y, dMax, facecolors=colorFlip,
                            linewidth=0.02, shade=True)
     surf.set_edgecolor('black') # add edgecolor back in, bug?
 
     # third figure shows 3d plots of probabilities
-    ax = fig.add_subplot(2,2,3, projection='3d')
+    ax = fig.add_subplot(2, 2, 3, projection='3d')
 
     # straight class colors for suface plots
-    color = np.reshape([pRed,pGreen,pBlue], (3, x.shape[0],x.shape[1]))
-    color = color.swapaxes(1,2).T
+    color = np.reshape([pRed, pGreen, pBlue], (3, x.shape[0], x.shape[1]))
+    color = color.swapaxes(1, 2).T
 
     # flip colors to fade to white
     zro        = np.zeros_like(x)
     colorFlip  = np.ones((3, x.shape[0], x.shape[1]))
-    colorFlip -= (np.array((zro,pRed,pRed)) +
-                  np.array((pGreen,zro,pGreen)) +
-                  np.array((pBlue,pBlue,zro)))
+    colorFlip -= (np.array((zro, pRed, pRed)) +
+                  np.array((pGreen, zro, pGreen)) +
+                  np.array((pBlue, pBlue, zro)))
     colorFlip -= np.min(colorFlip)
     colorFlip /= np.max(colorFlip)
-    colorFlip  = colorFlip.swapaxes(1,2).T
+    colorFlip  = colorFlip.swapaxes(1, 2).T
 
     # probability density surface
-    #surf = ax.plot_surface(x,y, pMax, cmap=matplotlib.cm.jet, linewidth=0)
-    surf = ax.plot_surface(x,y, pMax, facecolors=colorFlip,
+    #surf = ax.plot_surface(x, y, pMax, cmap=matplotlib.cm.jet, linewidth=0)
+    surf = ax.plot_surface(x, y, pMax, facecolors=colorFlip,
                            linewidth=0.02, shade=True)
     surf.set_edgecolor('black') # add edgecolor back in, bug?
     """
     # third figure shows contours and color image of probability densities
-    ax = fig.add_subplot(2,2,3)
+    ax = fig.add_subplot(2, 2, 3)
 
-    #ax.pcolor(x,y,pMax)
+    #ax.pcolor(x, y, pMax)
     ax.imshow(colorFlip, origin='lower',
-              extent=(mn[0],mx[0],mn[1],mx[1]), aspect='auto')
+              extent=(mn[0], mx[0], mn[1], mx[1]), aspect='auto')
 
     # contours 
     nLevel = 6
     cs = ax.contour(x, y, pMax, colors='black',
-                    levels=np.linspace(np.min(pMax),np.max(pMax),nLevel))
+                    levels=np.linspace(np.min(pMax), np.max(pMax), nLevel))
     cs.clabel(fontsize=6)
     """
 
     # fourth figure
-    ax = fig.add_subplot(2,2,4, projection='3d')
+    ax = fig.add_subplot(2, 2, 4, projection='3d')
 
     labels = model.label(z)
     lMax   = np.reshape(labels, x.shape)
 
-    surf = ax.plot_surface(x,y, lMax, facecolors=colorFlip,
+    surf = ax.plot_surface(x, y, lMax, facecolors=colorFlip,
                            linewidth=0.02)#, antialiased=False)
     #surf.set_edgecolor(np.vstack(color))
     surf.set_edgecolor('black')
@@ -383,7 +382,7 @@ class LinearDiscriminantAnalysis(Classifier):
 
         Args:
             classData:  Training data.  This is a numpy array or list of numpy
-                        arrays with shape (nCls,nObs[,nIn]).  If the dimensions
+                        arrays with shape (nCls, nObs[,nIn]).  If the dimensions
                         index is missing the data is assumed to be
                         one-dimensional.
 
@@ -391,7 +390,7 @@ class LinearDiscriminantAnalysis(Classifier):
                         covariance matrix toward its average eigenvalue:
                             covariance = (1-shrinkage)*covariance +
                             shrinkage*averageEigenvalue*identity
-                        Behavior is undefined if shrinkage is outside [0,1].
+                        Behavior is undefined if shrinkage is outside [0, 1].
                         This parameter has no effect if average is 0.
 
         Returns:
@@ -411,7 +410,7 @@ class LinearDiscriminantAnalysis(Classifier):
 
         Args:
             classData:  Training data.  This is a numpy array or list of numpy
-                        arrays with shape (nCls,nObs[,nIn]).  If the dimensions
+                        arrays with shape (nCls, nObs[,nIn]).  If the dimensions
                         index is missing the data is assumed to be
                         one-dimensional.
         """
@@ -425,7 +424,7 @@ class LinearDiscriminantAnalysis(Classifier):
         logPriors = np.log(np.array(
                 [cls.shape[0]/float(totalObs) for cls in classData])).astype(self.dtype, copy=False)
 
-        # class means (nCls,ndim)
+        # class means (nCls, ndim)
         means = np.array([np.mean(cls, axis=0) for cls in classData]).astype(self.dtype, copy=False)
         means = util.colmat(means)
 
@@ -433,7 +432,7 @@ class LinearDiscriminantAnalysis(Classifier):
         self.avgCov = np.zeros((self.nIn, self.nIn), dtype=self.dtype)
 
         # sum up class covariances
-        for i,cls in enumerate(classData):
+        for i, cls in enumerate(classData):
             self.avgCov += np.cov(cls, rowvar=False)
             #key = util.hashArray(cls)
             #cov = covCache[key]
@@ -467,11 +466,11 @@ class LinearDiscriminantAnalysis(Classifier):
             raise RuntimeError('Covariance matrix has zero determinant, consider using shrinkage.')
 
         # model coefficients
-        # (ndim,nCls) = (ndim,ndim) x (ndim,nCls)
-        self.weights = self.invCov.dot(means.T)
+        # (ndim, nCls) = (ndim, ndim) x (ndim, nCls)
+        self.weights = self.invCov @ means.T
 
         # model intercepts (nCls,)
-        #self.intercepts = np.array([-0.5 * means[cls,:].dot(self.weights[:,cls]) + logPriors[cls]
+        #self.intercepts = np.array([-0.5 * (means[cls,:] @ (self.weights[:,cls])) + logPriors[cls]
         #                  for cls in range(self.nCls)])
         self.intercepts = -0.5 * np.sum(self.weights * means.T, axis=0) + logPriors
 
@@ -495,8 +494,8 @@ class LinearDiscriminantAnalysis(Classifier):
         x = util.colmat(x)
 
         # discriminant values
-        # (nObs,nCls) = (nObs,ndim) x (ndim,nCls) + (nObs,nCls)
-        dv = x.dot(self.weights) + self.intercepts.reshape((1,-1))
+        # (nObs, nCls) = (nObs, ndim) x (ndim, nCls) + (nObs, nCls)
+        dv = (x @ self.weights) + self.intercepts.reshape((1,-1))
 
         return dv
 
@@ -505,7 +504,7 @@ class LinearDiscriminantAnalysis(Classifier):
         dv = self.discrim(x)
 
         # find class probability densities by adding back in canceled terms
-        xSx = np.sum(x.dot(self.invCov) * x, axis=1).reshape((-1,1))
+        xSx = np.sum(x @ self.invCov) * x, axis=1).reshape((-1, 1))
 
         return -0.5 * (self.nCls*log2pi + self.logDet + xSx) + dv
 
@@ -516,7 +515,7 @@ class LinearDiscriminantAnalysis(Classifier):
             x:  Input data.  A numpy array with shape (nObs[,nIn]).
 
         Returns:
-            Numpy array with shape (nObs,nCls) containing the density values.
+            Numpy array with shape (nObs, nCls) containing the density values.
 
         Notes:
             This is slower and less precise than discrim.  Only use probs if you
@@ -531,7 +530,7 @@ class LinearDiscriminantAnalysis(Classifier):
             x:  Input data.  A numpy array with shape (nObs[,nIn]).
 
         Returns:
-            Numpy array with shape (nObs,nCls) containing the probability values.
+            Numpy array with shape (nObs, nCls) containing the probability values.
 
         Notes:
             This is less precise than discrim.  Only use probs if you
@@ -559,8 +558,8 @@ def demoLDA2d():
     """LDA 2d example.
     """
     # covariance matrix for each training class
-    cov = [[1,-0.8],
-           [-0.8,1]]
+    cov = [[1, -0.8],
+           [-0.8, 1]]
 
     # red data
     red = np.random.multivariate_normal(
@@ -568,17 +567,17 @@ def demoLDA2d():
 
     # green data
     green = np.random.multivariate_normal(
-        (0,0), cov, 300)
+        (0, 0), cov, 300)
 
     # blue data
     blue = np.random.multivariate_normal(
-        (1,1), cov, 400)
+        (1, 1), cov, 400)
 
-    data = [red,green,blue]
+    data = [red, green, blue]
 
     # min and max training values
-    mn = np.min(np.vstack((red,green,blue)), axis=0)
-    mx = np.max(np.vstack((red,green,blue)), axis=0)
+    mn = np.min(np.vstack((red, green, blue)), axis=0)
+    mx = np.max(np.vstack((red, green, blue)), axis=0)
 
     # train model
     model = LinearDiscriminantAnalysis(data, shrinkage=0)
@@ -601,7 +600,7 @@ def demoLDA2d():
 
     # first figure shows training data and class intersections
     fig = plt.figure()
-    ax = fig.add_subplot(2,2,1)
+    ax = fig.add_subplot(2, 2, 1)
 
     # training data
     ax.scatter(red[:,0],   red[:,1],   color="red")
@@ -610,9 +609,9 @@ def demoLDA2d():
 
     # generate grid over training data
     sw = 0.02
-    sx = np.arange(mn[0],mx[0], sw)
-    sy = np.arange(mn[1],mx[1], sw)
-    x,y = np.meshgrid(sx,sy)
+    sx = np.arange(mn[0], mx[0], sw)
+    sy = np.arange(mn[1], mx[1], sw)
+    x, y = np.meshgrid(sx, sy)
 
     # get probability probabilities and labels for values in grid
     z = np.vstack((x.reshape((-1,)), y.reshape((-1,)))).T
@@ -640,72 +639,71 @@ def demoLDA2d():
     dMax   = np.reshape(np.max(densities, axis=1), x.shape)
 
     # second figure shows 3d plots of probability densities
-    ax = fig.add_subplot(2,2,2, projection='3d')
+    ax = fig.add_subplot(2, 2, 2, projection='3d')
 
     # straight class colors for suface plots
-    color = np.reshape([dRed,dGreen,dBlue], (3, x.shape[0],x.shape[1]))
-    color = color.swapaxes(1,2).T
+    color = np.reshape([dRed, dGreen, dBlue], (3, x.shape[0], x.shape[1]))
+    color = color.swapaxes(1, 2).T
 
     # flip colors to fade to white
     zro        = np.zeros_like(x)
     colorFlip  = np.ones((3, x.shape[0], x.shape[1]))
-    colorFlip -= (np.array((zro,dRed,dRed)) +
-                  np.array((dGreen,zro,dGreen)) +
-                  np.array((dBlue,dBlue,zro)))
+    colorFlip -= (np.array((zro, dRed, dRed)) +
+                  np.array((dGreen, zro, dGreen)) +
+                  np.array((dBlue, dBlue, zro)))
     colorFlip -= np.min(colorFlip)
     colorFlip /= np.max(colorFlip)
-    colorFlip  = colorFlip.swapaxes(1,2).T
+    colorFlip  = colorFlip.swapaxes(1, 2).T
 
     # probability density surface
-    #surf = ax.plot_surface(x,y, dMax, cmap=matplotlib.cm.jet, linewidth=0)
-    surf = ax.plot_surface(x,y, dMax, facecolors=colorFlip,
+    #surf = ax.plot_surface(x, y, dMax, cmap=matplotlib.cm.jet, linewidth=0)
+    surf = ax.plot_surface(x, y, dMax, facecolors=colorFlip,
                            linewidth=0.02, shade=True)
     surf.set_edgecolor('black') # add edgecolor back in, bug?
 
     # third figure shows 3d plots of probabilities
-    ax = fig.add_subplot(2,2,3, projection='3d')
+    ax = fig.add_subplot(2, 2, 3, projection='3d')
 
     # straight class colors for suface plots
-    color = np.reshape([pRed,pGreen,pBlue], (3, x.shape[0],x.shape[1]))
-    color = color.swapaxes(1,2).T
+    color = np.reshape([pRed, pGreen, pBlue], (3, x.shape[0], x.shape[1]))
+    color = color.swapaxes(1, 2).T
 
     # flip colors to fade to white
     zro        = np.zeros_like(x)
     colorFlip  = np.ones((3, x.shape[0], x.shape[1]))
-    colorFlip -= (np.array((zro,pRed,pRed)) +
-                  np.array((pGreen,zro,pGreen)) +
-                  np.array((pBlue,pBlue,zro)))
+    colorFlip -= (np.array((zro, pRed, pRed)) +
+                  np.array((pGreen, zro, pGreen)) +
+                  np.array((pBlue, pBlue, zro)))
     colorFlip -= np.min(colorFlip)
     colorFlip /= np.max(colorFlip)
-    colorFlip  = colorFlip.swapaxes(1,2).T
+    colorFlip  = colorFlip.swapaxes(1, 2).T
 
     # probability density surface
-    #surf = ax.plot_surface(x,y, pMax, cmap=matplotlib.cm.jet, linewidth=0)
-    surf = ax.plot_surface(x,y, pMax, facecolors=colorFlip,
+    surf = ax.plot_surface(x, y, pMax, facecolors=colorFlip,
                            linewidth=0.02, shade=True)
     surf.set_edgecolor('black') # add edgecolor back in, bug?
     """
     # third figure shows contours and color image of probability densities
-    ax = fig.add_subplot(2,2,3)
+    ax = fig.add_subplot(2, 2, 3)
 
-    #ax.pcolor(x,y,pMax)
+    #ax.pcolor(x, y, pMax)
     ax.imshow(colorFlip, origin='lower',
-              extent=(mn[0],mx[0],mn[1],mx[1]), aspect='auto')
+              extent=(mn[0], mx[0], mn[1], mx[1]), aspect='auto')
 
     # contours 
     nLevel=6
     cs = ax.contour(x, y, pMax, colors='black',
-                    levels=np.linspace(np.min(pMax),np.max(pMax),nLevel))
+                    levels=np.linspace(np.min(pMax), np.max(pMax), nLevel))
     cs.clabel(fontsize=6)
     """
 
     # fourth figure
-    ax = fig.add_subplot(2,2,4, projection='3d')
+    ax = fig.add_subplot(2, 2, 4, projection='3d')
 
     labels = model.label(z)
     lMax   = np.reshape(labels, x.shape)
 
-    surf = ax.plot_surface(x,y, lMax, facecolors=colorFlip,
+    surf = ax.plot_surface(x, y, lMax, facecolors=colorFlip,
                            linewidth=0.02)#, antialiased=False)
     #surf.set_edgecolor(np.vstack(color))
     surf.set_edgecolor('black')

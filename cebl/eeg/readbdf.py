@@ -1,3 +1,5 @@
+"""Work in progress: read bdf data from a file.
+"""
 import matplotlib.pyplot as plt
 import numpy as np
 import struct
@@ -161,7 +163,9 @@ if __name__ == '__main__':
 
     fileName = 's11-letter-b.bdf'
     contents = readBDF(fileName, verbose=True)
-    print('From', fileName, 'read',contents['nDataRecords']*contents['nSecondsPerDataRecord'],'seconds of',contents['nChan'],'chans of data at',contents['sampRate'],'samples per second. EEG matrix is',contents['data'].shape)
+    print('From', fileName, 'read', contents['nDataRecords']*contents['nSecondsPerDataRecord'],
+          'seconds of', contents['nChan'], 'chans of data at', contents['sampRate'],
+          'samples per second. EEG matrix is',contents['data'].shape)
     n = 25000
     eeg = contents['data']
     plt.figure(2)
