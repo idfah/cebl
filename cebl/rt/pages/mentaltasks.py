@@ -612,7 +612,7 @@ class MentalTasks(StandardBCIPage):
             self.saveCap()
 
     def trainEpoch(self):
-        if len(self.curChoices) == 0:
+        if not self.curChoices:
             self.curChoices = copy.copy(self.choices)
             np.random.shuffle(self.curChoices)
             self.curTrial += 1
@@ -629,7 +629,7 @@ class MentalTasks(StandardBCIPage):
 
         self.src.setMarker(0.0)
 
-        if self.curTrial == self.nTrainTrial and len(self.curChoices) == 0:
+        if not self.curChoices and self.curTrial == self.nTrainTrial:
             wx.CallLater(1000.0*self.pauseSecs, self.endTrain)
         else:
             wx.CallLater(1000.0*self.pauseSecs, self.runTrainEpoch)
@@ -984,7 +984,7 @@ class MentalTasks(StandardBCIPage):
             wx.CallLater(1000.0*self.decisionSecs*1.1, self.testClassify)
 
     def highlightTestTarget(self):
-        if len(self.curChoices) == 0:
+        if not self.curChoices:
             self.curChoices = copy.copy(self.choices)
             np.random.shuffle(self.curChoices)
             self.curTrial += 1
@@ -1031,7 +1031,7 @@ class MentalTasks(StandardBCIPage):
         self.pieMenu.clearAllHighlights()
         self.curDecision = -1
 
-        if self.curTrial == self.nTestTrial and len(self.curChoices) == 0:
+        if not self.curChoices and self.curTrial == self.nTestTrial:
             wx.CallLater(1000.0*self.pauseSecs, self.endTest)
         else:
             wx.CallLater(1000.0*self.pauseSecs, self.runTestEpoch)

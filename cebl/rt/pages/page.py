@@ -114,7 +114,7 @@ class Page(wx.Panel):
 
             try:
                 self.beforeStop()
-                self.running= False
+                self.running = False
                 self.mgr.remRunningPage(self)
                 self.afterStop()
 

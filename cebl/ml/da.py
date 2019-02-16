@@ -504,7 +504,7 @@ class LinearDiscriminantAnalysis(Classifier):
         dv = self.discrim(x)
 
         # find class probability densities by adding back in canceled terms
-        xSx = np.sum(x @ self.invCov) * x, axis=1).reshape((-1, 1))
+        xSx = np.sum((x @ self.invCov) * x, axis=1).reshape((-1, 1))
 
         return -0.5 * (self.nCls*log2pi + self.logDet + xSx) + dv
 

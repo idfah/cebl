@@ -509,7 +509,7 @@ class BCIPlayer(StandardBCIPage):
             self.saveCap()
 
     def trainEpoch(self):
-        if len(self.curStimList) == 0:
+        if not self.curStimList:
             self.curTrainTrial += 1
             self.initCurStimList()
 
@@ -787,7 +787,7 @@ class BCIPlayer(StandardBCIPage):
         self.pieMenu.clearAllHighlights()
         self.src.setMarker(0.0)
 
-        if len(self.curStimList) == 0:
+        if not self.curStimList:
             self.initCurStimList()
             wx.CallLater(1000.0*self.windowEnd*1.05, self.testClassify)
         else:

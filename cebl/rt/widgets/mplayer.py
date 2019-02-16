@@ -1,4 +1,5 @@
 import os
+
 import wx
 from wx.lib import newevent
 import wx.media as wxm
@@ -11,13 +12,13 @@ MPlayerFinishedEvent, EVT_MPLAYER_FINISHED = newevent.NewCommandEvent()
 
 def _filesAndPaths(cwd):
     files = os.listdir(cwd)
-    files = [f for f in files if not f.startswith('.')]
+    files = [f for f in files if not f.startswith(".")]
     filesPath = [cwd + os.path.sep + f for f in files]
 
     return files, filesPath
 
 class MPlayerPanel(wx.Panel):
-    def __init__(self, parent=None, cwd='~', *args, **kwargs):
+    def __init__(self, parent=None, cwd="~", *args, **kwargs):
         wx.Panel.__init__(self, parent=parent, *args, **kwargs)
 
         self.initNavbar()
@@ -29,7 +30,7 @@ class MPlayerPanel(wx.Panel):
         self.setCWD(cwd)
 
     def initMediaCtrl(self):
-        #self.mediaControlBox = ControlBox(self, label='Media', orient=wx.HORIZONTAL)
+        #self.mediaControlBox = ControlBox(self, label="Media", orient=wx.HORIZONTAL)
 
         self.mediaCtrl = wxm.MediaCtrl(self, style=wx.SIMPLE_BORDER)
         self.mediaCtrl.Hide()
@@ -39,51 +40,51 @@ class MPlayerPanel(wx.Panel):
         self.Bind(wxm.EVT_MEDIA_STOP, self.onStop)
 
     def initNavbar(self):
-        self.navControlBox = ControlBox(self, label='Navigation',
+        self.navControlBox = ControlBox(self, label="Navigation",
             orient=wx.HORIZONTAL)
 
-        self.playButton = wx.Button(self, label='Play')
+        self.playButton = wx.Button(self, label="Play")
         self.Bind(wx.EVT_BUTTON, self.play, self.playButton)
         self.navControlBox.Add(self.playButton, proportion=0,
                 flag=wx.ALL | wx.EXPAND, border=5)
 
-        self.rewAlbumButton = wx.Button(self, label='Album <-')
+        self.rewAlbumButton = wx.Button(self, label="Album <-")
         self.Bind(wx.EVT_BUTTON, self.rewAlbum, self.rewAlbumButton)
         self.navControlBox.Add(self.rewAlbumButton, proportion=0,
                 flag=wx.BOTTOM | wx.RIGHT | wx.TOP | wx.EXPAND, border=5)
 
-        self.forAlbumButton = wx.Button(self, label='Album ->')
+        self.forAlbumButton = wx.Button(self, label="Album ->")
         self.Bind(wx.EVT_BUTTON, self.forAlbum, self.forAlbumButton)
         self.navControlBox.Add(self.forAlbumButton, proportion=0,
                 flag=wx.BOTTOM | wx.RIGHT | wx.TOP | wx.EXPAND, border=5)
 
-        self.rewSongButton = wx.Button(self, label='Song <-')
+        self.rewSongButton = wx.Button(self, label="Song <-")
         self.Bind(wx.EVT_BUTTON, self.rewSong, self.rewSongButton)
         self.navControlBox.Add(self.rewSongButton, proportion=0,
                 flag=wx.BOTTOM | wx.RIGHT | wx.TOP | wx.EXPAND, border=5)
 
-        self.forSongButton = wx.Button(self, label='Song ->')
+        self.forSongButton = wx.Button(self, label="Song ->")
         self.Bind(wx.EVT_BUTTON, self.forSong, self.forSongButton)
         self.navControlBox.Add(self.forSongButton, proportion=0,
                 flag=wx.BOTTOM | wx.RIGHT | wx.TOP | wx.EXPAND, border=5)
 
-        #self.previewButton = wx.Button(self, label='Preview')
+        #self.previewButton = wx.Button(self, label="Preview")
         #self.Bind(wx.EVT_BUTTON, self.preview, self.previewButton)
         #self.navControlBox.Add(self.previewButton, proportion=0,
         #        flag=wx.BOTTOM | wx.RIGHT | wx.TOP | wx.EXPAND, border=5)
 
-        #self.stopButton = wx.Button(self, label='Stop')
+        #self.stopButton = wx.Button(self, label="Stop")
         #self.Bind(wx.EVT_BUTTON, self.stop, self.stopButton)
         #self.navControlBox.Add(self.stopButton, proportion=0,
         #        flag=wx.BOTTOM | wx.RIGHT | wx.TOP | wx.EXPAND, border=5)
 
     def initMusicLists(self):
-        self.albumControlBox = ControlBox(self, label='Albums', orient=wx.VERTICAL)
+        self.albumControlBox = ControlBox(self, label="Albums", orient=wx.VERTICAL)
         self.albumListBox = wx.ListBox(self, choices=[], style=wx.LB_SINGLE)
         self.albumControlBox.Add(self.albumListBox, proportion=1,
                 flag=wx.ALL | wx.EXPAND, border=5)
 
-        self.songControlBox = ControlBox(self, label='Songs', orient=wx.VERTICAL)
+        self.songControlBox = ControlBox(self, label="Songs", orient=wx.VERTICAL)
         self.songListBox = wx.ListBox(self, choices=[], style=wx.LB_SINGLE)
         self.songControlBox.Add(self.songListBox, proportion=1,
                 flag=wx.ALL | wx.EXPAND, border=5)
@@ -114,14 +115,14 @@ class MPlayerPanel(wx.Panel):
     def updateAlbums(self):
         files, filesPath = _filesAndPaths(self.cwd)
 
-        self.albumList = [f for f,fp in zip(files,filesPath)
+        self.albumList = [f for f, fp in zip(files, filesPath)
                           if os.path.isdir(fp)]
 
         self.albumList.sort()
 
         self.albumListBox.Clear()
 
-        if len(self.albumList) > 0:
+        if self.albumList:
             self.albumListBox.AppendItems(self.albumList)
             self.albumListBox.SetSelection(0)
             self.albumListBox.EnsureVisible(0)
@@ -132,27 +133,27 @@ class MPlayerPanel(wx.Panel):
 
         files, filesPath = _filesAndPaths(albumPath)
 
-        self.songList = [f for f,fp in zip(files,filesPath)
-                         if os.path.isfile(fp) and fp.endswith('.flac')]
+        self.songList = [f for f, fp in zip(files, filesPath)
+                         if os.path.isfile(fp) and fp.endswith(".flac")]
 
         self.songList.sort()
 
         self.songListBox.Clear()
 
-        if len(self.songList) > 0:
+        if self.songList:
             self.songListBox.AppendItems(self.songList)
             self.songListBox.SetSelection(0)
             self.albumListBox.EnsureVisible(0)
 
     def loadAndPlay(self):
-        #self.mediaCtrl.Load('/home/idfah/tests/python/wx/reggae.wav')
+        #self.mediaCtrl.Load("/home/idfah/tests/python/wx/reggae.wav")
         song = self.songList[self.songListBox.GetSelection()]
         album = self.albumList[self.albumListBox.GetSelection()]
 
         songPath = self.cwd + os.path.sep + album + os.path.sep + song
         status = self.mediaCtrl.Load(songPath)
         if not status:
-            raise RuntimeError('Failed to load song %s.' % str(songPath))
+            raise RuntimeError("Failed to load song %s." % str(songPath))
 
         self.mediaCtrl.ShowPlayerControls()
         self.mediaCtrl.Play()

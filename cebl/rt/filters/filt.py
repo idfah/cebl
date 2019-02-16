@@ -82,7 +82,7 @@ class FilterChain:
         self.filters = []
 
     def push(self, filterClass):
-        if len(self.filters) == 0:
+        if not self.filters:
             inSampRate = self.src.getSampRate()
             inChans = self.src.getChanNames()
         else:

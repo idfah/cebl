@@ -146,7 +146,7 @@ class ERPTestConfigPanel(SourceConfigPanel):
 
         value = self.triggerValueTextCtrl.GetValue()
 
-        if len(value) == 0:
+        if not value:
             fValue = 0.0
         else:
             try:
