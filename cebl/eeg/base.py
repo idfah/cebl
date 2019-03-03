@@ -1,10 +1,9 @@
 """Module containing EEG base class and related routines.
 """
-
 class EEGBase:
     """Base class for all EEG types.
     """
-    def __init__(self, nObs, nChan, sampRate=256.0, chanNames=None, deviceName=''):
+    def __init__(self, nObs, nChan, sampRate=256.0, chanNames=None, deviceName=""):
         """Construct a new EEGBase instance.
 
         Args:
@@ -17,7 +16,7 @@ class EEGBase:
 
             chanNames:  A list of names of the channels in the eeg data.
                         If None (default) then the channel names are set
-                        to '1', '2', ... 'nChan'.
+                        to "1", "2", ... "nChan".
 
             deviceName: The name of the device used to record the eeg data.
         """
@@ -72,7 +71,7 @@ class EEGBase:
                 else:
                     chanNames.append(None)
             else:
-                if c < self.nChan and c >= 0:
+                if 0 <= c < self.nChan:
                     chanNames.append(self.chanNames[c])
                 else:
                     chanNames.append(None)
@@ -84,14 +83,14 @@ class EEGBase:
 
         Args:
             chanNames:  A list or tuple of channel names.  If None (default)
-                        then the channel names are set to '1', '2', ... 'nChan'.
+                        then the channel names are set to "1", "2", ... "nChan".
         """
         if chanNames is None:
             chanNames = [str(i) for i in range(self.nChan)]
 
         if len(chanNames) != self.nChan:
-            raise RuntimeError('Length of chanNames ' + str(len(chanNames)) + \
-                            ' does not match number of channels ' + str(self.nChan))
+            raise RuntimeError("Length of chanNames " + str(len(chanNames)) +
+                            " does not match number of channels " + str(self.nChan))
 
         self.chanNames = list(chanNames)
 
@@ -121,7 +120,7 @@ class EEGBase:
                 else:
                     chanIndices.append(None)
             else:
-                if c < self.nChan and c >= 0:
+                if 0 <= c < self.nChan:
                     chanIndices.append(c)
                 else:
                     chanIndices.append(None)
@@ -137,7 +136,7 @@ class EEGBase:
         """Set the name of the device used to record the eeg data.
         """
         if deviceName is None:
-            deviceName = ''
+            deviceName = ""
         self.deviceName = str(deviceName)
         return self
 

@@ -39,7 +39,7 @@ class STrans:
 
         y = s.dot(self.w)
 
-        if comp is None or len(comp) == 0:
+        if comp is None or not comp:
             return y
         else:
             compInd = np.array([remove,]*s.shape[1])
@@ -52,7 +52,7 @@ class STrans:
 
         y = s.dot(self.w)
 
-        if comp is None or len(comp) == 0:
+        if comp is None or not comp:
             compInd = np.ones(s.shape[1], dtype=self.dtype)
         else:
             compInd = np.empty(s.shape[1], dtype=self.dtype)
@@ -64,22 +64,22 @@ class STrans:
         filt = y.dot(compMat).dot(self.wInv) + self.means
         return filt[:,:self.nDim]
 
-    def plotTransform(self, s, comp=None, remove=False, ax=None, *args, **kwargs):
+    def plotTransform(self, s, comp=None, remove=False, ax=None, **kwargs):
         if ax is None:
             fig = plt.figure()
-            ax = fig.add_subplot(1,1,1)
+            ax = fig.add_subplot(1, 1, 1)
 
         y = self.transform(s, comp=comp, remove=remove)
-        lines = ax.plot(y+util.colsep(y), *args, **kwargs)
+        lines = ax.plot(y+util.colsep(y), **kwargs)
 
         return {'ax': ax, 'lines': lines}
 
-    def plotFilter(self, s, comp, remove=False, ax=None, *args, **kwargs):
+    def plotFilter(self, s, comp, remove=False, ax=None, **kwargs):
         if ax is None:
             fig = plt.figure()
-            ax = fig.add_subplot(1,1,1)
+            ax = fig.add_subplot(1, 1, 1)
 
         filt = self.filter(s, comp=comp, remove=remove)
-        lines = ax.plot(filt+util.colsep(filt), *args, **kwargs)
+        lines = ax.plot(filt+util.colsep(filt), **kwargs)
 
         return {'ax': ax, 'lines': lines}

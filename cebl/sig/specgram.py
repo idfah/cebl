@@ -67,7 +67,7 @@ class SpectrogramBase:
     def getFreqsPowersPhases(self):
         return self.freqs, self.powers, self.phases
 
-    def plotPower(self, scale='log', chanNames=None, colorbar=True, axs=None, **kwargs):
+    def plotPower(self, scale='log', chanNames=None, colorbar=True, axs=None):
         if chanNames is None:
             chanNames = [str(i) for i in range(self.nChan)]
 
@@ -110,7 +110,6 @@ class SpectrogramBase:
             else:
                 ax = axs[i]
 
-            # should pass kwargs to imshow? XXX - idfah
             img = ax.imshow(powers[:,:,i].T, interpolation='bicubic', origin='lower',
                             cmap=plt.cm.get_cmap('jet'), aspect='auto', norm=norm,
                             extent=(self.times[0], self.times[-1],
@@ -129,8 +128,8 @@ class SpectrogramBase:
         if colorbar:
             if newAxs:
                 fig.tight_layout()
-                #cbar = fig.colorbar(imgs[-1], norm=norm, ax=axs, pad=0.025, fraction=0.06)#, anchor=(0.0, 0.1))
-                cbar = fig.colorbar(imgs[-1], norm=norm, ax=axs, pad=0.025, fraction=0.1)#, anchor=(0.0, 0.1))
+                cbar = fig.colorbar(imgs[-1], norm=norm, ax=axs,
+                                    pad=0.025, fraction=0.1)#, anchor=(0.0, 0.1))
             else:
                 cbar = axs[-1].colorbar(imgs[-1], norm=norm)
             cbar.set_label(zlabel)
@@ -150,7 +149,8 @@ class CWTSpectrogram(SpectrogramBase):
 
 
 class FFTSpectrogram(SpectrogramBase):
-    def __init__(self, s, sampRate=1.0, span=0.1, overlap=0.5, windowFunc=windows.hanning, pad=False):
+    def __init__(self, s, sampRate=1.0, span=0.1, overlap=0.5,
+                 windowFunc=windows.hanning, pad=False):
         s = util.colmat(s)
         nObs, nChan = s.shape
 
@@ -209,7 +209,7 @@ class FFTSpectrogram(SpectrogramBase):
 
 # wrapper around class constructors
 # pylint: disable=invalid-name
-def Spectrogram(s, method='cwt', *args, **kwargs):
+def Spectrogram(s, *args, method='cwt', **kwargs):
     method = method.lower()
     if method == 'cwt':
         return CWTSpectrogram(s, *args, **kwargs)
@@ -230,7 +230,8 @@ def demoCWT():
     t = np.linspace(0.0, sampRate*10.0, sampRate*10.0)
 
     s1 = np.sin(t*2.0*np.pi*20.0/float(sampRate))
-    s2 = np.sin(t*2.0*np.pi*60.0/float(sampRate)) + np.random.normal(scale=0.02, size=t.size)
+    s2 = np.sin(t*2.0*np.pi*60.0/float(sampRate)) + \
+            np.random.normal(scale=0.02, size=t.size)
     s3 = np.cumsum(np.random.normal(scale=0.05, size=t.size))
     s = np.vstack((s1, s2, s3)).T
 

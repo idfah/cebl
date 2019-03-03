@@ -17,7 +17,7 @@ class CEBLApp(wx.App):
         """Create a new CEBLMain frame.
         """
         self.SetAppName('CEBL')
-        main = CEBLMain()
+        self.main = CEBLMain()
         return True
 
     def OnExit(self):
@@ -28,7 +28,8 @@ class CEBLApp(wx.App):
         return True
 
 class CEBLMain(wx.Frame):
-    """Top-level CEBL frame.  Holds the notebook and source manager and maintains the general state of CEBL.
+    """Top-level CEBL frame.  Holds the notebook and source manager and
+     maintains the general state of CEBL.
     """
     def __init__(self):
         """Initialize the main GUI frame.
@@ -131,7 +132,9 @@ class CEBLMain(wx.Frame):
 
 class Splash(wx.adv.SplashScreen):
     def __init__(self, parent):
-        logo = wx.Image(os.path.dirname(__file__) + '/images/CEBL3_splash.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap()
+        logo = wx.Image(os.path.dirname(__file__) + '/images/CEBL3_splash.png',
+            wx.BITMAP_TYPE_PNG).ConvertToBitmap()
+
         wx.adv.SplashScreen.__init__(self,
             parent=parent, milliseconds=2000, bitmap=logo,
             splashStyle=wx.adv.SPLASH_CENTER_ON_SCREEN | wx.adv.SPLASH_TIMEOUT)

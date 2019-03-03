@@ -15,16 +15,14 @@ def logExceptionHook(etype, e, trace):
     wx.LogError(''.join(traceback.format_exception(etype, e, trace)) + 'Uncaught.\n')
 
 class Manager:
-    def __init__(self, pageParent, statusPanel=None,
-                 sourceList=sources.sourceList,
-                 defaultSource=sources.defaultSource,
-                 pageList=pages.pageList):
+    def __init__(self, pageParent, statusPanel=None, sourceList=None,
+                 defaultSource=sources.defaultSource, pageList=None):
         self.pageParent = pageParent
         self.statusPanel = statusPanel
 
-        self.sourceList = sourceList
+        self.sourceList = sources.sourceList if sourceList is None else sourceList
         self.defaultSource = defaultSource
-        self.pageList = pageList
+        self.pageList = pages.pageList if pageList is None else pageList
 
         self.pages = []
         self.src = None
@@ -97,7 +95,7 @@ class Manager:
         number of running pages reaches zero.
         """
         self.runningPages.remove(page)
-        
+
         if self.getNRunningPages() == 0:
             self.src.stop()
 

@@ -1,12 +1,13 @@
 import copy
+import random
+import socket
+import time
+
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as pltgs
 from matplotlib.backends.backend_wxagg \
     import FigureCanvasWxAgg as FigureCanvas
 import numpy as np
-import random
-import socket
-import time
 import wx
 from wx.lib.agw import aui
 import wx.lib.agw.floatspin as agwfs
@@ -247,12 +248,12 @@ class PlotPanel(wx.Panel):
 
     def initERPCanvas(self):
         #self.erpFig = plt.Figure()
-        #self.erpAx = self.erpFig.add_subplot(1,1,1)
+        #self.erpAx = self.erpFig.add_subplot(1, 1, 1)
         #self.erpCanvas = FigureCanvas(parent=self, id=wx.ID_ANY, figure=self.erpFig)
         self.erpFig = plt.Figure()
         self.erpFig.subplots_adjust(hspace=0.32, wspace=0.02,
             left=0.065, right=0.95, top=0.97, bottom=0.18)
-        gs = pltgs.GridSpec(2,4)
+        gs = pltgs.GridSpec(2, 4)
         self.erpAx = self.erpFig.add_subplot(gs[0,:])
         self.h1Ax  = self.erpFig.add_subplot(gs[1,0])
         self.h2Ax  = self.erpFig.add_subplot(gs[1,1])
@@ -425,8 +426,8 @@ class P300Bot(StandardBCIPage):
                 pass
 
         try:
-            self.robotSock = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-            self.robotSock.connect((host,port))
+            self.robotSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.robotSock.connect((host, port))
 
         except Exception as e:
             self.robotSock = None
@@ -482,7 +483,7 @@ class P300Bot(StandardBCIPage):
             ##self.saveCap()
 
     def trainEpoch(self):
-        if len(self.curStimList) == 0:
+        if not self.curStimList:
             self.curTrainTrial += 1
             self.initCurStimList()
 
@@ -594,7 +595,7 @@ class P300Bot(StandardBCIPage):
             caption='Training Completed!', style=wx.OK | wx.ICON_INFORMATION)
 
     def trainKNN(self, classData, dialog, metric):
-        ks = np.arange(1,10)
+        ks = np.arange(1, 10)
 
         trainAUC = np.zeros(ks.shape)
         validAUC = np.zeros(ks.shape)
@@ -759,7 +760,7 @@ class P300Bot(StandardBCIPage):
         self.pieMenu.clearAllHighlights()
         self.src.setMarker(0.0)
 
-        if len(self.curStimList) == 0:
+        if not self.curStimList:
             self.initCurStimList()
             wx.CallLater(1000.0*self.windowEnd*1.05, self.testClassify)
         else:

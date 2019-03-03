@@ -1,11 +1,14 @@
+import os
+import time
+
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_wxagg \
     import FigureCanvasWxAgg as FigureCanvas
 from matplotlib.colors import LogNorm as pltLogNorm
 from matplotlib.colors import Normalize as pltLinNorm
+import munch
 import numpy as np
-import os
-import time
+
 import wx
 from wx.lib.agw import aui
 
@@ -388,12 +391,12 @@ class Spectrogram(StandardMonitorPage):
 
         self.setRefreshDelay(200)
 
-        self.waveletConfig = util.Holder(
+        self.waveletConfig = munch.Munch(
             nFreq = 100,
             span = 10
         )
 
-        self.fourierConfig = util.Holder()
+        self.fourierConfig = munch.Munch()
 
     def initCanvas(self):
         """Initialize a new matplotlib canvas, figure and axis.

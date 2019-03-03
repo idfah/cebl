@@ -1,7 +1,21 @@
+"""Signal statistical measures.
+"""
 import numpy as np
 
 
 def autoCorrelation(s):
+    """Compute the autocorrelations of s.
+
+    Args:
+        s:  A numpy array or list of floating point
+            values representing the signal.
+
+    Returns:
+        A numpy array where the i'th values contains
+        the autocorrelation of the signal at i time lags.
+    """
+    s = np.array(s, copy=False)
+
     def ac1d(x):
         var = x.var()
         x = x - x.mean()

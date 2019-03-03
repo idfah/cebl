@@ -128,7 +128,7 @@ def plotHead(chanNames=('F3','F4','C3','C4','P3','P4','O1','O2'),
     chanNamesLower = [chanName.lower() for chanName in chanNames] # lower case
 
     # if no valid chanNames then just draw the outline
-    if len(chanNames) == 0:
+    if not chanNames:
         return result
 
     # get 3d cartesian coordinates for each channel
@@ -194,7 +194,7 @@ def plotHeadLines(magnitudes, chanNames=('F3','F4','C3','C4','P3','P4','O1','O2'
     result['mx'] = mx
 
     # if no valid chanNames then just draw the outline
-    if len(chanNames) == 0:
+    if not chanNames:
         return result
 
     # get 3d cartesian coordinates for each channel
@@ -290,7 +290,7 @@ def plotHeadInterp(magnitudes, chanNames=('Fp1','Fp2','F7','F3','Fz','F4','F8','
     magnitudes = np.asarray(magnitudes)
 
     # if no valid mags then just draw the outline
-    if len(magnitudes) == 0:
+    if not magnitudes:
         return result
 
     # get min and max magnitudes if not provided

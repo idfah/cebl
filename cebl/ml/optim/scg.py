@@ -45,11 +45,11 @@ def scg(optable,
                             is included in the final results.  If False
                             (default), then a history is not kept.
 
-        callback:           
+        callback:
 
         verbose:            Print extra information to standard out during
                             the training procedure.
-    
+
         args, kwargs:       Additional arguments passed to optable.error
                             and optable.gradient.
 
@@ -110,8 +110,8 @@ def scg(optable,
     sigma0 = 1.0e-4
 
     # initial scale
-    #beta = 0.01
-    beta = 1.0
+    beta = 0.01
+    #beta = 1.0
 
     # force calculation of directional derivatives
     success = True

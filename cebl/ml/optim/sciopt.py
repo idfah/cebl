@@ -6,7 +6,7 @@ from . import tests
 
 
 def sciopt(optable,
-           method='CG', options=None, 
+           method='CG', options=None,
            maxIter=1000, precision=1.0e-10,
            pTrace=False, eTrace=False,
            callback=None, verbose=False,

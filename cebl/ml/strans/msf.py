@@ -77,10 +77,10 @@ def demoMSF():
     s1 = spsig.sawtooth(t) #+ 3.0
     s2 = np.cos(5.0*t)
     s3 = np.random.uniform(-1.0, 1.0, size=t.size)
-    s = np.vstack((s1,s2,s3)).T
+    s = np.vstack((s1, s2, s3)).T
 
     #m = np.array([ [0.5, 0.5, 0.0], [0.5, 0.0, 0.5], [0.0, 0.5, 0.5] ])
-    m = np.random.random((3,3))
+    m = np.random.random((3, 3))
     m /= m.sum(axis=0)
 
     sMixed = s.dot(m)
@@ -88,22 +88,22 @@ def demoMSF():
     msfFilt = MSF(sMixed, lags=0)
     fig = plt.figure()
 
-    axOrig = fig.add_subplot(4,1, 1)
+    axOrig = fig.add_subplot(4, 1, 1)
     axOrig.plot(s+util.colsep(s))
     axOrig.set_title('Unmixed Signal')
     axOrig.autoscale(tight=True)
 
-    axMixed = fig.add_subplot(4,1, 2)
+    axMixed = fig.add_subplot(4, 1, 2)
     axMixed.plot(sMixed+util.colsep(sMixed))
     axMixed.set_title('Mixed Signal (random transform)')
     axMixed.autoscale(tight=True)
 
-    axUnmixed = fig.add_subplot(4,1, 3)
+    axUnmixed = fig.add_subplot(4, 1, 3)
     msfFilt.plotTransform(sMixed, ax=axUnmixed)
     axUnmixed.set_title('MSF Components')
     axUnmixed.autoscale(tight=True)
 
-    axCleaned = fig.add_subplot(4,1, 4)
+    axCleaned = fig.add_subplot(4, 1, 4)
     msfFilt.plotFilter(sMixed, comp=(2,), remove=True, ax=axCleaned)
     axCleaned.set_title('Cleaned Signal (Last Component Removed)')
     axCleaned.autoscale(tight=True)

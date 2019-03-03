@@ -1,12 +1,6 @@
 """Text-stimulus widgets that present text stimuli to the screen.
 """
-
-import numpy as np
-import random
-import string
 import wx
-
-from cebl import util
 
 from .wxgraphics import DrawablePanel
 
@@ -96,7 +90,7 @@ class TextStim(DrawablePanel):
                         If None (default) the stimulus text
                         will not be drawn.
         """
-        self.stimText  = stimText
+        self.stimText = stimText
 
         if refresh:
             self.refresh()
@@ -145,7 +139,7 @@ class TextStim(DrawablePanel):
                         If None (default) the feedback message
                         will not be drawn.
         """
-        self.feedText  = feedText
+        self.feedText = feedText
 
         if refresh:
             self.refresh()
@@ -240,7 +234,7 @@ class TextStim(DrawablePanel):
         dc.SetFont(self.feedFont)
 
         trimmedFeedText = \
-            self.feedText[max(len(self.feedText)-self.feedLength,0):]
+            self.feedText[max(len(self.feedText)-self.feedLength, 0):]
 
         dc.DrawText(trimmedFeedText, 10, 5)
 
@@ -256,7 +250,7 @@ class IdleTextStim(TextStim):
             parent:         wx parent object.
 
             stim:           String containing the idle stimulus.
-    
+
             args, kwargs:   Additional arguments passed to TextStim
                             base class.
         """

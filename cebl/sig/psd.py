@@ -109,9 +109,11 @@ class WelchPSD(PSDBase):
 
         Refs:
             @article{heinzel2002spectrum,
-              title={Spectrum and spectral density estimation by the Discrete Fourier transform (DFT),
-                     including a comprehensive list of window functions and some new flat-top windows},
-              author={Heinzel, G. and R{\"u}diger, A. and Schilling, R. and Hannover, T.},
+              title={Spectrum and spectral density estimation by the Discrete
+                     Fourier transform (DFT), including a comprehensive list of
+                     window functions and some new flat-top windows},
+              author={Heinzel, G. and R{\"u}diger, A. and Schilling,
+                      R. and Hannover, T.},
               journal={Max Plank Institute},
               year={2002}
             }

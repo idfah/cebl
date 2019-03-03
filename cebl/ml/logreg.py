@@ -79,6 +79,11 @@ class LogisticRegression(Classifier, optim.Optable):
         """
         return self.weights.ravel()
 
+    def discrim(self, x):
+        x = util.colmat(x)
+        v = x @ (self.weights[:-1]) + self.weights[-1]
+        return v
+
     def probs(self, x):
         """Compute class probabilities.
 
@@ -88,10 +93,7 @@ class LogisticRegression(Classifier, optim.Optable):
         Returns:
             Numpy array with shape (nObs, nIn) containing the probability values.
         """
-        x = util.colmat(x)
-
-        v = x.dot(self.weights[:-1]) + self.weights[-1]
-        return util.softmax(v)
+        return util.softmax(self.discrim(x))
 
     def error(self, x, g):
         """Compute the negative log likelyhood for given inputs and targets.
@@ -120,7 +122,7 @@ class LogisticRegression(Classifier, optim.Optable):
 
         delta = (probs - g) / probs.size
 
-        grad = util.bias(x).T.dot(delta)
+        grad = util.bias(x).T @ delta
 
         gf = grad.ravel()
 
@@ -272,7 +274,7 @@ def demoLogisticRegression2d():
     ax.imshow(colorFlip, origin='lower',
               extent=(mn[0], mx[0], mn[1], mx[1]), aspect='auto')
 
-    # contours 
+    # contours
     nLevel = 4
     cs = ax.contour(x, y, pMax, colors='black',
                     levels=np.linspace(np.min(pMax), np.max(pMax), nLevel))
@@ -299,7 +301,7 @@ class LogisticRegressionElastic(LogisticRegression):
 
             elastic:
 
-            kwargs:   
+            kwargs:
         """
         self.penalty = penalty
         self.elastic = elastic
@@ -313,7 +315,7 @@ class LogisticRegressionElastic(LogisticRegression):
         likes = np.log(util.capZero(self.probs(x)))
 
         pf = self.weights[:-1,:].ravel()
-        return (-np.mean(g*likes) + 
+        return (-np.mean(g*likes) +
                 self.elastic       * self.penalty * pf.dot(pf)/pf.size + # L2-norm penalty
                 (1.0-self.elastic) * self.penalty * np.mean(np.abs(pf))) # L1-norm penalty
 
@@ -328,7 +330,7 @@ class LogisticRegressionElastic(LogisticRegression):
         penMask = np.ones_like(self.weights)
         penMask[-1,:] = 0.0
 
-        grad = (util.bias(x).T.dot(delta) +
+        grad = (util.bias(x).T @ delta +
             self.elastic * 2.0 * self.penalty * penMask * self.weights / self.weights.size + # L2-norm penalty
             (1.0-self.elastic) * self.penalty * penMask * np.sign(self.weights) / self.weights.size) # L1-norm penalty
 

@@ -15,14 +15,15 @@ from . import chanlocs
 from . import head
 
 
+# pylint: disable=too-many-public-methods
 class SegmentedEEG(EEGBase):
     def __init__(self, data, sampRate, chanNames=None, markers=None,
-                 start=0.0, deviceName='', dtype=None, copy=False):
+                 start=0.0, deviceName="", dtype=None, copy=False):
         """Construct a new SegmentedEEG instance for processing eeg data
         that has been split into segments of equal length.
 
         Args:
-            data:       A 3D numpy array of floats of shape (nSeg,nObs[,nDim])
+            data:       A 3D numpy array of floats of shape (nSeg, nObs[,nDim])
                         containing the eeg segments.  The first axis
                         corresponds to the eeg segments.  The second axis
                         corresponds to the observations (i.e., time steps).
@@ -34,7 +35,7 @@ class SegmentedEEG(EEGBase):
 
             chanNames:  A list of names of the channels in the eeg data.
                         If None (default) then the channel names are set
-                        to '1', '2', ... 'nChan'.
+                        to "1", "2", ... "nChan".
 
             markers:    EEG event markers.  This is a list or tuple of floats
                         that mark each eeg segment.  There should be one marker
@@ -56,7 +57,7 @@ class SegmentedEEG(EEGBase):
                         the data argument.
 
             copy:       If False (default) then data will not be copied if
-                        possible.  If True, then the data definitely be 
+                        possible.  If True, then the data definitely be
                         copied.  Warning:  If multiple EEG instances use
                         the same un-copied data array, then modifying one
                         EEG instance may lead to undefined behavior in
@@ -72,7 +73,10 @@ class SegmentedEEG(EEGBase):
         EEGBase.__init__(self, data.shape[1], data.shape[2],
             sampRate=sampRate, chanNames=chanNames, deviceName=deviceName)
 
+        self.markers = None
         self.setMarkers(markers, copy=copy)
+
+        self.start = None
         self.setStart(start)
 
     def copy(self, dtype=None):
@@ -81,7 +85,7 @@ class SegmentedEEG(EEGBase):
                             deviceName=self.deviceName, dtype=dtype, copy=True)
 
     def getData(self):
-        """Get the current data as a numpy array of shape (nSeg,nObs,nChan).
+        """Get the current data as a numpy array of shape (nSeg, nObs, nChan).
         """
         return self.data
 
@@ -99,13 +103,14 @@ class SegmentedEEG(EEGBase):
         self.markers = self.markers.astype(self.dtype, copy=False)
 
         if len(self.markers) != self.nSeg:
-            raise RuntimeError('Length of markers ' + str(len(self.markers)) + \
-                            ' does not match number of segments ' + str(self.nSeg))
+            raise RuntimeError("Length of markers " + str(len(self.markers)) +
+                               " does not match number of segments " + str(self.nSeg))
         return self
 
     def setStart(self, start=None):
         if start is None:
             start = self.start
+
         self.start = int(np.floor(start*float(self.sampRate)))/float(self.sampRate)
         return self
 
@@ -136,7 +141,7 @@ class SegmentedEEG(EEGBase):
             sampRate=self.sampRate, markers=self.markers[indicators], start=self.getStart(),
             chanNames=self.chanNames, deviceName=self.deviceName, copy=copy)
 
-    def selectChr(self, character, sign=0, *args, **kwargs):
+    def selectChr(self, character, *args, sign=0, **kwargs):
         """ Note np.abs in documentation XXX - idfah
         """
         def matchFunc(mark):
@@ -167,8 +172,8 @@ class SegmentedEEG(EEGBase):
             start = int(start*float(self.sampRate))/self.sampRate
 
             if start < startOrig:
-                raise RuntimeError('Cannot trim to start %f before original start %f.' %
-                                (start, startOrig))
+                raise RuntimeError("Cannot trim to start %f before original start %f." %
+                                   (start, startOrig))
 
             startTrimSamp = int((start-startOrig)*self.sampRate)
         else:
@@ -180,14 +185,14 @@ class SegmentedEEG(EEGBase):
             end = int(end*float(self.sampRate))/self.sampRate
 
             if end > endOrig:
-                raise RuntimeError('Cannot trim to end %f before original end %f.' %
-                                (end, endOrig))
+                raise RuntimeError("Cannot trim to end %f before original end %f." %
+                                   (end, endOrig))
 
             endTrimSamp = int((end-endOrig)*self.sampRate)
         else:
             endTrimSamp = None
 
-        self.data = self.data[:,startTrimSamp:endTrimSamp,:]
+        self.data = self.data[:, startTrimSamp:endTrimSamp, :]
 
         self.nObs = self.data.shape[1]
         self.nSec = self.nObs / float(self.sampRate)
@@ -196,23 +201,21 @@ class SegmentedEEG(EEGBase):
 
         return self
 
-    '''
-    def split(self, nSec):
-        nObs = self.sampRate*nSec
-        rem = np.remainder(self.nObs, nObs)
+    ## def split(self, nSec):
+    ##     nObs = self.sampRate*nSec
+    ##     rem = np.remainder(self.nObs, nObs)
 
-        self.data = self.data[:,:(self.nObs-rem-1)]
+    ##     self.data = self.data[:, :(self.nObs-rem-1)]
 
-        nSplit = self.data.shape[1] // nObs
+    ##     nSplit = self.data.shape[1] // nObs
 
-        self.data = self.data.reshape((nSplit*self.nSeg, nObs, -1))
+    ##     self.data = self.data.reshape((nSplit*self.nSeg, nObs, -1))
 
-        self.nSeg = self.data.shape[0]
-        self.nObs = self.data.shape[1]
-        self.nSec = self.nObs / float(self.sampRate)
+    ##     self.nSeg = self.data.shape[0]
+    ##     self.nObs = self.data.shape[1]
+    ##     self.nSec = self.nObs / float(self.sampRate)
 
-        return self
-    '''
+    ##     return self
 
     def split(self, nSec, overlap=0.0):
         span = int(self.sampRate*nSec)
@@ -224,7 +227,7 @@ class SegmentedEEG(EEGBase):
         # test this? XXX - idfah
         self.markers = np.repeat(self.markers, windows.shape[1])
 
-        self.data = windows.reshape((-1,span,self.nChan))
+        self.data = windows.reshape((-1, span, self.nChan))
 
         self.nSeg = self.data.shape[0]
         self.nObs = self.data.shape[1]
@@ -260,7 +263,7 @@ class SegmentedEEG(EEGBase):
         chans = self.getChanIndices(chans)
         self.data = np.delete(self.data, chans, axis=2)
         self.nChan -= len(chans)
-        self.chanNames = [c for i,c in enumerate(self.chanNames) if i not in chans]
+        self.chanNames = [c for i, c in enumerate(self.chanNames) if i not in chans]
         return self
 
     def keepChans(self, chans):
@@ -271,7 +274,7 @@ class SegmentedEEG(EEGBase):
 
     def reference(self, chans):
         chans = self.getChanIndices(chans)
-        ref = self.data[:,:,chans]
+        ref = self.data[:, :, chans]
         if len(chans) > 1:
             ref = ref.mean(axis=2)
         self.data -= util.segmat(ref)
@@ -280,19 +283,20 @@ class SegmentedEEG(EEGBase):
     def bipolarReference(self, pairs):
         for pair in pairs:
             if len(pair) > 2:
-                raise RuntimeError('Bipolar reference assumes pairs of electrodes but got %s.' % pair)
+                raise RuntimeError(
+                    "Bipolar reference assumes pairs of electrodes but got %s." % pair)
 
             pair = self.getChanIndices(pair)
 
-            ref = self.data[:,:,pair].mean(axis=2)
-            self.data[:,:,pair] = util.segmat(ref)
+            ref = self.data[:, :, pair].mean(axis=2)
+            self.data[:, :, pair] = util.segmat(ref)
 
         chanNames = []
         for pair in pairs:
             pair = self.getChanNames(pair)
-            chanNames.append('-'.join(pair))
+            chanNames.append("-".join(pair))
 
-        self.deleteChans([r for l,r in pairs])
+        self.deleteChans([r for l, r in pairs])
         self.setChanNames(chanNames)
 
         return self
@@ -303,7 +307,7 @@ class SegmentedEEG(EEGBase):
         #                           for seg in self.data])
 
         for i in range(self.data.shape[0]):
-            self.data[i,...] = sig.commonAverageReference(self.data[i,...], *args, **kwargs)
+            self.data[i, ...] = sig.commonAverageReference(self.data[i, ...], *args, **kwargs)
 
         return self
 
@@ -312,57 +316,59 @@ class SegmentedEEG(EEGBase):
 
     def meanSeparate(self, recover=False):
         for i in range(self.data.shape[0]):
-            self.data[i,...] = sig.meanSeparate(self.data[i,...], recover=recover)
+            self.data[i, ...] = sig.meanSeparate(self.data[i, ...], recover=recover)
 
         if recover:
-            self.chanNames[-1] = 'recovered'
+            self.chanNames[-1] = "recovered"
         else:
-            self.chanNames[-1] = 'mean'
+            self.chanNames[-1] = "mean"
 
         return self
 
-    def sharpen(self, coord='sphere', *args, **kwargs):
+    def sharpen(self, coord="sphere", *args, **kwargs):
         locs = np.asarray([chanlocs.chanLocs3d[cn.lower()] for cn in self.getChanNames()],
                           dtype=self.dtype)
 
         coord = coord.lower()
-        if coord == '2d':
+        if coord == "2d":
             # steriographic projection
-            x = locs[:,0]
-            y = locs[:,1]
-            z = locs[:,2]
+            x = locs[:, 0]
+            y = locs[:, 1]
+            z = locs[:, 2]
             xy = np.vstack((x/(1.0+z), y/(1.0+z))).T
 
             dist = head.euclidDist(xy, xy)
 
-        elif coord == '3d':
+        elif coord == "3d":
             dist = head.euclidDist(locs, locs)
 
-        elif coord == 'sphere':
+        elif coord == "sphere":
             dist = head.sphereDist(locs, locs)
 
         else:
-            raise RuntimeError('Invalid coord %s.', str(coord))
+            raise RuntimeError("Invalid coord %s." % str(coord))
 
-        self.data = np.array([sig.sharpen(seg, dist=dist, *args, **kwargs) for seg in self.data])
+        self.data = np.array([sig.sharpen(seg, dist=dist, *args, **kwargs)
+                              for seg in self.data])
+
         return self
 
     def baselineCorrect(self, t=None):
         if t is None:
             if self.getStart() >= 0.0:
-                raise RuntimeError('Cannot baselineCorrect with positive start time ' +
-                                'unless t is given explicitely')
+                raise RuntimeError("Cannot baselineCorrect with positive start time " +
+                                   "unless t is given explicitely")
             tSamp = int(np.abs(self.getStart()) * self.sampRate)
         else:
             tSamp = int(t * self.sampRate)
 
-        self.data -= np.mean(self.data[:,:tSamp,:],axis=1).reshape((self.nSeg,1,self.nChan))    
+        self.data -= np.mean(self.data[:, :tSamp, :], axis=1).reshape((self.nSeg, 1, self.nChan))
 
         return self
 
     def downsample(self, factor):
         self.data = np.asarray([sig.downsample(seg, factor) for seg in self.data],
-                                   dtype=self.dtype)
+                               dtype=self.dtype)
 
         self.sampRate /= float(factor)
         self.nObs = self.data.shape[1]
@@ -372,7 +378,10 @@ class SegmentedEEG(EEGBase):
 
         return self
 
-    def resample(self, factorDown, factorUp=1, interpKwargs=dict(), **decimKwargs):
+    def resample(self, factorDown, factorUp=1, interpKwargs=None, **decimKwargs):
+        if interpKwargs is None:
+            interpKwargs = {}
+
         self.data = np.asarray(
             [sig.resample(seg, factorDown=factorDown, factorUp=factorUp,
                           interpKwargs=interpKwargs, **decimKwargs)
@@ -391,7 +400,7 @@ class SegmentedEEG(EEGBase):
         return self
 
     def chanEmbed(self):
-        return self.data.reshape((self.data.shape[0], -1), order='F')
+        return self.data.reshape((self.data.shape[0], -1), order="F")
 
     def timeEmbed(self, *args, **kwargs):
         return util.timeEmbed(self.data, *args, axis=1, **kwargs)
@@ -412,102 +421,103 @@ class SegmentedEEG(EEGBase):
 
     def reference(self, chans):
         chans = self.getChanIndices(chans)
-        ref = self.data[:,:,chans]
+        ref = self.data[:, :, chans]
         if len(chans) > 1:
             ref = ref.mean(axis=2)
         self.data -= util.segmat(ref)
         return self
 
-    def plotSegs(self, chan=0, drawZeroTime=False, drawZeroVolt=True,
-                 timeUnit='ms',
-                 segLineColor=(0.05,0.05,0.2,0.1), segLineWidth=3,
-                 meanLineColor='red', meanLineWidth=2,
-                 ax=None, *args, **kwargs):
+    def plotSegs(self, chan=0, drawZeroTime=False, drawZeroVolt=True, timeUnit="ms",
+                 segLineColor=(0.05, 0.05, 0.2, 0.1), segLineWidth=3,
+                 meanLineColor="red", meanLineWidth=2, ax=None, **kwargs):
         chan, = self.getChanIndices((chan,))
 
-        segs = self.data[:,:,chan].T
+        segs = self.data[:, :, chan].T
 
         timeUnit = timeUnit.lower()
-        if timeUnit in ('s', 'ms'):
-            time = np.linspace(self.getStart(),self.getEnd(),
+        if timeUnit in ("s", "ms"):
+            time = np.linspace(self.getStart(), self.getEnd(),
                         segs.shape[0]).astype(self.dtype, copy=False)
-        elif timeUnit == 'obs':
+        elif timeUnit == "obs":
             time = np.arange(self.nObs)
         else:
-            raise RuntimeError('Invalid timeUnit %s.' + str(timeUnit))
+            raise RuntimeError("Invalid timeUnit %s." + str(timeUnit))
 
-        if timeUnit == 'ms':
+        if timeUnit == "ms":
             time *= 1000.0
 
         if ax is None:
-            #fig = plt.figure(figsize=(9,5.5))
+            #fig = plt.figure(figsize=(9, 5.5))
             fig = plt.figure()
-            ax = fig.add_subplot(1,1,1)
+            ax = fig.add_subplot(1, 1, 1)
 
-        if timeUnit == 's':
-            ax.set_xlabel('Time (s)')
-        elif timeUnit == 'ms':
-            ax.set_xlabel('Time (ms)')
-        elif timeUnit == 'obs':
-            ax.set_xlabel('Observation')
-        ax.set_ylabel(r'Signal ($\mu V$)')
+        if timeUnit == "s":
+            ax.set_xlabel("Time (s)")
+        elif timeUnit == "ms":
+            ax.set_xlabel("Time (ms)")
+        elif timeUnit == "obs":
+            ax.set_xlabel("Observation")
+        ax.set_ylabel(r"Signal ($\mu V$)")
 
-        segLines = ax.plot(time, segs, color=segLineColor, linewidth=segLineWidth, *args, **kwargs)
-        segLines[-1].set_label('Single Trial')
-        ax.plot(time, np.mean(segs, axis=1), color='white', linewidth=meanLineWidth*2, *args, **kwargs)
-        meanLine = ax.plot(time, np.mean(segs, axis=1), color=meanLineColor, linewidth=meanLineWidth, label='Mean', *args, **kwargs)
+        segLines = ax.plot(time, segs, color=segLineColor, linewidth=segLineWidth, **kwargs)
+        segLines[-1].set_label("Single Trial")
+        ax.plot(time, np.mean(segs, axis=1), color="white", linewidth=meanLineWidth*2, **kwargs)
+        meanLine = ax.plot(time, np.mean(segs, axis=1), color=meanLineColor,
+                           linewidth=meanLineWidth, label="Mean", **kwargs)
 
         vertLine = None
         if drawZeroTime:
-            vertLine = ax.vlines(0.0, np.min(segs), np.max(segs), color='red', linewidth=2, linestyle='--')
+            vertLine = ax.vlines(0.0, np.min(segs), np.max(segs),
+                                 color="red", linewidth=2, linestyle="--")
 
         if drawZeroVolt:
-            ax.hlines(0.0, time[0], time[-1], linewidth=2, linestyle='--', color='grey')
+            ax.hlines(0.0, time[0], time[-1], linewidth=2, linestyle="--", color="grey")
 
         ax.autoscale(tight=True)
 
-        return {'ax': ax, 'segLines': segLines, 'meanLine': meanLine, vertLine: 'vertLine'}
+        return {"ax": ax, "segLines": segLines, "meanLine": meanLine, vertLine: "vertLine"}
 
-    def plotAvg(self, chans=None, drawZeroTime=False, drawZeroVolt=True, timeUnit='ms', scale=None, ax=None, **kwargs):
+    def plotAvg(self, chans=None, drawZeroTime=False, drawZeroVolt=True,
+                timeUnit="ms", scale=None, ax=None, **kwargs):
         if chans is None:
             chans = self.getChanNames()
         chans = self.getChanIndices(chans)
 
         chans = self.getChanIndices(chans)
 
-        avg = self.data[:,:,chans].mean(axis=0)
+        avg = self.data[:, :, chans].mean(axis=0)
 
         timeUnit = timeUnit.lower()
-        if timeUnit in ('s', 'ms'):
-            time = np.linspace(self.getStart(),self.getEnd(),
+        if timeUnit in ("s", "ms"):
+            time = np.linspace(self.getStart(), self.getEnd(),
                         avg.shape[0]).astype(self.dtype, copy=False)
-        elif timeUnit == 'obs':
+        elif timeUnit == "obs":
             time = np.arange(self.nObs)
         else:
-            raise RuntimeError('Invalid timeUnit %s.' + str(timeUnit))
+            raise RuntimeError("Invalid timeUnit %s." + str(timeUnit))
 
-        if timeUnit == 'ms':
+        if timeUnit == "ms":
             time *= 1000.0
 
         sep, scale = util.colsep(avg, scale=scale, returnScale=True)
 
         if ax is None:
-            #fig = plt.figure(figsize=(9,5.5))
+            #fig = plt.figure(figsize=(9, 5.5))
             fig = plt.figure()
-            ax = fig.add_subplot(1,1,1)
+            ax = fig.add_subplot(1, 1, 1)
 
-        if timeUnit == 's':
-            ax.set_xlabel('Time (s)')
-        elif timeUnit == 'ms':
-            ax.set_xlabel('Time (ms)')
-        elif timeUnit == 'obs':
-            ax.set_xlabel('Observation')
+        if timeUnit == "s":
+            ax.set_xlabel("Time (s)")
+        elif timeUnit == "ms":
+            ax.set_xlabel("Time (ms)")
+        elif timeUnit == "obs":
+            ax.set_xlabel("Observation")
 
         if len(chans) > 1:
-            ax.set_yticklabels([c for i,c in enumerate(self.chanNames) if i in chans])
+            ax.set_yticklabels([c for i, c in enumerate(self.chanNames) if i in chans])
             ax.set_yticks(sep)
         else:
-            ax.set_ylabel(r'Signal ($\mu V$)')
+            ax.set_ylabel(r"Signal ($\mu V$)")
 
         lines = ax.plot(time, avg+sep, **kwargs)
 
@@ -515,13 +525,13 @@ class SegmentedEEG(EEGBase):
 
         if drawZeroTime:
             ylim = ax.get_ylim()
-            #ax.vlines(0.0, np.min(avg+sep), np.max(avg+sep), color='red', linewidth=2, linestyle='--')
-            ax.vlines(0.0, ylim[0], ylim[1], color='red', linewidth=2, linestyle='--')
+            #ax.vlines(0.0, np.min(avg+sep), np.max(avg+sep), color="red", linewidth=2, linestyle="--")
+            ax.vlines(0.0, ylim[0], ylim[1], color="red", linewidth=2, linestyle="--")
 
         if drawZeroVolt:
-            ax.hlines(0.0, time[0], time[-1], linewidth=2, linestyle='--', color='grey')
+            ax.hlines(0.0, time[0], time[-1], linewidth=2, linestyle="--", color="grey")
 
-        return {'ax': ax, 'lines': lines, 'scale': scale}
+        return {"ax": ax, "lines": lines, "scale": scale}
 
     def plotAvgDiffHead(self, other, times=(0.0, 0.1, 0.2, 0.3), chans=None):
         if chans is None:
@@ -533,8 +543,8 @@ class SegmentedEEG(EEGBase):
 
         nTimes = len(times)
 
-        avgSelf = self.data[:,:,chans].mean(axis=0)
-        avgOther = other.data[:,:,chans].mean(axis=0)
+        avgSelf = self.data[:, :, chans].mean(axis=0)
+        avgOther = other.data[:, :, chans].mean(axis=0)
         avgDiff = avgSelf - avgOther
 
         if nTimes <= 4:
@@ -547,56 +557,58 @@ class SegmentedEEG(EEGBase):
         fig = plt.figure()
         axs = []
 
-        for i,t in enumerate(times):
+        for i, t in enumerate(times):
             ax = fig.add_subplot(nRow, nCol, i+1)
-            ax.set_title('%.0fms' % (t*1000.0))
+            ax.set_title("%.0fms" % (t*1000.0))
             axs.append(ax)
 
             timeStep = int(t*self.sampRate)
 
-            head.plotHeadInterp(avgDiff[timeStep,:], chanNames=chanNames, ax=ax)
+            head.plotHeadInterp(avgDiff[timeStep, :], chanNames=chanNames, ax=ax)
 
-        return {'fig': fig, 'axs': axs}
+        return {"fig": fig, "axs": axs}
 
-    def plotAvgAndHead(self, chan=0, times=(100,200,300,400,500,600,700), timeUnit='ms',
-                       mn=None, mx=None, avgKwargs={}, **kwargs):
+    def plotAvgAndHead(self, chan=0, times=(100, 200, 300, 400, 500, 600, 700), timeUnit="ms",
+                       mn=None, mx=None, avgKwargs=None, **kwargs):
+        if avgKwargs is None:
+            avgKwargs = {}
+
         chan, = self.getChanIndices((chan,))
-
 
         timeUnit = timeUnit.lower()
         nHead = len(times)
 
-        fig = plt.figure(figsize=(14,8))
+        fig = plt.figure(figsize=(14, 8))
         fig.subplots_adjust(hspace=0.32, wspace=0.02,
             left=0.065, right=0.95, top=0.97, bottom=0.18)
 
-        gs = pltgs.GridSpec(2,nHead)
-        axAvg = fig.add_subplot(gs[0,:])
-        axHead = [fig.add_subplot(gs[1,i]) for i in range(nHead)]
+        gs = pltgs.GridSpec(2, nHead)
+        axAvg = fig.add_subplot(gs[0, :])
+        axHead = [fig.add_subplot(gs[1, i]) for i in range(nHead)]
         axCBar = fig.add_axes((0.05, 0.08, 0.9, 0.05))
 
         avgPlot = self.plotAvg(chans=(chan,), ax=axAvg, timeUnit=timeUnit, **avgKwargs)
 
-        avgMn, avgMx = avgPlot['ax'].get_ylim()
-        axAvg.vlines(times, avgMn, avgMx, linestyle='--', linewidth=2, color='red')
-        axAvg.set_title('Channel %s Average' % self.getChanNames((chan,))[0])
+        avgMn, avgMx = avgPlot["ax"].get_ylim()
+        axAvg.vlines(times, avgMn, avgMx, linestyle="--", linewidth=2, color="red")
+        axAvg.set_title("Channel %s Average" % self.getChanNames((chan,))[0])
 
         avg = np.mean(self.data, axis=0)
 
         headPlots = []
-        for t,axH in zip(times, axHead):
+        for t, axH in zip(times, axHead):
             startObs = int(self.start*self.sampRate)
-            if timeUnit == 's':
+            if timeUnit == "s":
                 i = int(self.sampRate*t)
-                fmt = '%.2f'
-            elif timeUnit == 'ms':
+                fmt = "%.2f"
+            elif timeUnit == "ms":
                 i = int(self.sampRate*t/1000.0)
-                fmt = '%.0f'
-            elif timeUnit == 'obs':
+                fmt = "%.0f"
+            elif timeUnit == "obs":
                 i = t
-                fmt = '%.0f'
+                fmt = "%.0f"
             else:
-                raise RuntimeError('Invalid timeUnit %s.' % str(timeUnit))
+                raise RuntimeError("Invalid timeUnit %s." % str(timeUnit))
             i -= startObs
 
             if mn is None:
@@ -605,19 +617,23 @@ class SegmentedEEG(EEGBase):
             if mx is None:
                 mx = np.max(avg)
 
-            hp = head.plotHeadInterp(avg[i,:],
+            hp = head.plotHeadInterp(avg[i, :],
                     chanNames=self.getChanNames(), mn=mn, mx=mx,
                     colorbar=False, ax=axH, **kwargs)
             axH.set_title((fmt + timeUnit) % t)
             headPlots.append(hp)
 
-        cbar = plt.colorbar(hp['im'], ax=axAvg, orientation='horizontal', cax=axCBar)
-        cbar.set_label(r'Signal ($\mu V$)')
+        cbar = plt.colorbar(hp["im"], ax=axAvg, orientation="horizontal", cax=axCBar)
+        cbar.set_label(r"Signal ($\mu V$)")
 
-        return {'axAvg': axAvg, 'axHead': axHead, 'axCBar': axCBar,
-                'avgPlot': avgPlot, 'headPlots': headPlots, 'cbar': cbar}
+        return {"axAvg": axAvg, "axHead": axHead, "axCBar": axCBar,
+                "avgPlot": avgPlot, "headPlots": headPlots, "cbar": cbar}
 
-    def plotAvgPSDByChan(self, scale='log', plotChanNames=True, lowFreq=0, highFreq=np.inf, ax=None, psdKwargs={}, **kwargs):
+    def plotAvgPSDByChan(self, scale="log", plotChanNames=True,
+                         ax=None, psdKwargs=None, **kwargs):
+        if psdKwargs is None:
+            psdKwargs = {}
+
         psds = self.psd(**psdKwargs)
 
         powers = np.array([psd.getPowers() for psd in psds])
@@ -627,36 +643,36 @@ class SegmentedEEG(EEGBase):
         highMask = freqs > 0.5
         freqMask = lowMask & highMask
 
-        powers = powers[:,freqMask]
+        powers = powers[:, freqMask]
         powers = powers.mean(axis=0)
 
         freqs = freqs[freqMask]
 
         if ax is None:
             fig = plt.figure()
-            ax = fig.add_subplot(1,1,1)
+            ax = fig.add_subplot(1, 1, 1)
 
         ax.grid()
-        ax.set_title('Power Spectral Density')
-        ax.set_xlabel(r'Freqency ($Hz$)')
+        ax.set_title("Power Spectral Density")
+        ax.set_xlabel(r"Freqency ($Hz$)")
         ax.set_xlim((np.min(freqs), np.max(freqs)))
 
         scale = scale.lower()
-        if scale in ('linear', 'log'):
-            ax.set_ylabel(r'Power Density ($\mu V^2 / Hz$)')
-        elif scale in ('db', 'decibels'):
-            ax.set_ylabel(r'Power Density (dB)')
-        if scale == 'log':
-            ax.set_yscale('log')
+        if scale in ("linear", "log"):
+            ax.set_ylabel(r"Power Density ($\mu V^2 / Hz$)")
+        elif scale in ("db", "decibels"):
+            ax.set_ylabel(r"Power Density (dB)")
+        if scale == "log":
+            ax.set_yscale("log")
 
-        if scale in ('linear', 'log'):
+        if scale in ("linear", "log"):
             pass
-        elif scale in ('db', 'decibels'):
+        elif scale in ("db", "decibels"):
             powers = 10.0*np.log10(powers/np.max(powers))
         else:
-            raise RuntimeError('Invalid scale %s.' % str(scale))
+            raise RuntimeError("Invalid scale %s." % str(scale))
 
-        powersFlat = powers.reshape((-1,), order='F')
+        powersFlat = powers.reshape((-1,), order="F")
         lines = ax.plot(powersFlat, **kwargs)
 
         nFreq = len(freqs)
@@ -665,16 +681,16 @@ class SegmentedEEG(EEGBase):
         chanNames = self.getChanNames()
 
         if plotChanNames:
-            for i,cn in enumerate(chanNames):
+            for i, cn in enumerate(chanNames):
                 if i > 0:
-                    ax.vlines(i*float(nFreq), mn, mx, linestyle='--')
+                    ax.vlines(i*float(nFreq), mn, mx, linestyle="--")
                 ax.text((i+0.25)*float(nFreq), mx-0.38*(mx-mn), cn, fontsize=14)
 
         tickStride = int(np.ceil(nFreq/3.0))
         tickFreqs = freqs[::tickStride]
         tickPlaces = np.arange(nFreq)[::tickStride]
         tickLocs = np.concatenate(
-                        [tickPlaces+nFreq*i for i,c in enumerate(chanNames)])
+                        [tickPlaces+nFreq*i for i, c in enumerate(chanNames)])
         tickLabels = np.round(np.tile(tickFreqs, len(chanNames))).astype(np.int)
 
         ax.set_xticks(tickLocs)
@@ -682,7 +698,7 @@ class SegmentedEEG(EEGBase):
 
         ax.autoscale(tight=True)
 
-        return {'freqs': freqs, 'powers': powers, 'lines': lines, 'ax': ax}
+        return {"freqs": freqs, "powers": powers, "lines": lines, "ax": ax}
 
     def plotImg(self, chans):
         if chans is None:
@@ -692,21 +708,21 @@ class SegmentedEEG(EEGBase):
         chans = self.getChanIndices(chans)
 
         #if ax is None:
-        ##    fig = plt.figure(figsize=(14,8.5))
-        #    fig = plt.figure(figsize=(9,5.5))
-        #    ax = fig.add_subplot(1,1,1)
-        #ax.set_yticklabels([c for i,c in enumerate(self.chanNames) if i in chans])
+        ##    fig = plt.figure(figsize=(14, 8.5))
+        #    fig = plt.figure(figsize=(9, 5.5))
+        #    ax = fig.add_subplot(1, 1, 1)
+        #ax.set_yticklabels([c for i, c in enumerate(self.chanNames) if i in chans])
         #ax.set_yticks(sep)
-        #ax.set_xlabel('Time (s)')
+        #ax.set_xlabel("Time (s)")
         #ax.set_ylim(-scale, sep[-1] + scale)
 
 class SegmentedEEGFromEEG(SegmentedEEG):
     def __init__(self, unSegmentedEEG, start=0.0, end=0.8,
                  #startsFunc=lambda m: np.where(np.diff(np.abs(m)) > 0.0)[0],
                  startsFunc=lambda m: np.where(~np.isclose(np.diff(m), 0.0))[0],
-                 *args, **kwargs):
+                 **kwargs):
 
-        unSegmentedData = unSegmentedEEG.getData() 
+        unSegmentedData = unSegmentedEEG.getData()
         sampRate = unSegmentedEEG.getSampRate()
         chanNames = unSegmentedEEG.getChanNames()
         markers = unSegmentedEEG.getMarkers()
@@ -725,12 +741,12 @@ class SegmentedEEGFromEEG(SegmentedEEG):
         # if first segment is too short, ditch it
         # this feels hacky ? XXX - idfah
         while segStarts[0] + startSamp < 0:
-            ##print('ditching first segment')
+            ##print("ditching first segment")
             segStarts = segStarts[1:]
 
         # if last segment is too short, ditch it
         while segStarts[-1] + endSamp >= unSegmentedData.shape[0]:
-            ##print('ditching last segment')
+            ##print("ditching last segment")
             segStarts = segStarts[:-1]
 
         indices = np.asarray([range(s+startSamp, s+endSamp) for s in segStarts],
@@ -739,7 +755,7 @@ class SegmentedEEGFromEEG(SegmentedEEG):
         data = unSegmentedData[indices]
 
         SegmentedEEG.__init__(self, data=data, sampRate=sampRate, chanNames=chanNames,
-                              markers=markers[segStarts+1], start=start, *args, **kwargs)
+                              markers=markers[segStarts+1], start=start, **kwargs)
 
 class SegmentEEGFromSingleEEG(SegmentedEEG):
     def __init__(self, singleEEG, *args, **kwargs):
@@ -749,14 +765,14 @@ class SegmentEEGFromSingleEEG(SegmentedEEG):
 
         sampRate = singleEEG.getSampRate()
         chanNames = singleEEG.getChanNames()
-        
+
         SegmentedEEG.__init__(self, data=data, sampRate=sampRate, chanNames=chanNames,
                               markers=markers, *args, **kwargs)
 
 class SegmentedEEGFromMatFiles(SegmentedEEG):
-    def __init__(self, fileNames, dataKey='data', sampRate=('key','freq'),
-                 chanNames=('key','channels'), markers=('arg',None), start=('arg',0.0),
-                 transpose=False, deviceName=('arg',None), *args, **kwargs):
+    def __init__(self, fileNames, dataKey="data", sampRate=("key", "freq"),
+                 chanNames=("key", "channels"), markers=("arg", None), start=("arg", 0.0),
+                 transpose=False, deviceName=("arg", None), **kwargs):
 
         firstMat = spio.loadmat(fileNames[0])
         firstSeg = util.colmat(firstMat[dataKey])
@@ -768,12 +784,12 @@ class SegmentedEEGFromMatFiles(SegmentedEEG):
             koa = spec[0]
             val = spec[1]
 
-            if koa == 'key':
+            if koa == "key":
                 return firstMat[val]
-            elif koa == 'arg':
+            elif koa == "arg":
                 return val
             else:
-                raise RuntimeError('Invalid spec %s.' % spec)
+                raise RuntimeError("Invalid spec %s." % spec)
 
         sampRate = int(keyOrArg(sampRate))
         chanNames = [str(chanName[0]) for chanName in keyOrArg(chanNames)[0][0]]
@@ -791,7 +807,7 @@ class SegmentedEEGFromMatFiles(SegmentedEEG):
                 seg = seg.T
 
             if seg.shape != firstShape:
-                raise RuntimeError('Shape of first segment %s %s does not not match shape of segment %s %s.' %
+                raise RuntimeError("Shape of first segment %s %s does not not match shape of segment %s %s." %
                     (str(fileNames[0]), str(firstShape), str(fileName), str(seg.shape)))
 
             data.append(seg)
@@ -799,4 +815,4 @@ class SegmentedEEGFromMatFiles(SegmentedEEG):
         data = np.asarray(data)
 
         SegmentedEEG.__init__(self, data=data, sampRate=sampRate, chanNames=chanNames,
-                              markers=markers, start=start, *args, **kwargs)
+                              markers=markers, start=start, **kwargs)

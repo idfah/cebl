@@ -1,8 +1,11 @@
 import copy
-import numpy as np
+
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_wxagg \
     import FigureCanvasWxAgg as FigureCanvas
+import munch
+import numpy as np
+
 import wx
 from wx.lib.agw import aui
 import wx.lib.agw.floatspin as agwfs
@@ -41,7 +44,7 @@ class WelchConfigPanel(wx.Panel):
                 flag=wx.ALL | wx.EXPAND, border=10)
         featureSizer.Add(spanControlBox, proportion=1,
                 flag=wx.LEFT | wx.BOTTOM | wx.RIGHT | wx.EXPAND, border=10)
-        
+
         # radio buttons for turning log transform on and off
         logTransControlBox = widgets.ControlBox(self, label='Log Trans', orient=wx.HORIZONTAL)
 
@@ -374,7 +377,7 @@ class ConfigPanel(StandardConfigPanel):
         self.pg.requireRetrain()
 
     def initLayout(self):
-        self.initStandardLayout() 
+        self.initStandardLayout()
 
         self.FitInside()
         self.autoregPanel.Hide()
@@ -487,7 +490,7 @@ class MentalTasks(StandardBCIPage):
         #self.choices = ['Song', 'Right', 'Count', 'Left']
         self.choices = ['Song', 'Right', 'Cube', 'Left']
 
-        self.welchConfig = util.Holder(
+        self.welchConfig = munch.Munch(
             classifierKind = 'Linear Discrim',
             span = 0.2,
             logTrans = True,
@@ -497,7 +500,7 @@ class MentalTasks(StandardBCIPage):
         )
 
         # autoregression config
-        self.autoregConfig = util.Holder(
+        self.autoregConfig = munch.Munch(
             horizon = 1
         )
 
@@ -612,7 +615,7 @@ class MentalTasks(StandardBCIPage):
             self.saveCap()
 
     def trainEpoch(self):
-        if len(self.curChoices) == 0:
+        if not self.curChoices:
             self.curChoices = copy.copy(self.choices)
             np.random.shuffle(self.curChoices)
             self.curTrial += 1
@@ -629,7 +632,7 @@ class MentalTasks(StandardBCIPage):
 
         self.src.setMarker(0.0)
 
-        if self.curTrial == self.nTrainTrial and len(self.curChoices) == 0:
+        if not self.curChoices and self.curTrial == self.nTrainTrial:
             wx.CallLater(1000.0*self.pauseSecs, self.endTrain)
         else:
             wx.CallLater(1000.0*self.pauseSecs, self.runTrainEpoch)
@@ -790,7 +793,7 @@ class MentalTasks(StandardBCIPage):
         dialog.Destroy()
 
         resultText = (('Best Num Iterations: %f\n' % bestIter) +
-                      ('Best Mean Training CA: %f\n' % bestMeanTrnCA) + 
+                      ('Best Mean Training CA: %f\n' % bestMeanTrnCA) +
                       ('Best Mean Validation CA: %f\n' % bestMeanValCA) +
                       ('Final Training CA: %f\n' % trainCA) +
                       ('Confusion Matrix:\n' + str(trainConfusion) + '\n') +
@@ -850,7 +853,7 @@ class MentalTasks(StandardBCIPage):
         dialog.Destroy()
 
         resultText = (('Best Order: %f\n' % bestOrder) +
-                      ('Best Mean Training CA: %f\n' % bestMeanTrnCA) + 
+                      ('Best Mean Training CA: %f\n' % bestMeanTrnCA) +
                       ('Best Mean Validation CA: %f\n' % bestMeanValCA) +
                       ('Final Training CA: %f\n' % trainCA) +
                       ('Confusion Matrix:\n' + str(trainConfusion) + '\n') +
@@ -984,7 +987,7 @@ class MentalTasks(StandardBCIPage):
             wx.CallLater(1000.0*self.decisionSecs*1.1, self.testClassify)
 
     def highlightTestTarget(self):
-        if len(self.curChoices) == 0:
+        if not self.curChoices:
             self.curChoices = copy.copy(self.choices)
             np.random.shuffle(self.curChoices)
             self.curTrial += 1
@@ -1031,7 +1034,7 @@ class MentalTasks(StandardBCIPage):
         self.pieMenu.clearAllHighlights()
         self.curDecision = -1
 
-        if self.curTrial == self.nTestTrial and len(self.curChoices) == 0:
+        if not self.curChoices and self.curTrial == self.nTestTrial:
             wx.CallLater(1000.0*self.pauseSecs, self.endTest)
         else:
             wx.CallLater(1000.0*self.pauseSecs, self.runTestEpoch)

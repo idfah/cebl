@@ -1,8 +1,11 @@
 import copy
-import numpy as np
+
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_wxagg \
     import FigureCanvasWxAgg as FigureCanvas
+import munch
+import numpy as np
+
 import wx
 from wx.lib.agw import aui
 import wx.lib.agw.floatspin as agwfs
@@ -42,7 +45,7 @@ class WelchConfigPanel(wx.Panel):
                 flag=wx.ALL | wx.EXPAND, border=10)
         featureSizer.Add(spanControlBox, proportion=1,
                 flag=wx.LEFT | wx.BOTTOM | wx.RIGHT | wx.EXPAND, border=10)
-        
+
         # radio buttons for turning log transform on and off
         logTransControlBox = widgets.ControlBox(self, label='Log Trans', orient=wx.HORIZONTAL)
 
@@ -161,7 +164,7 @@ class ConfigPanel(StandardConfigPanel):
 
         choiceControlBox.Add(choiceGridSizer, proportion=1,
                              flag=wx.ALL | wx.EXPAND, border=0)
-        
+
         self.sizer.Add(choiceControlBox, proportion=0, flag=wx.ALL | wx.EXPAND, border=10)
 
     def setChoices(self, event):
@@ -365,7 +368,7 @@ class ConfigPanel(StandardConfigPanel):
         self.pg.requireRetrain()
 
     def initLayout(self):
-        self.initStandardLayout() 
+        self.initStandardLayout()
 
         self.FitInside()
         self.autoregPanel.Hide()
@@ -397,8 +400,8 @@ class PlotPanel(wx.Panel):
         self.featureCanvas = FigureCanvas(parent=self, id=wx.ID_ANY, figure=self.featureFig)
 
     def initPongGame(self):
-        self.pongGame = widgets.Pong(self) 
-        
+        self.pongGame = widgets.Pong(self)
+
         # for some reason pongGame.Hide() is not called in showPieMenu. I don't know why
         self.pongGame.Hide()
 
@@ -492,7 +495,7 @@ class MotorPong(StandardBCIPage):
         self.trainButton = wx.Button(self.toolbar, label='Train')
         self.toolbar.AddControl(self.trainButton, label='Train')
         self.Bind(wx.EVT_BUTTON, self.toggleTrain, self.trainButton)
-        
+
         # button to re-train classifier
         self.retrainButton = wx.Button(self.toolbar, label='Retrain')
         self.retrainButton.Disable()
@@ -546,7 +549,7 @@ class MotorPong(StandardBCIPage):
 
         self.choices = ['Left', 'Right']
 
-        self.welchConfig = util.Holder(
+        self.welchConfig = munch.Munch(
             classifierKind = 'Linear Discrim',
             span = 0.5,
             logTrans = True,
@@ -556,7 +559,7 @@ class MotorPong(StandardBCIPage):
         )
 
         # autoregression config
-        self.autoregConfig = util.Holder(
+        self.autoregConfig = munch.Munch(
             horizon = 1
         )
 
@@ -664,7 +667,7 @@ class MotorPong(StandardBCIPage):
             self.saveCap()
 
     def trainEpoch(self):
-        if len(self.curChoices) == 0:
+        if not self.curChoices:
             self.curChoices = copy.copy(self.choices)
             np.random.shuffle(self.curChoices)
             self.curTrial += 1
@@ -681,7 +684,7 @@ class MotorPong(StandardBCIPage):
 
         self.src.setMarker(0.0)
 
-        if self.curTrial == self.nTrainTrial and len(self.curChoices) == 0:
+        if not self.curChoices and self.curTrial == self.nTrainTrial:
             wx.CallLater(1000.0*self.pauseSecs, self.endTrain)
         else:
             wx.CallLater(1000.0*self.pauseSecs, self.runTrainEpoch)
@@ -926,7 +929,7 @@ class MotorPong(StandardBCIPage):
             wx.CallLater(1000.0*self.decisionSecs*1.1, self.testClassify)
 
     def highlightTestTarget(self):
-        if len(self.curChoices) == 0:
+        if not self.curChoices:
             self.curChoices = copy.copy(self.choices)
             np.random.shuffle(self.curChoices)
             self.curTrial += 1
@@ -986,7 +989,7 @@ class MotorPong(StandardBCIPage):
         self.pieMenu.clearAllHighlights()
         self.curDecision = -1
 
-        if self.curTrial == self.nTestTrial and len(self.curChoices) == 0:
+        if not self.curChoices and self.curTrial == self.nTestTrial:
             wx.CallLater(1000.0*self.pauseSecs, self.endTest)
         else:
             wx.CallLater(1000.0*self.pauseSecs, self.runTestEpoch)

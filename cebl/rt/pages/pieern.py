@@ -21,7 +21,7 @@ class ConfigPanel(StandardConfigPanel):
         self.initTrialSecs()
         self.initARParam()
         self.initClassifier()
-        self.initStandardLayout() 
+        self.initStandardLayout()
 
     def initChoices(self):
         choiceControlBox = widgets.ControlBox(self, label='Choices', orient=wx.VERTICAL)

@@ -1,10 +1,8 @@
 import numpy as np
-import time
 import wx
 from wx.lib.agw import aui
 
 from cebl.rt import widgets
-from cebl import sig
 
 from .standard import StandardConfigPanel, StandardMonitorPage
 
@@ -85,7 +83,7 @@ class ConfigPanel(StandardConfigPanel):
         rbtns[0].SetValue(True) # select first button to start
 
         # bind callbacks to each radio button with appropriate factors
-        for rbtn,factor in zip(rbtns,(1, 2, 4, 8)):
+        for rbtn, factor in zip(rbtns, (1,2,4,8)):
             # Uses lexical scoping to save ratio for each button.
             def setDecimationWrapper(event, factor=factor):
                 self.setDecimation(factor=factor)
@@ -306,7 +304,7 @@ class Trace(StandardMonitorPage):
                         markerScale = self.scale
                     markers = 0.9 * markers * markerScale / np.max(np.abs(markers))
 
-            data = np.hstack((data,markers[:,None]))
+            data = np.hstack((data, markers[:,None]))
             chanNames = chanNames + ['Mk']
 
         # tell trace plot widget to draw

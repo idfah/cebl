@@ -30,8 +30,8 @@ def accum(x, n, accumf=np.sum, truncate=True, axis=None):
         The accumulated matrix.
 
     Examples:
-        >>> x = np.reshape((1,)*(4*3*3), (4, 3, 3))
-        >>> x
+        > x = np.reshape((1,)*(4*3*3), (4, 3, 3))
+        > x
         array([[[1, 1, 1],
                 [1, 1, 1],
                 [1, 1, 1]],
@@ -47,9 +47,9 @@ def accum(x, n, accumf=np.sum, truncate=True, axis=None):
                [[1, 1, 1],
                 [1, 1, 1],
                 [1, 1, 1]]])
-        >>> accum(x, 2, axis=None)
+        > accum(x, 2, axis=None)
         array([2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2])
-        >>> accum(x, 2, axis=0)
+        > accum(x, 2, axis=0)
         array([[[2, 2, 2],
                 [2, 2, 2],
                 [2, 2, 2]],
@@ -57,7 +57,7 @@ def accum(x, n, accumf=np.sum, truncate=True, axis=None):
                [[2, 2, 2],
                 [2, 2, 2],
                 [2, 2, 2]]])
-        >>> accum(x, 3, axis=1)
+        > accum(x, 3, axis=1)
         array([[[3, 3, 3]],
 
                [[3, 3, 3]],
@@ -133,14 +133,14 @@ def bias(x, value=1, axis=-1):
         A new matrix with value appended.
 
     Examples:
-        >>> import numpy as np
-        >>> from cebl import util
+        > import numpy as np
+        > from cebl import util
 
-        >>> a = np.arange(10)
-        >>> util.bias(a, axis=0)
+        > a = np.arange(10)
+        > util.bias(a, axis=0)
         array([[ 0.,  1.,  2.,  3.,  4.,  5.,  6.,  7.,  8.,  9.],
                [ 1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.]])
-        >>> util.bias(a, axis=1)
+        > util.bias(a, axis=1)
         array([[ 0.,  1.],
                [ 1.,  1.],
                [ 2.,  1.],
@@ -151,20 +151,20 @@ def bias(x, value=1, axis=-1):
                [ 7.,  1.],
                [ 8.,  1.],
                [ 9.,  1.]])
-        >>> util.bias(a, axis=None)
+        > util.bias(a, axis=None)
         array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 1])
 
-        >>> a = np.random.random((3, 2))
-        >>> util.bias(a, axis=0)
+        > a = np.random.random((3, 2))
+        > util.bias(a, axis=0)
         array([[ 0.5734496 ,  0.41789283],
                [ 0.15415034,  0.99381062],
                [ 0.80518692,  0.86804327],
                [ 1.        ,  1.        ]])
-        >>> util.bias(a, axis=1)
+        > util.bias(a, axis=1)
         array([[ 0.5734496 ,  0.41789283,  1.        ],
                [ 0.15415034,  0.99381062,  1.        ],
                [ 0.80518692,  0.86804327,  1.        ]])
-        >>> util.bias(a, value=3)
+        > util.bias(a, value=3)
         array([[ 0.5734496 ,  0.41789283,  3.        ],
                [ 0.15415034,  0.99381062,  3.        ],
                [ 0.80518692,  0.86804327,  3.        ]])
@@ -201,6 +201,23 @@ def bias(x, value=1, axis=-1):
     return xb
 
 def capInf(x, copy=False):
+    """Cap np.inf to a very large value.
+
+    Args:
+        x:  A list or numpy array.
+
+        copy:   If False, numpy arrays will be
+                modified in place. If False or
+                if x is not a numpy array, then
+                x will be copied.
+
+    Returns:
+        A numpy array with the same shape as x
+        with all np.inf and -np.inf values replaced
+        by the largest / smallest values that can
+        be represented by x's dtype, i.e.,
+        np.finfo(x.dtype).min and np.finfo(x.dtype).max
+    """
     x = np.array(x, copy=copy)
 
     mn = np.finfo(x.dtype).min
@@ -214,23 +231,6 @@ def capInf(x, copy=False):
     else:
         x[x < mn] = mn
         x[x > mx] = mx
-
-    return x
-
-def capZero(x, copy=False):
-    """
-    Notes:  If copy is False and x is a numpy array,
-            then x is modified in place.
-    """
-    x = np.array(x, copy=copy)
-
-    tiny = np.finfo(x.dtype).tiny
-
-    if x.ndim == 0:
-        if x < tiny:
-            x[...] = tiny
-    else:
-        x[x < tiny] = tiny
 
     return x
 
@@ -260,6 +260,36 @@ def colsep(x, scale=None, returnScale=False):
         return sep, scale
     else:
         return sep
+
+def capZero(x, copy=False):
+    """Cap zero values at a very small number that
+    is larger than zero.
+
+    Args:
+        x:  A list or numpy array.
+
+        copy:   If False, numpy arrays will be
+                modified in place. If False or
+                if x is not a numpy array, then
+                x will be copied.
+
+    Returns:
+        A numpy array with the same shape as x
+        with all zero values replaced by the
+        small number, greater than zero found
+        from np.finfo(x.dtype).tiny
+    """
+    x = np.array(x, copy=copy)
+
+    tiny = np.finfo(x.dtype).tiny
+
+    if x.ndim == 0:
+        if x < tiny:
+            x[...] = tiny
+    else:
+        x[x < tiny] = tiny
+
+    return x
 
 def hashArray(x):
     return hashlib.sha1(np.ascontiguousarray(x).view(np.uint8)).hexdigest()
@@ -300,6 +330,12 @@ def punion(probs, axis=None):
     else:
         return np.apply_along_axis(func1d=punion1d, axis=axis, arr=probs)
 
+def segdot(x1, x2):
+    assert x1.ndim == 3
+    assert x2.ndim == 2
+
+    return x1.reshape((-1, x1.shape[-1])).dot(x2).reshape((x1.shape[0], -1, x2.shape[-1]))
+
 def segmat(xs, dtype=None, copy=False):
     xs = np.array(xs, copy=copy)
 
@@ -314,19 +350,13 @@ def segmat(xs, dtype=None, copy=False):
 
     return xs
 
-def segdot(x1, x2):
-    assert x1.ndim == 3
-    assert x2.ndim == 2
-
-    return x1.reshape((-1, x1.shape[-1])).dot(x2).reshape((x1.shape[0], -1, x2.shape[-1]))
-
 def softmaxM1(x):
     mx = np.max((np.max(x), 0.0))
     emx = capZero(np.exp(-mx))
     terms = capZero(np.exp(x-mx))
     denom = (emx + np.sum(terms, axis=1)).reshape((-1, 1))
     return np.hstack((terms/denom, emx/denom))
-    
+
 def logSoftmaxM1(x):
     mx = np.max((np.max(x), 0.0))
     xmx = x - mx

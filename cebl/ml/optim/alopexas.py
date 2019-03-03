@@ -30,7 +30,7 @@ def alopex(optable,
 
         stepMax:            An upper bound on step sizes.
 
-        tempInit:           
+        tempInit:
 
         tempIter:
 
@@ -64,11 +64,11 @@ def alopex(optable,
                             final results.  If False (default), then a history
                             is not kept.
 
-        callback:           
+        callback:
 
         verbose:            Print extra information to standard out during the
                             training procedure.
-    
+
         args, kwargs:       Arguments passed to optable.gradients.
 
     Returns:
@@ -274,7 +274,7 @@ def alopexas(optable,
 
         stepMax:            An upper bound on step sizes.
 
-        tempInit:           
+        tempInit:
 
         tempIter:
 
@@ -308,11 +308,11 @@ def alopexas(optable,
                             final results.  If False (default), then a history
                             is not kept.
 
-        callback:           
+        callback:
 
         verbose:            Print extra information to standard out during the
                             training procedure.
-    
+
         args, kwargs:       Arguments passed to optable.gradients.
 
     Returns:
@@ -518,7 +518,7 @@ def alopexb(optable,
 
         stepMax:            An upper bound on step sizes.
 
-        forgetFactor:       
+        forgetFactor:
 
         accuracy:           Terminate if current value of the error funciton
                             falls below this value.
@@ -550,11 +550,11 @@ def alopexb(optable,
                             final results.  If False (default), then a history
                             is not kept.
 
-        callback:           
+        callback:
 
         verbose:            Print extra information to standard out during the
                             training procedure.
-    
+
         args, kwargs:       Arguments passed to optable.gradients.
 
     Returns:

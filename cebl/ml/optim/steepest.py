@@ -14,7 +14,7 @@ def steepest(optable,
 
     Args:
         optable:
-        
+
         learningRates:      Initial learning learning rate.
 
         finalLearningRates: Final learning rate.  If None (default),
@@ -51,7 +51,7 @@ def steepest(optable,
 
         verbose:            Print extra information to standard out
                             during the training procedure.
-    
+
         args, kwargs:       Arguments passed to opt.gradients.
 
     Returns:

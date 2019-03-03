@@ -1,3 +1,5 @@
+"""Work in progress: read bdf data from a file.
+"""
 import matplotlib.pyplot as plt
 import numpy as np
 import struct
@@ -39,7 +41,7 @@ def unpackInt24s(binaryData, start, length, count, nChan, sampRate):
     ints = ints.reshape((-1, nChan))
 
     return ints, start + totalLength
-    
+
 def readBDF(fileName, verbose=False):
     with open(fileName, 'rb') as fileHandle:
         binaryData = fileHandle.read()
@@ -51,16 +53,16 @@ def readBDF(fileName, verbose=False):
         raise RuntimeError('readBDF:  idCode is', idcode, 'which is not BIOSEMI. Cannot read this file.')
 
     subjectId, nextByte = unpackStrings(binaryData, nextByte, 80)
-    if verbose: print('subjectId is', subjectId)    
+    if verbose: print('subjectId is', subjectId)
 
     recordingId, nextByte = unpackStrings(binaryData, nextByte, 80)
-    if verbose: print('recordingId is', recordingId)    
+    if verbose: print('recordingId is', recordingId)
 
     startDate, nextByte = unpackStrings(binaryData, nextByte, 8)
-    if verbose: print('startDate is', startDate)    
+    if verbose: print('startDate is', startDate)
 
     startTime, nextByte = unpackStrings(binaryData, nextByte, 8)
-    if verbose: print('startTime is', startTime)    
+    if verbose: print('startTime is', startTime)
 
     nBytesHeader, nextByte = unpackInts(binaryData, nextByte, 8)
     if verbose: print('nBytesHeader is', nBytesHeader)
@@ -161,7 +163,9 @@ if __name__ == '__main__':
 
     fileName = 's11-letter-b.bdf'
     contents = readBDF(fileName, verbose=True)
-    print('From', fileName, 'read',contents['nDataRecords']*contents['nSecondsPerDataRecord'],'seconds of',contents['nChan'],'chans of data at',contents['sampRate'],'samples per second. EEG matrix is',contents['data'].shape)
+    print('From', fileName, 'read', contents['nDataRecords']*contents['nSecondsPerDataRecord'],
+          'seconds of', contents['nChan'], 'chans of data at', contents['sampRate'],
+          'samples per second. EEG matrix is',contents['data'].shape)
     n = 25000
     eeg = contents['data']
     plt.figure(2)

@@ -186,7 +186,7 @@ class ConvolutionalNetworkAccum(Classifier, optim.Optable):
                 #c = phi(c.dot(cw[:-1]) + cw[-1])
                 c = phi(util.segdot(c, cw[:-1]) + cw[-1])
                 c = util.accum(c, poolSize, axis=1) / poolSize
-                
+
             elif self.poolMethod == 'lanczos':
                 c = util.timeEmbed(c, lags=width-1, axis=1)
                 #c = phi(c.dot(cw[:-1]) + cw[-1])
@@ -359,10 +359,10 @@ class ConvolutionalNetworkAccum(Classifier, optim.Optable):
             cPrimes.append(cPrime)
 
             c = phi(h)
-       
+
             if poolSize == 1:
                 pass
- 
+
             elif self.poolMethod == 'average':
                 c = util.accum(c, poolSize, axis=1) / poolSize
 

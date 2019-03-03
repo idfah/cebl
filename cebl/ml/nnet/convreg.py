@@ -110,7 +110,7 @@ class ConvolutionalNetworkRegression(Regression, optim.Optable):
 
             c = util.timeEmbed(c, lags=width-1, axis=1)
             c = phi(util.segdot(c, cw[:-1]) + cw[-1])
-                
+
             cs.append(c)
 
         return cs
@@ -212,7 +212,7 @@ class ConvolutionalNetworkRegression(Regression, optim.Optable):
             cPrimes.append(cPrime)
 
             c = phi(h)
-        
+
         c1 = util.bias(c)
 
         # evaluate hidden and visible layers

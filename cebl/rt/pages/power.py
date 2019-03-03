@@ -1,4 +1,5 @@
-import numpy as np
+import munch
+
 import wx
 from wx.lib.agw import aui
 
@@ -147,7 +148,7 @@ class ConfigPanel(StandardConfigPanel):
         rbtns[0].SetValue(True) # select first button to start
 
         # bind callbacks to each radio button with appropriate factors
-        for rbtn,factor in zip(rbtns,(1, 2, 4, 8)):
+        for rbtn, factor in zip(rbtns, (1,2,4,8)):
             # Uses lexical scoping to save ratio for each button.
             def setDecimationWrapper(event, factor=factor):
                 self.setDecimation(factor=factor)
@@ -330,11 +331,11 @@ class Power(StandardMonitorPage):
 
         self.method = 'FFT+Welch'
 
-        self.welchConfig = util.Holder(
-            span=1.0    # width of spans/sub-windows used in Welch's method
+        self.welchConfig = munch.Munch(
+            span=1.0 # width of spans/sub-windows used in Welch's method
         )
 
-        self.autoregConfig = util.Holder(
+        self.autoregConfig = munch.Munch(
             order=20,
             nFreq=150
         )

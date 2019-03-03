@@ -80,18 +80,18 @@ def packedViews(shapes, dtype=np.float):
         this approach to work.
 
     Examples:
-        >>> import numpy as np
-        >>> from cebl import util
+        > import numpy as np
+        > from cebl import util
 
-        >>> packed, view1, view2 = util.packedViews(((2,2), (2,3,4)))
+        > packed, view1, view2 = util.packedViews(((2,2), (2,3,4)))
 
-        >>> view1[...] = np.arange(view1.size).reshape(view1.shape)
-        >>> view1
+        > view1[...] = np.arange(view1.size).reshape(view1.shape)
+        > view1
         array([[ 0.,  1.],
                [ 2.,  3.]])
 
-        >>> view2[...] = 7.0
-        >>> view2
+        > view2[...] = 7.0
+        > view2
         array([[[ 7.,  7.,  7.,  7.],
                 [ 7.,  7.,  7.,  7.],
                 [ 7.,  7.,  7.,  7.]],
@@ -100,7 +100,7 @@ def packedViews(shapes, dtype=np.float):
                 [ 7.,  7.,  7.,  7.],
                 [ 7.,  7.,  7.,  7.]]])
 
-        >>> packed
+        > packed
         array([ 0.,  1.,  2.,  3.,  7.,  7.,  7.,  7.,  7.,  7.,  7.,  7.,  7.,
                 7.,  7.,  7.,  7.,  7.,  7.,  7.,  7.,  7.,  7.,  7.,  7.,  7.,
                 7.,  7.])

@@ -1,11 +1,10 @@
-import copy
+import time
+
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as pltgs
 from matplotlib.backends.backend_wxagg \
     import FigureCanvasWxAgg as FigureCanvas
 import numpy as np
-import os
-import time
 import wx
 from wx.lib.agw import aui
 import wx.lib.agw.floatspin as agwfs
@@ -48,28 +47,28 @@ class ConfigPanel(StandardConfigPanel):
 
         copyControlBox = widgets.ControlBox(self, label='Copy Text', orient=wx.VERTICAL)
         self.copyTextCtrl = wx.TextCtrl(self)
-        self.Bind(wx.EVT_TEXT, self.setCopyText, self.copyTextCtrl)         
+        self.Bind(wx.EVT_TEXT, self.setCopyText, self.copyTextCtrl)
         self.offlineControls += [self.copyTextCtrl]
         copyControlBox.Add(self.copyTextCtrl, proportion=1,
                 flag=wx.ALL | wx.EXPAND, border=10)
 
         copySizer.Add(copyControlBox, proportion=1,
                 flag =wx.ALL | wx.EXPAND, border=10)
-      
+
         self.sizer.Add(copySizer, proportion=0, flag=wx.EXPAND)
 
     def setCopyText(self, event):
         copyText = self.copyTextCtrl.GetLineText(0)
         self.pg.testText = copyText
         self.pg.gridSpeller.setCopyText(copyText)
-        if len(copyText) == 0:
+        if not copyText:
             self.pg.freeSpelling = True
         else:
             self.pg.freeSpelling = False
 
     def initNTrial(self):
         trialSizer = wx.BoxSizer(orient=wx.HORIZONTAL)
-        
+
         trialControlBox = widgets.ControlBox(self, label='Num Trials', orient=wx.VERTICAL)
         self.trialSpinCtrl = wx.SpinCtrl(self, #style=wx.SP_WRAP,
                 value=str(self.pg.nTrials), min=1, max=100)
@@ -187,7 +186,7 @@ class ConfigPanel(StandardConfigPanel):
     def initColors(self):
         # first row
         colorSizer1 = wx.BoxSizer(orient=wx.HORIZONTAL)
-        
+
         gridColorControlBox = widgets.ControlBox(self,
                 label='Grid color', orient=wx.VERTICAL)
         self.gridColorCtrl = wx.ColourPickerCtrl(self)
@@ -277,7 +276,7 @@ class ConfigPanel(StandardConfigPanel):
 
     def setBackgroundColor(self, event):
         self.pg.gridSpeller.setBackground(self.backgroundColorCtrl.GetColour())
- 
+
     def setHighlightColor(self, event):
         self.pg.gridSpeller.setHighlightColor(self.highlightColorCtrl.GetColour())
 
@@ -289,7 +288,7 @@ class ConfigPanel(StandardConfigPanel):
 
     def setFeedColor(self, event):
         self.pg.gridSpeller.setFeedColor(self.feedColorCtrl.GetColour())
-    
+
     def initGridLayout(self):
         gridLayoutControlBox = widgets.ControlBox(self, label='Layout', orient=wx.VERTICAL)
 
@@ -333,7 +332,7 @@ class ConfigPanel(StandardConfigPanel):
 
     def setGridLayoutNum(self, event):
         self.pg.gridSpeller.setGridNum()
-    
+
     def setGridLayoutEtc(self, event):
         self.pg.gridSpeller.setGridEtc()
 
@@ -376,7 +375,7 @@ class PlotPanel(wx.Panel):
         self.erpFig = plt.Figure()
         self.erpFig.subplots_adjust(hspace=0.32, wspace=0.02,
             left=0.065, right=0.95, top=0.97, bottom=0.18)
-        gs = pltgs.GridSpec(2,4)
+        gs = pltgs.GridSpec(2, 4)
         self.erpAx = self.erpFig.add_subplot(gs[0,:])
         self.h1Ax  = self.erpFig.add_subplot(gs[1,0])
         self.h2Ax  = self.erpFig.add_subplot(gs[1,1])
@@ -448,10 +447,10 @@ class PlotPanel(wx.Panel):
         self.erpAx.set_ylabel(r'Signal ($\mu V$)')
 
         sampRate = targ.getSampRate()
-        erp1 = erp[int((0.2+0.2)*sampRate),:]
-        erp2 = erp[int((0.2+0.3)*sampRate),:]
-        erp3 = erp[int((0.2+0.4)*sampRate),:]
-        erp4 = erp[int((0.2+0.5)*sampRate),:]
+        erp1 = erp[int((0.2 + 0.2) * sampRate),:]
+        erp2 = erp[int((0.2 + 0.3) * sampRate),:]
+        erp3 = erp[int((0.2 + 0.4) * sampRate),:]
+        erp4 = erp[int((0.2 + 0.5) * sampRate),:]
 
         erpAll = np.concatenate((erp1, erp2, erp3, erp4))
 
@@ -528,7 +527,7 @@ class P300Grid(StandardBCIPage):
         self.windowEnd = 0.75
 
         # classifier parameters
-        self.classifierChoices = ('Linear Discriminant', 
+        self.classifierChoices = ('Linear Discriminant',
                                   'K-Nearest Euclidean',
                                   'K-Nearest Cosine',
                                   'Linear Logistic',
@@ -642,7 +641,7 @@ class P300Grid(StandardBCIPage):
     #    # original
     #    #cap = cap.copy().demean().bandpass(0.5, 12.0, order=3)
     #    # biosemi hack XXX - idfah
-    #    cap = cap.copy().demean().reference((36,37)).deleteChans(range(32,40))
+    #    cap = cap.copy().demean().reference((36, 37)).deleteChans(range(32, 40))
     #    cap.keepChans(('Fz', 'Cz', 'P3', 'Pz', 'P4', 'P7', 'Oz', 'P8'))
 
     #    # kind of a hack XXX - idfah
@@ -686,8 +685,8 @@ class P300Grid(StandardBCIPage):
 
     def showTrainSymbol(self):
         # random, no bottom row
-        #self.curRow = np.random.randint(0,5)
-        #self.curCol = np.random.randint(0,6)
+        #self.curRow = np.random.randint(0, 5)
+        #self.curCol = np.random.randint(0, 6)
 
         trainSyms = [sym if sym != ' ' else grid.space for sym in self.trainText]
         sym = trainSyms[(self.curRep-1) % len(trainSyms)]
@@ -700,7 +699,7 @@ class P300Grid(StandardBCIPage):
 
     def trainEpoch(self):
         # if the stim list is empty
-        if len(self.curStimList) == 0:
+        if not self.curStimList:
             # increment current repetition
             self.curRep += 1
 
@@ -836,7 +835,7 @@ class P300Grid(StandardBCIPage):
         self.saveResultText(resultText)
 
     def trainKNN(self, classData, dialog, metric):
-        ks = np.arange(1,10)
+        ks = np.arange(1, 10)
 
         trainAUC = np.zeros(ks.shape)
         validAUC = np.zeros(ks.shape)
@@ -1039,7 +1038,7 @@ class P300Grid(StandardBCIPage):
         self.gridSpeller.removeHighlight()
         self.src.setMarker(0.0)
 
-        if len(self.curStimList) == 0:
+        if not self.curStimList:
             self.initCurStimList()
 
             wx.CallLater(1000.0*self.windowEnd*1.1, self.testClassify)
@@ -1061,7 +1060,7 @@ class P300Grid(StandardBCIPage):
             else:
                 self.gridSpeller.appendFeedText('_')
 
-        if len(self.testSyms) == 0:
+        if not self.testSyms:
              ##wx.CallLater(1000.0*self.windowEnd*1.1-1000.0*self.si, self.endTest)
              wx.CallLater(1000.0*self.windowEnd*1.1, self.endTest)
 
@@ -1104,6 +1103,6 @@ class P300Grid(StandardBCIPage):
 
         resultRow, resultCol = np.unravel_index(probabilities.argmax(), probabilities.shape)
 
-        #resultRow = np.random.randint(0,6)
-        #resultCol = np.random.randint(0,6)
-        self.controlSpeller(resultRow,resultCol)
+        #resultRow = np.random.randint(0, 6)
+        #resultCol = np.random.randint(0, 6)
+        self.controlSpeller(resultRow, resultCol)
