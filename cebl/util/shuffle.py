@@ -29,7 +29,7 @@ def blockShuffle(x, n, axis=None):
 
         shp = x.shape
 
-        indx = np.reshape(range(x.size), (x.size//n,n))
+        indx = np.reshape(range(x.size), (x.size//n, n))
         np.random.shuffle(indx)
         indx = indx.reshape((-1,))
 
@@ -41,7 +41,7 @@ def blockShuffle(x, n, axis=None):
                 (axis, x.shape[axis], n))
 
         lax = x.shape[axis]
-        indx = np.reshape(range(lax), (lax//n,n))
+        indx = np.reshape(range(lax), (lax//n, n))
         np.random.shuffle(indx)
         indx = indx.reshape((-1,))
 
@@ -62,16 +62,15 @@ def cycle(x, n):
         New list with length n.
 
     Examples:
-        >>> import util
+        > import util
 
-        >>> x = range(4)
+        > x = range(4)
 
-        >>> util.cycle(x, 3)
+        > util.cycle(x, 3)
         [0, 1, 2]
 
-        >>> util.cycle(x, 6)
+        > util.cycle(x, 6)
         [0, 1, 2, 3, 0, 1]
     """
     l = int(np.ceil(n/float(len(x))))
     return (x*l)[0:n]
-

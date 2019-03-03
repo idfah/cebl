@@ -1,7 +1,9 @@
 """Text-stimulus widgets that present text stimuli to the screen.
 """
 
+import munch
 import numpy as np
+
 import wx
 
 from cebl import util
@@ -9,22 +11,21 @@ from cebl import util
 from .wxgraphics import DrawablePanel
 
 
-grid = util.Holder()
-
-grid.enter = '\u21B5'
-grid.back  = '\u232B'
-grid.space = '__'
-grid.upper = '\u21E7'
-grid.lower = '\u21E9'
-grid.ellip = '\u2026'
-grid.left  = '\u2190'
-grid.right = '\u2192'
-grid.up    = '\u2191'
-grid.down  = '\u2193'
-
-grid.num   = '123'
-grid.etc   = 'Etc'
-grid.sym   = 'Sym'
+grid = munch.Munch(
+    enter = '\u21B5',
+    back  = '\u232B',
+    space = '__',
+    upper = '\u21E7',
+    lower = '\u21E9',
+    ellip = '\u2026',
+    left  = '\u2190',
+    right = '\u2192',
+    up    = '\u2191',
+    down  = '\u2193',
+    num   = '123',
+    etc   = 'Etc',
+    sym   = 'Sym'
+)
 
 grid.normal, grid.highlighted, grid.unhighlighted, grid.selected = range(4)
 

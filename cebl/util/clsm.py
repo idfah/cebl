@@ -7,6 +7,8 @@ from .arr import capZero
 
 
 def roc(classProbs):
+    """Receiver operating characteristic.
+    """
     if len(classProbs) > 2:
         raise RuntimeError('roc is only valid for two-class problems.')
 
@@ -115,22 +117,22 @@ def confusion(classLabels, normalize=True):
         Otherwise, each cell is a label count.
 
     Examples:
-        >>> from cebl import util
-        >>> import numpy as np
+        > from cebl import util
+        > import numpy as np
 
-        >>> a = [[0, 0, 0, 1], [1, 1, 1, 1, 1, 0], [2, 2]]
+        > a = [[0, 0, 0, 1], [1, 1, 1, 1, 1, 0], [2, 2]]
 
-        >>> con = util.confusion(a)
+        > con = util.confusion(a)
 
-        >>> con
+        > con
         array([[ 0.75      ,  0.16666667,  0.        ],
                [ 0.25      ,  0.83333333,  0.        ],
                [ 0.        ,  0.        ,  1.        ]])
 
-        >>> np.sum(con, axis=0)
+        > np.sum(con, axis=0)
         array([ 1.,  1.,  1.])
 
-        >>> util.confusion(a, normalize=False)
+        > util.confusion(a, normalize=False)
         array([[ 3.,  1.,  0.],
                [ 1.,  5.,  0.],
                [ 0.,  0.,  2.]])
@@ -149,6 +151,20 @@ def confusion(classLabels, normalize=True):
     return confMat
 
 def itrSimple(accuracy, nCls, decisionRate):
+    """Compute information transfer rate in bits per minute using
+    accuracy and number of classes instead of class labels.
+
+    Args:
+        accuracy:   Fraction of correctly labeled examples.
+
+        nCls:       Number of classes total.
+
+        decisionRate:   Scalar rate at which labels are assigned
+                        in decisions per minute.
+
+    Returns:
+        Scalar information transfer rate in bits per minute.
+    """
     if accuracy < 0.0 or np.isclose(accuracy, 0.0):
         return 0.0
 
@@ -161,7 +177,7 @@ def itrSimple(accuracy, nCls, decisionRate):
     return decisionRate * (left + middle + right)
 
 def itr(classLabels, decisionRate=60.0):
-    """Information transfer rate in bits-per-minute
+    """Information transfer rate in bits per minute.
 
     Args:
         classLabels:    A list with length equal to the number of classes

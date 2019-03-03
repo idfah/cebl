@@ -1,8 +1,11 @@
 import copy
-import numpy as np
+
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_wxagg \
     import FigureCanvasWxAgg as FigureCanvas
+import munch
+import numpy as np
+
 import wx
 from wx.lib.agw import aui
 import wx.lib.agw.floatspin as agwfs
@@ -487,7 +490,7 @@ class MentalTasks(StandardBCIPage):
         #self.choices = ['Song', 'Right', 'Count', 'Left']
         self.choices = ['Song', 'Right', 'Cube', 'Left']
 
-        self.welchConfig = util.Holder(
+        self.welchConfig = munch.Munch(
             classifierKind = 'Linear Discrim',
             span = 0.2,
             logTrans = True,
@@ -497,7 +500,7 @@ class MentalTasks(StandardBCIPage):
         )
 
         # autoregression config
-        self.autoregConfig = util.Holder(
+        self.autoregConfig = munch.Munch(
             horizon = 1
         )
 

@@ -1,3 +1,5 @@
+import munch
+
 import wx
 from wx.lib.agw import aui
 
@@ -329,11 +331,11 @@ class Power(StandardMonitorPage):
 
         self.method = 'FFT+Welch'
 
-        self.welchConfig = util.Holder(
-            span=1.0    # width of spans/sub-windows used in Welch's method
+        self.welchConfig = munch.Munch(
+            span=1.0 # width of spans/sub-windows used in Welch's method
         )
 
-        self.autoregConfig = util.Holder(
+        self.autoregConfig = munch.Munch(
             order=20,
             nFreq=150
         )

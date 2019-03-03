@@ -54,6 +54,8 @@ def nrmse(y, g=0.0, mn=None, mx=None, axis=None):
     return rmse(r, axis=axis)/(mx-mn)
 
 def gini(y, g, normalize=True):
+    """Gini coefficient.
+    """
     if y.ndim > 1 or g.ndim > 1:
         raise RuntimeError('Gini does not currently support more than one axis.')
 

@@ -1,8 +1,11 @@
 import copy
-import numpy as np
+
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_wxagg \
     import FigureCanvasWxAgg as FigureCanvas
+import munch
+import numpy as np
+
 import wx
 from wx.lib.agw import aui
 import wx.lib.agw.floatspin as agwfs
@@ -546,7 +549,7 @@ class MotorPong(StandardBCIPage):
 
         self.choices = ['Left', 'Right']
 
-        self.welchConfig = util.Holder(
+        self.welchConfig = munch.Munch(
             classifierKind = 'Linear Discrim',
             span = 0.5,
             logTrans = True,
@@ -556,7 +559,7 @@ class MotorPong(StandardBCIPage):
         )
 
         # autoregression config
-        self.autoregConfig = util.Holder(
+        self.autoregConfig = munch.Munch(
             horizon = 1
         )
 

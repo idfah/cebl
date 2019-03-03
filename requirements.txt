@@ -1,4 +1,5 @@
 matplotlib
+munch
 numpy
 pylibftdi
 scipy
