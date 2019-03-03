@@ -1,3 +1,5 @@
+""" Spatial signal transformations, i.e., across channels.
+"""
 import matplotlib.pyplot as plt
 import numpy as np
 import scipy.signal as spsig
