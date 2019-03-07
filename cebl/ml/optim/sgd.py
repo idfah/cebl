@@ -119,14 +119,16 @@ def sgd(optable, x, g, batchSize=30,
         print(reason)
 
     # save result into a dictionary
-    result = dict()
-    result['error'] = error
-    result['params'] = params
-    result['error'] = error
-    result['iteration'] = iteration
-    result['reason'] = reason
+    result = {
+        "error": error,
+        "params": params,
+        "error": error,
+        "iteration": iteration,
+        "reason": reason
+    }
 
-    if pTrace: result['pTrace'] = paramTrace
-    if eTrace: result['eTrace'] = errorTrace
+    # pylint: disable=multiple-statements
+    if pTrace: result["pTrace"] = paramTrace
+    if eTrace: result["eTrace"] = errorTrace
 
     return result

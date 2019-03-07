@@ -148,15 +148,17 @@ def steepest(optable,
         print(reason)
 
     # save result into a dictionary
-    result = dict()
-    result['error'] = error
-    result['params'] = params
-    result['error'] = error
-    result['iteration'] = iteration
-    result['reason'] = reason
+    result = {
+        "error": error,
+        "params": params,
+        "error": error,
+        "iteration": iteration,
+        "reason": reason
+    }
 
-    if pTrace: result['pTrace'] = paramTrace
-    if eTrace: result['eTrace'] = errorTrace
+    # pylint: disable=multiple-statements
+    if pTrace: result["pTrace"] = paramTrace
+    if eTrace: result["eTrace"] = errorTrace
 
     return result
 
@@ -321,13 +323,15 @@ def steepestl(optable, stepInitial=0.1, lineSearchPrecision=1.0e-4,
         print(reason)
 
     # save result into a dictionary
-    result = dict()
-    result['error'] = error
-    result['params'] = params
-    result['error'] = error
-    result['iteration'] = iteration
-    result['reason'] = reason
+    result = {
+        "error": error,
+        "params": params,
+        "error": error,
+        "iteration": iteration,
+        "reason": reason
+    }
 
+    # pylint: disable=multiple-statements
     if pTrace: result['pTrace'] = paramTrace
     if eTrace: result['eTrace'] = errorTrace
 

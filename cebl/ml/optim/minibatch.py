@@ -128,12 +128,14 @@ def minibatch(optable, x, g, batchSize=10, maxRound=10,
         print('iterations: %d' % totalIter)
 
     # save result into a dictionary
-    result = {}
-    result['iteration'] = totalIter
-    result['round'] = curRound
-    result['reason'] = reason
+    result = {
+        "iteration": totalIter,
+        "round": curRound,
+        "reason": reason
+    }
 
-    if pTrace: result['pTrace'] = paramTrace
-    if eTrace: result['eTrace'] = errorTrace
+    # pylint: disable=multiple-statements
+    if pTrace: result["pTrace"] = paramTrace
+    if eTrace: result["eTrace"] = errorTrace
 
     return result

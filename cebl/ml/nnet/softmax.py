@@ -1,3 +1,5 @@
+"""Feedforward Neural Network with softmax visible layer for classification.
+"""
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
@@ -13,8 +15,7 @@ from . import transfer
 
 
 class ForwardNetworkSoftmax(Classifier, optim.Optable):
-    """Two-Layer Feedforward Neural Network with softmax visible layer
-    for classification.
+    """Feedforward Neural Network with softmax visible layer for classification.
     """
     def __init__(self, classData, nHidden=10, transFunc=transfer.lecun,
                  weightInitFunc=pinit.lecun, penalty=None, elastic=1.0,
@@ -333,7 +334,7 @@ def demoFNS2d():
     mx = np.max(np.vstack(classData), axis=0)
 
     # train model
-    model = FNS(classData, nHidden=(4,8,16), optimFunc=optim.scg,
+    model = FNS(classData, nHidden=(4, 8, 16), optimFunc=optim.scg,
                 transFunc=transfer.lecun, precision=1.0e-5,
                 #transFunc=transfer.exprect, precision=1.0e-10,
                 #transFunc=transfer.rectifierTwist, precision=1.0e-10,

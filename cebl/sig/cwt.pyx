@@ -13,8 +13,10 @@ class ContinuousWaveletTransform(object):
             http://fieldtrip.fcdonders.nl/
 
             @article{tallon1997oscillatory,
-              title={Oscillatory $\gamma$-band (30--70 Hz) activity induced by a visual search task in humans},
-              author={Tallon-Baudry, Catherine and Bertrand, Olivier and Delpuech, Claude and Pernier, Jacques},
+              title={Oscillatory $\gamma$-band (30--70 Hz) activity induced
+                     by a visual search task in humans},
+              author={Tallon-Baudry, Catherine and Bertrand, Olivier and Delpuech,
+                      Claude and Pernier, Jacques},
               journal={Journal of Neuroscience},
               volume={17},
               number={2},
@@ -24,7 +26,8 @@ class ContinuousWaveletTransform(object):
             }
 
             @book{addison2017illustrated,
-              title={The illustrated wavelet transform handbook: introductory theory and applications in science, engineering, medicine and finance},
+              title={The illustrated wavelet transform handbook: introductory theory
+                     and applications in science, engineering, medicine and finance},
               author={Addison, Paul S},
               year={2017},
               publisher={CRC press}
@@ -66,41 +69,42 @@ class ContinuousWaveletTransform(object):
         return (dialation * np.exp(-time**2.0/(2.0*timeScale**2.0)) *
             np.exp(2.0j * np.pi * freq * time))
 
-    ''' pure python.
+    ## #pure python.
+    ## def apply(self, s):
+    ##     ##cdef long nObs, nChan, i, padDiff, padFront, padBack
+    ##     s = util.colmat(s)
+
+    ##     # number of observations and channels
+    ##     nObs, nChan = s.shape
+
+    ##     # empty arrays to hold power and phase information
+    ##     powers = np.zeros((nObs, self.nFreq, nChan), dtype=s.dtype)
+    ##     phases = np.zeros((nObs, self.nFreq, nChan), dtype=s.dtype)
+
+    ##     for i,wlet in enumerate(self.wavelets):
+    ##         conv = np.apply_along_axis(lambda d:
+    ##                     np.convolve(d, wlet, mode='full'),
+    ##                     axis=0, arr=s)
+
+    ##         padDiff = (conv.shape[0] - s.shape[0])
+    ##         padFront = padDiff // 2
+    ##         padBack = padDiff - padFront
+    ##         conv = conv[padFront:-padBack,:]
+
+    ##         ##conv = np.apply_along_axis(lambda d:
+    ##         ##    spsig.fftconvolve(d, wlet, mode='same'),
+    ##         ##    axis=0, arr=s)
+
+    ##         powers[:,i,:] = 2.0*np.abs(conv)**2 / \
+    ##                             np.sum(np.abs(wlet))**2
+    ##         phases[:,i,:] = np.angle(conv)
+
+    ##     powers /= self.sampRate
+
+    ##     return self.freqs, powers, phases
+
     def apply(self, s):
-        ##cdef long nObs, nChan, i, padDiff, padFront, padBack
-        s = util.colmat(s)
-
-        # number of observations and channels
-        nObs, nChan = s.shape
-
-        # empty arrays to hold power and phase information
-        powers = np.zeros((nObs, self.nFreq, nChan), dtype=s.dtype)
-        phases = np.zeros((nObs, self.nFreq, nChan), dtype=s.dtype)
-
-        for i,wlet in enumerate(self.wavelets):
-            conv = np.apply_along_axis(lambda d:
-                        np.convolve(d, wlet, mode='full'),
-                        axis=0, arr=s)
-
-            padDiff = (conv.shape[0] - s.shape[0])
-            padFront = padDiff // 2
-            padBack = padDiff - padFront
-            conv = conv[padFront:-padBack,:]
-
-            ##conv = np.apply_along_axis(lambda d:
-            ##    spsig.fftconvolve(d, wlet, mode='same'),
-            ##    axis=0, arr=s)
-
-            powers[:,i,:] = 2.0*np.abs(conv)**2 / \
-                                np.sum(np.abs(wlet))**2
-            phases[:,i,:] = np.angle(conv)
-
-        powers /= self.sampRate
-
-        return self.freqs, powers, phases
-    '''
-    def apply(self, s):
+        # XXX: need to measure if this is really any faster in cython - idfah
         cdef long nObs, nChan, nFreq, i, j, padDiff, padFront, padBack
         
         s = util.colmat(s)

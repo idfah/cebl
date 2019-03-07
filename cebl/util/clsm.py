@@ -40,7 +40,6 @@ def roc(classProbs):
 def auc(classProbs):
     """Area under the roc curve.
     """
-
     if len(classProbs) > 2:
         raise RuntimeError('auc is only implemented for two-class problems.')
 
@@ -63,7 +62,7 @@ def auc(classProbs):
     return score / float(denom)
 
 def bca(classLabels):
-    """Balanced classification accuracy
+    """Balanced classification accuracy.
     """
     con = confusion(classLabels, normalize=False)
     return np.mean(np.diag(con) / np.sum(con, axis=0))

@@ -1,16 +1,17 @@
+"""Scipy optimization.
+"""
 import matplotlib.pyplot as plt
-import numpy as np
 import scipy.optimize as spopt
 
 from . import tests
 
 
-def sciopt(optable,
+def sciopt(optable, *args,
            method='CG', options=None,
            maxIter=1000, precision=1.0e-10,
            pTrace=False, eTrace=False,
            callback=None, verbose=False,
-           *args, **kwargs):
+           **kwargs):
     """Wrapper for scipy optimization routines.
     """
     # get view of parameters to optimize
@@ -74,26 +75,34 @@ def sciopt(optable,
 
     params.flat[...] = optres['x']
 
-    result = {}
-    result['error'] = optres['fun']
-    result['params'] = params
-    result['iteration'] = cb.iteration
-    result['reason'] = optres['message']
+    result = {
+        "error": optres["fun"],
+        "params": params,
+        "iteration": cb.iteration,
+        "reason": optres["message"]
+    }
 
-    if pTrace: result['pTrace'] = paramTrace
-    if eTrace: result['eTrace'] = errorTrace
+    # pylint: disable=multiple-statements
+    if pTrace: result["pTrace"] = paramTrace
+    if eTrace: result["eTrace"] = errorTrace
 
     return result
 
 def demoScioptPowell():
+    """Demonstration of Powell's method for gradient-free optimization.
+    """
     rosen = tests.Rosen(optimFunc=sciopt, method='Powell', verbose=True, options={'maxfev': 1000})
     rosen.plot()
 
 def demoScioptBFGS():
+    """Demonstration of BFGS optimization.
+    """
     rosen = tests.Rosen(optimFunc=sciopt, method='BFGS', verbose=True)
     rosen.plot()
 
 def demoScioptCG():
+    """Demonstration of conjugate gradient optimization with line search.
+    """
     rosen = tests.Rosen(optimFunc=sciopt, method='CG', verbose=True)
     rosen.plot()
 

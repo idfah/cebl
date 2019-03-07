@@ -1,17 +1,19 @@
+"""Resilient backpropagation.
+"""
 import matplotlib.pyplot as plt
 import numpy as np
 
 from . import tests
 
 
-def rprop(optable,
+def rprop(optable, *args,
           stepInitial=0.05, stepUp=1.02, stepDown=0.6,
           stepMin=0.0, stepMax=50.0,
           accuracy=0.0, precision=1.0e-10,
           divergeThresh=1.0e10, maxIter=2500,
           pTrace=False, sTrace=False, eTrace=False,
-          callback=None, verbose=False, *args, **kwargs):
-    """Resilient backpropigation.
+          callback=None, verbose=False, **kwargs):
+    """Resilient backpropagation.
     Requires a first-order gradient estimate.
 
     Args:
@@ -85,7 +87,8 @@ def rprop(optable,
 
     Refs:
         @inproceedings{riedmiller1993direct,
-          title={A direct adaptive method for faster backpropagation learning: The RPROP algorithm},
+          title={A direct adaptive method for faster backpropagation
+                 learning: The RPROP algorithm},
           author={Riedmiller, Martin and Braun, Heinrich},
           booktitle={IEEE International Conference on Neural Networks}
           pages={586--591},
@@ -94,7 +97,6 @@ def rprop(optable,
         }
     """
     params = optable.parameters()
-    paramsStart = params.copy()
 
     # initialize all step sizes to stepInitial
     steps = np.ones_like(params) * stepInitial
@@ -178,32 +180,36 @@ def rprop(optable,
         print(reason)
 
     # save result into a dictionary
-    result = {}
-    result['params'] = params
-    result['error'] = error
-    result['iteration'] = iteration
-    result['reason'] = reason
+    result = {
+        "params": params,
+        "error": error,
+        "iteration": iteration,
+        "reason": reason
+    }
 
-    if pTrace: result['pTrace'] = paramTrace
-    if sTrace: result['sTrace'] = stepTrace
-    if eTrace: result['eTrace'] = errorTrace
+    # pylint: disable=multiple-statements
+    if pTrace: result["pTrace"] = paramTrace
+    if sTrace: result["sTrace"] = stepTrace
+    if eTrace: result["eTrace"] = errorTrace
 
     return result
 
 def demoRProp():
+    """Demonstration of resilient backpropagation.
+    """
     rosen = tests.Rosen(optimFunc=rprop, maxIter=10000, verbose=True)
     rosen.plot()
 
 
-def irprop(optable,
+def irprop(optable, *args,
           stepInitial=0.05, stepUp=1.02, stepDown=0.6,
           #stepInitial=0.05, stepUp=1.015, stepDown=0.5,
           stepMin=0.0, stepMax=50.0,
           accuracy=0.0, precision=1.0e-10,
           divergeThresh=1.0e10, maxIter=2500,
           pTrace=False, sTrace=False, eTrace=False,
-          callback=None, verbose=False, *args, **kwargs):
-    """Resilient backpropigation.
+          callback=None, verbose=False, **kwargs):
+    """Improved resilient backpropagation.
     Requires a first-order gradient estimate.
 
     Args:
@@ -277,7 +283,8 @@ def irprop(optable,
 
     Refs:
         @inproceedings{riedmiller1993direct,
-          title={A direct adaptive method for faster backpropagation learning: The RPROP algorithm},
+          title={A direct adaptive method for faster backpropagation
+                 learning: The RPROP algorithm},
           author={Riedmiller, Martin and Braun, Heinrich},
           booktitle={IEEE International Conference on Neural Networks}
           pages={586--591},
@@ -394,194 +401,25 @@ def irprop(optable,
         print(reason)
 
     # save result into a dictionary
-    result = {}
-    result['params'] = params
-    result['error'] = error
-    result['iteration'] = iteration
-    result['reason'] = reason
+    result = {
+        "params": params,
+        "error": error,
+        "iteration": iteration,
+        "reason": reason
+    }
 
-    if pTrace: result['pTrace'] = paramTrace
-    if sTrace: result['sTrace'] = stepTrace
-    if eTrace: result['eTrace'] = errorTrace
+    # pylint: disable=multiple-statements
+    if pTrace: result["pTrace"] = paramTrace
+    if sTrace: result["sTrace"] = stepTrace
+    if eTrace: result["eTrace"] = errorTrace
 
     return result
 
 def demoIRProp():
+    """Demonstration of improved resilient backpropagation.
+    """
     rosen = tests.Rosen(optimFunc=irprop, maxIter=10000, verbose=True)
     rosen.plot()
-
-
-def srprop(optable, x, g, batchSize=10, maxRound=np.inf,
-          stepInitial=0.05, stepUp=1.02, stepDown=0.6,
-          stepMin=0.0, stepMax=50.0,
-          accuracy=0.0, precision=1.0e-10,
-          divergeThresh=1.0e10, maxIter=2500,
-          pTrace=False, sTrace=False, eTrace=False,
-          callback=None, verbose=True, *args, **kwargs):
-    """Stochastic Resilient Backpropigation.
-    """
-    # make sure x and g are numpy arrays
-    x = np.asarray(x)
-    g = np.asarray(g)
-
-    # make sure x and g have same size
-    assert len(x) == len(g)
-
-    # number of observations
-    nObs = len(x)
-
-    params = optable.parameters()
-    paramsStart = params.copy()
-
-    # initialize all step sizes to stepInitial
-    steps = np.ones_like(params) * stepInitial
-
-    # initialize unknown error to infinity
-    error = np.inf
-
-    # initialize gradient to zero in order to yield no flips
-    grad = np.zeros_like(params)
-
-    paramTrace = []
-    stepTrace = []
-    errorTrace = []
-
-    # indices into x and g used to select minibatches
-    batchInd = np.arange(nObs)
-
-    # current round of minibatches
-    curRound = 0
-
-    iteration = 0
-
-    # termination reason
-    reason = ''
-
-    # for each round
-    done = False
-    while not done:
-        if verbose:
-            print('=======')
-            print('round: %d' % curRound)
-            print('error: %.5f' % optable.error(x=x, g=g))
-            print('=======')
-
-        # start index into current minibatch
-        start = 0
-
-        # randomly shuffle minibatches each round
-        np.random.shuffle(batchInd)
-        xShuff = x[batchInd]
-        gShuff = g[batchInd]
-
-        # for each minibatch
-        curBatch = 0
-        while True:
-            # end index into current minibatch
-            end = start + batchSize
-
-            # don't process last minibatch
-            # if smaller than batchSize
-            if end > nObs:
-                break
-
-            # select current batch
-            xMini = xShuff[start:end]
-            gMini = gShuff[start:end]
-
-            # compute value of the error function and the gradient
-            errorPrev = error
-            gradPrev = grad
-            error, grad = optable.gradient(*args, x=x, g=g, returnError=True, **kwargs)
-
-            if verbose:
-                print('%d %d %d %6f' % (iteration, curRound, curBatch, error))
-
-            if callback is not None:
-                callback(optable, iteration, paramTrace, errorTrace)
-
-            # keep parameter history if requested
-            if pTrace:
-                paramTrace.append(params.copy())
-
-            # keep step trace if requested
-            if sTrace:
-                stepTrace.append(steps.copy())
-
-            # keep error function history if requested
-            if eTrace:
-                errorTrace.append(error)
-
-            # terminate if maximum iterations reached
-            if iteration >= maxIter:
-                reason = 'maxiter'
-                done = True
-                break
-
-            # terminate if desired accuracy reached
-            if error < accuracy:
-                reason = 'accuracy'
-                done = True
-                break
-
-            # terminate if desired precision reached
-            if np.abs(error - errorPrev) < precision:
-                reason = 'precision'
-                done = True
-                break
-
-            # terminate if the error function diverges
-            if error > divergeThresh:
-                reason = 'diverge'
-                done = True
-                break
-
-            flips = grad * gradPrev
-
-            # decrease step sizes where gradient flipped
-            flipsNeg = np.where(flips < 0.0)[0]
-            steps[flipsNeg] *= stepDown
-            steps[...] = np.maximum(steps, stepMin)
-
-            # increase step sizes where gradient did not flip
-            flipsPos = np.where(flips > 0.0)[0]
-            steps[flipsPos] *= stepUp
-            steps[...] = np.minimum(steps, stepMax)
-
-            params[...] += steps * -np.sign(grad)
-
-            # move mini-batch forward
-            start += batchSize
-
-            # increment iteration counter
-            iteration += 1
-
-            # increment batch counters
-            curBatch += 1
-
-        # increment round counter
-        curRound += 1
-
-        if curRound >= maxRound:
-            reason = 'maxround'
-            done = True
-            break
-
-    if verbose:
-        print(reason)
-
-    # save result into a dictionary
-    result = {}
-    result['params'] = params
-    result['error'] = error
-    result['iteration'] = iteration
-    result['reason'] = reason
-
-    if pTrace: result['pTrace'] = paramTrace
-    if sTrace: result['sTrace'] = stepTrace
-    if eTrace: result['eTrace'] = errorTrace
-
-    return result
 
 
 if __name__ == '__main__':

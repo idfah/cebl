@@ -13,7 +13,7 @@ class AutoRegressionBase:
     def __init__(self, ss, horizon, regClass, *args, **kwargs):
         """
         Args:
-            ss:   (nSeg,nObs[,nDim])
+            ss: (nSeg, nObs, [nDim])
         """
         ss = np.asarray(ss)
         self.horizon = horizon
@@ -30,40 +30,40 @@ class AutoRegressionBase:
     def train(self, ss, *args, **kwargs):
         raise NotImplementedError('train not implemented.')
 
-    def eval(self, ss, returnResid=False, *args, **kwargs):
+    def eval(self, ss, *args, returnResid=False, **kwargs):
         raise NotImplementedError('eval not implemented.')
 
     def resid(self, ss, *args, **kwargs):
         pred, resid = self.eval(ss, *args, returnResid=True, **kwargs)
         return resid
 
-    def abe(self, ss, axis=None, *args, **kwargs):
+    def abe(self, ss, *args, axis=None, **kwargs):
         resid = self.resid(ss, *args, **kwargs)
         return util.abe(resid, axis=axis)
 
-    def sse(self, ss, axis=None, *args, **kwargs):
+    def sse(self, ss, *args, axis=None, **kwargs):
         resid = self.resid(ss, *args, **kwargs)
         return util.sse(resid, axis=axis)
 
-    def mse(self, ss, axis=None, *args, **kwargs):
+    def mse(self, ss, *args, axis=None, **kwargs):
         resid = self.resid(ss, *args, **kwargs)
         return util.mse(resid, axis=axis)
 
-    def rmse(self, ss, axis=None, *args, **kwargs):
+    def rmse(self, ss, *args, axis=None, **kwargs):
         resid = self.resid(ss, *args, **kwargs)
         return util.rmse(resid, axis=axis)
 
-    def nrmse(self, ss, axis=None, *args, **kwargs):
+    def nrmse(self, ss, *args, axis=None, **kwargs):
         resid = self.resid(ss, *args, **kwargs)
         return util.nrmse(resid, axis=axis)
 
 
 class AutoRegression(AutoRegressionBase):
-    def __init__(self, ss, order, horizon=1, regClass=RidgeRegression, *args, **kwargs):
+    def __init__(self, ss, order, horizon=1, regClass=RidgeRegression, **kwargs):
         self.order = order
 
         AutoRegressionBase.__init__(self, ss, horizon=horizon,
-                regClass=regClass, *args, **kwargs)
+                regClass=regClass, **kwargs)
 
     def getInputs(self, ss):
         ss = util.segmat(ss)
@@ -82,7 +82,7 @@ class AutoRegression(AutoRegressionBase):
 
         self.model = self.regClass(x, g, *args, **kwargs)
 
-    def eval(self, ss, returnResid=False, *args, **kwargs):
+    def eval(self, ss, *args, returnResid=False, **kwargs):
         xs = self.getInputs(ss)
         gs = self.getTargets(ss)
 
@@ -98,7 +98,7 @@ class AR(AutoRegression):
     pass
 
 def demoAutoRegressionSine():
-    time = np.linspace(0.0,10.0*np.pi,5000)
+    time = np.linspace(0.0, 10.0*np.pi, 5000)
     s = np.sin(time)
 
     #data = [s + np.random.normal(size=s.shape, scale=0.3) for i in range(5)]
@@ -115,7 +115,7 @@ def demoAutoRegressionSine():
     plt.plot(time[order:], pred[0], color='red')
 
 def demoAutoRegressionMulti():
-    time = np.linspace(0.0,10.0*np.pi,5000)
+    time = np.linspace(0.0, 10.0*np.pi, 5000)
 
     # noisy cosine chirp
     s1 = np.cos(time**2/10.0)
@@ -127,7 +127,7 @@ def demoAutoRegressionMulti():
     n = len(time)
     s2 = np.empty(n)
     s2[0] = 0.1
-    for i in range(1,n):
+    for i in range(1, n):
         s2[i] = np.exp(-a*s2[i-1]**2) + b
 
     s3 = np.random.normal(size=len(time), scale=0.3)
@@ -153,9 +153,9 @@ def demoAutoRegressionMulti():
     sepTrain = np.arange(dataTrain.shape[2])*2.0*np.max(np.abs(data))
     sepTest = np.arange(dataTest.shape[2])*2.0*np.max(np.abs(data))
 
-    fig = plt.figure(figsize=(19,8))
+    fig = plt.figure(figsize=(19, 8))
 
-    axTrainPred = fig.add_subplot(2,3,1)
+    axTrainPred = fig.add_subplot(2, 3, 1)
     axTrainPred.plot(timeTrain, dataTrain[0]-sepTrain, color='gray', linewidth=2)
     axTrainPred.plot(timeTrain[order:], predTrain[0]-sepTrain, linewidth=1)
     axTrainPred.autoscale(tight=True)
@@ -164,7 +164,7 @@ def demoAutoRegressionMulti():
     axTrainPred.set_yticks(-sepTrain)
     axTrainPred.set_yticklabels(['s1', 's2', 's3'])
 
-    axTestPred = fig.add_subplot(2,3,2)
+    axTestPred = fig.add_subplot(2, 3, 2)
     axTestPred.plot(timeTest, dataTest[0]-sepTest, color='gray', linewidth=2)
     axTestPred.plot(timeTest[order:], predTest[0]-sepTest, linewidth=1)
     axTestPred.autoscale(tight=True)
@@ -173,7 +173,7 @@ def demoAutoRegressionMulti():
     axTestPred.set_yticks(-sepTrain)
     axTestPred.set_yticklabels(['s1', 's2', 's3'])
 
-    axWeights = fig.add_subplot(2,3,3)
+    axWeights = fig.add_subplot(2, 3, 3)
     img = axWeights.imshow(arFit.model.weights, aspect='auto', interpolation='none')
     cbar = plt.colorbar(img)
     cbar.set_label('Weight')
@@ -183,10 +183,10 @@ def demoAutoRegressionMulti():
     axWeights.set_xticks(range(arFit.model.weights.shape[1]))
     axWeights.set_xticklabels(['s1', 's2', 's3'])
     axWeights.set_yticks(range(arFit.model.weights.shape[0]))
-    axWeights.set_yticklabels(list(range(1,arFit.model.weights.shape[0]) + ['bias']))
+    axWeights.set_yticklabels(list(range(1, arFit.model.weights.shape[0]) + ['bias']))
     axWeights.autoscale(tight=True)
 
-    axTrainResid = fig.add_subplot(2,3,4)
+    axTrainResid = fig.add_subplot(2, 3, 4)
     axTrainResid.plot(timeTrain[order:], residTrain[0]-sepTrain)
     axTrainResid.autoscale(tight=True)
     axTrainResid.set_title('Train Residuals')
@@ -194,7 +194,7 @@ def demoAutoRegressionMulti():
     axTrainResid.set_yticks(-sepTrain)
     axTrainResid.set_yticklabels(['s1', 's2', 's3'])
 
-    axTestResid = fig.add_subplot(2,3,5)
+    axTestResid = fig.add_subplot(2, 3, 5)
     axTestResid.plot(timeTest[order:], residTest[0]-sepTest)
     axTestResid.autoscale(tight=True)
     axTestResid.set_title('Test Residuals')
@@ -202,7 +202,7 @@ def demoAutoRegressionMulti():
     axTestResid.set_yticks(-sepTrain)
     axTestResid.set_yticklabels(['s1', 's2', 's3'])
 
-    axTestResidDist = fig.add_subplot(2,3,6)
+    axTestResidDist = fig.add_subplot(2, 3, 6)
     #axTestResidDist.hist(residTest, histtype='stepfilled', normed=True)
     axTestResidDist.hist(residTest[0], stacked=True, normed=True)
     axTestResidDist.legend(['s1', 's2', 's3'])
@@ -229,7 +229,7 @@ class UnivariateAutoRegression(AutoRegression):
 
             self.model.append(self.regClass(x, g, *args, **kwargs))
 
-    def eval(self, ss, returnResid=False, *args, **kwargs):
+    def eval(self, ss, *args, returnResid=False, **kwargs):
         ss = util.segmat(ss)
 
         preds = []
@@ -245,10 +245,10 @@ class UnivariateAutoRegression(AutoRegression):
             if returnResid:
                 gi.append(gs.squeeze(2))
 
-        preds = np.rollaxis(np.array(preds), 0,3)
+        preds = np.rollaxis(np.array(preds), 0, 3)
 
         if returnResid:
-            gs = np.rollaxis(np.array(gi), 0,3)
+            gs = np.rollaxis(np.array(gi), 0, 3)
             resids = gs - preds
             return preds, resids
         else:
@@ -258,7 +258,7 @@ class UAR(UnivariateAutoRegression):
     pass
 
 def demoAutoRegressionUni():
-    time = np.linspace(0.0,10.0*np.pi,5000)
+    time = np.linspace(0.0, 10.0*np.pi, 5000)
 
     # noisy cosine chirp
     s1 = np.cos(time**2/10.0)
@@ -270,7 +270,7 @@ def demoAutoRegressionUni():
     n = len(time)
     s2 = np.empty(n)
     s2[0] = 0.1
-    for i in range(1,n):
+    for i in range(1, n):
         s2[i] = np.exp(-a*s2[i-1]**2) + b
 
     s3 = np.random.normal(size=len(time), scale=0.3)
@@ -296,9 +296,9 @@ def demoAutoRegressionUni():
     sepTrain = np.arange(dataTrain.shape[2])*2.0*np.max(np.abs(data))
     sepTest = np.arange(dataTest.shape[2])*2.0*np.max(np.abs(data))
 
-    fig = plt.figure(figsize=(19,8))
+    fig = plt.figure(figsize=(19, 8))
 
-    axTrainPred = fig.add_subplot(2,3,1)
+    axTrainPred = fig.add_subplot(2, 3, 1)
     axTrainPred.plot(timeTrain, dataTrain[0]-sepTrain, color='gray', linewidth=2)
     axTrainPred.plot(timeTrain[order:], predTrain[0]-sepTrain, linewidth=1)
     axTrainPred.autoscale(tight=True)
@@ -307,7 +307,7 @@ def demoAutoRegressionUni():
     axTrainPred.set_yticks(-sepTrain)
     axTrainPred.set_yticklabels(['s1', 's2', 's3'])
 
-    axTestPred = fig.add_subplot(2,3,2)
+    axTestPred = fig.add_subplot(2, 3, 2)
     axTestPred.plot(timeTest, dataTest[0]-sepTest, color='gray', linewidth=2)
     axTestPred.plot(timeTest[order:], predTest[0]-sepTest, linewidth=1)
     axTestPred.autoscale(tight=True)
@@ -316,7 +316,7 @@ def demoAutoRegressionUni():
     axTestPred.set_yticks(-sepTrain)
     axTestPred.set_yticklabels(['s1', 's2', 's3'])
 
-    axWeights = fig.add_subplot(2,3,3)
+    axWeights = fig.add_subplot(2, 3, 3)
     #img = axWeights.imshow(arFit.model.weights, aspect='auto', interpolation='none')
     #cbar = plt.colorbar(img)
     #cbar.set_label('Weight')
@@ -326,10 +326,10 @@ def demoAutoRegressionUni():
     #axWeights.set_xticks(range(arFit.model.weights.shape[1]))
     #axWeights.set_xticklabels(['s1', 's2', 's3'])
     #axWeights.set_yticks(range(arFit.model.weights.shape[0]))
-    #axWeights.set_yticklabels(list(range(1,arFit.model.weights.shape[0]) + ['bias']))
+    #axWeights.set_yticklabels(list(range(1, arFit.model.weights.shape[0]) + ['bias']))
     #axWeights.autoscale(tight=True)
 
-    axTrainResid = fig.add_subplot(2,3,4)
+    axTrainResid = fig.add_subplot(2, 3, 4)
     axTrainResid.plot(timeTrain[order:], residTrain[0]-sepTrain)
     axTrainResid.autoscale(tight=True)
     axTrainResid.set_title('Train Residuals')
@@ -337,7 +337,7 @@ def demoAutoRegressionUni():
     axTrainResid.set_yticks(-sepTrain)
     axTrainResid.set_yticklabels(['s1', 's2', 's3'])
 
-    axTestResid = fig.add_subplot(2,3,5)
+    axTestResid = fig.add_subplot(2, 3, 5)
     axTestResid.plot(timeTest[order:], residTest[0]-sepTest)
     axTestResid.autoscale(tight=True)
     axTestResid.set_title('Test Residuals')
@@ -345,7 +345,7 @@ def demoAutoRegressionUni():
     axTestResid.set_yticks(-sepTrain)
     axTestResid.set_yticklabels(['s1', 's2', 's3'])
 
-    axTestResidDist = fig.add_subplot(2,3,6)
+    axTestResidDist = fig.add_subplot(2, 3, 6)
     #axTestResidDist.hist(residTest, histtype='stepfilled', normed=True)
     axTestResidDist.hist(residTest[0], stacked=True, normed=True)
     axTestResidDist.legend(['s1', 's2', 's3'])
@@ -357,10 +357,10 @@ def demoAutoRegressionUni():
 
 
 class RecurrentAutoRegression(AutoRegressionBase):
-    def __init__(self, ss, horizon=1, transient=0, regClass=nnet.ESN, *args, **kwargs):
+    def __init__(self, ss, horizon=1, transient=0, regClass=nnet.ESN, **kwargs):
         self.transient = transient
         AutoRegressionBase.__init__(self, ss, horizon=horizon,
-                regClass=regClass, *args, **kwargs)
+                regClass=regClass, **kwargs)
 
     def getInputs(self, ss):
         ss = np.asarray(ss)
@@ -376,7 +376,7 @@ class RecurrentAutoRegression(AutoRegressionBase):
 
         self.model = self.regClass(xs, gs, *args, **kwargs)
 
-    def eval(self, ss, returnResid=False, *args, **kwargs):
+    def eval(self, ss, *args, returnResid=False, **kwargs):
         xs = self.getInputs(ss)
         gs = self.getTargets(ss)
 
@@ -392,7 +392,7 @@ class RAR(RecurrentAutoRegression):
     pass
 
 def demoRecurrentAutoRegression():
-    time = np.linspace(0.0,10.0*np.pi,5000)
+    time = np.linspace(0.0, 10.0*np.pi, 5000)
 
     # noisy cosine chirp
     s1 = np.cos(time**2/10.0)
@@ -404,7 +404,7 @@ def demoRecurrentAutoRegression():
     n = len(time)
     s2 = np.empty(n)
     s2[0] = 0.1
-    for i in range(1,n):
+    for i in range(1, n):
         s2[i] = np.exp(-a*s2[i-1]**2) + b
 
     s3 = np.random.normal(size=len(time), scale=0.3)
@@ -430,9 +430,9 @@ def demoRecurrentAutoRegression():
     sepTrain = np.arange(dataTrain.shape[2])*2.0*np.max(np.abs(data))
     sepTest = np.arange(dataTest.shape[2])*2.0*np.max(np.abs(data))
 
-    fig = plt.figure(figsize=(19,8))
+    fig = plt.figure(figsize=(19, 8))
 
-    axTrainPred = fig.add_subplot(2,3,1)
+    axTrainPred = fig.add_subplot(2, 3, 1)
     axTrainPred.plot(timeTrain, dataTrain[0]-sepTrain, color='gray', linewidth=2)
     axTrainPred.plot(timeTrain[horizon:], predTrain[0]-sepTrain, linewidth=1)
     axTrainPred.autoscale(tight=True)
@@ -441,7 +441,7 @@ def demoRecurrentAutoRegression():
     axTrainPred.set_yticks(-sepTrain)
     axTrainPred.set_yticklabels(['s1', 's2', 's3'])
 
-    axTestPred = fig.add_subplot(2,3,2)
+    axTestPred = fig.add_subplot(2, 3, 2)
     axTestPred.plot(timeTest, dataTest[0]-sepTest, color='gray', linewidth=2)
     axTestPred.plot(timeTest[horizon:], predTest[0]-sepTest, linewidth=1)
     axTestPred.autoscale(tight=True)
@@ -450,10 +450,10 @@ def demoRecurrentAutoRegression():
     axTestPred.set_yticks(-sepTrain)
     axTestPred.set_yticklabels(['s1', 's2', 's3'])
 
-    axWeights = fig.add_subplot(2,3,3)
+    axWeights = fig.add_subplot(2, 3, 3)
     rarFit.model.reservoir.plotActDensity(dataTest, ax=axWeights)
 
-    axTrainResid = fig.add_subplot(2,3,4)
+    axTrainResid = fig.add_subplot(2, 3, 4)
     axTrainResid.plot(timeTrain[horizon:], residTrain[0]-sepTrain)
     axTrainResid.autoscale(tight=True)
     axTrainResid.set_title('Train Residuals')
@@ -461,7 +461,7 @@ def demoRecurrentAutoRegression():
     axTrainResid.set_yticks(-sepTrain)
     axTrainResid.set_yticklabels(['s1', 's2', 's3'])
 
-    axTestResid = fig.add_subplot(2,3,5)
+    axTestResid = fig.add_subplot(2, 3, 5)
     axTestResid.plot(timeTest[horizon:], residTest[0]-sepTest)
     axTestResid.autoscale(tight=True)
     axTestResid.set_title('Test Residuals')
@@ -469,7 +469,7 @@ def demoRecurrentAutoRegression():
     axTestResid.set_yticks(-sepTrain)
     axTestResid.set_yticklabels(['s1', 's2', 's3'])
 
-    axTestResidDist = fig.add_subplot(2,3,6)
+    axTestResidDist = fig.add_subplot(2, 3, 6)
     #axTestResidDist.hist(residTest, histtype='stepfilled', normed=True)
     axTestResidDist.hist(residTest[0], stacked=True, normed=True)
     axTestResidDist.legend(['s1', 's2', 's3'])

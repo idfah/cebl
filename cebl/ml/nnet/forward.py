@@ -1,3 +1,5 @@
+"""Feedforward Neural Network for regression.
+"""
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
@@ -12,6 +14,8 @@ from . import transfer
 
 
 class ForwardNetwork(Regression, optim.Optable):
+    """Feedforward Neural Network for regression.
+    """
     def __init__(self, x, g, nHidden=10, transFunc=transfer.lecun,
                  weightInitFunc=pinit.lecun, penalty=None, elastic=1.0,
                  optimFunc=optim.scg, **kwargs):
@@ -113,7 +117,7 @@ class ForwardNetwork(Regression, optim.Optable):
             x:  Input data.  A numpy array with shape (nObs[,nDim]).
 
         Returns:
-            A numpy array with shape (nObs,nOut) containing the
+            A numpy array with shape (nObs, nOut) containing the
             network outputs for each input in x.
         """
         x = np.asarray(x)
@@ -347,9 +351,9 @@ def demoFN1d():
 
     results = model.trainResult
 
-    fig = plt.figure(figsize=(16,12))
+    fig = plt.figure(figsize=(16, 12))
 
-    axFit = fig.add_subplot(3,2,1)
+    axFit = fig.add_subplot(3, 2, 1)
     axFit.plot(x, gClean, linewidth=2, color='blue')
     axFit.plot(x, g, linewidth=2, color='black')
     axFit.plot(x, model.eval(x), linewidth=2, color='red')
@@ -358,19 +362,19 @@ def demoFN1d():
     axFit.set_xlabel('Input')
     axFit.set_ylabel('Output')
 
-    axError = fig.add_subplot(3,2,2)
+    axError = fig.add_subplot(3, 2, 2)
     axError.plot(results['eTrace'])
     axError.set_title('Training Error')
     axError.set_xlabel('Epoch')
     axError.set_ylabel('Mean-Squared Error')
 
-    axHResponse = fig.add_subplot(3,2,3)
+    axHResponse = fig.add_subplot(3, 2, 3)
     axHResponse.plot(x, model.evalHiddens(x)[0], linewidth=2)
     axHResponse.set_title('Hidden Unit Response')
     axHResponse.set_xlabel('Input')
     axHResponse.set_ylabel('Hidden Unit Output')
 
-    axHWeight = fig.add_subplot(3,2,4)
+    axHWeight = fig.add_subplot(3, 2, 4)
     img = axHWeight.imshow(model.hws[0], aspect='auto',
         interpolation='none', cmap=plt.cm.winter)
     cbar = plt.colorbar(img)
@@ -379,7 +383,7 @@ def demoFN1d():
     axHWeight.set_xlabel('Hidden Unit')
     axHWeight.set_ylabel('Input')
     axHWeight.set_yticks(range(model.hws[0].shape[0]))
-    axHWeight.set_yticklabels(list(range(1,model.hws[0].shape[0])) + ['bias'])
+    axHWeight.set_yticklabels(list(range(1, model.hws[0].shape[0])) + ['bias'])
 
     pTrace = np.array(results['pTrace'])
     #sTrace = np.array(results['sTrace'])
@@ -388,13 +392,13 @@ def demoFN1d():
     #hwTrace = sTrace
     vwTrace = pTrace[:,model.vw.size:]
 
-    axHWTrace = fig.add_subplot(3,2,5)
+    axHWTrace = fig.add_subplot(3, 2, 5)
     axHWTrace.plot(hwTrace)
     axHWTrace.set_title('Hidden Weight Trace')
     axHWTrace.set_xlabel('Epoch')
     axHWTrace.set_ylabel('Weight')
 
-    axVWTrace = fig.add_subplot(3,2,6)
+    axVWTrace = fig.add_subplot(3, 2, 6)
     axVWTrace.plot(vwTrace)
     axVWTrace.set_title('Visible Weight Trace')
     axVWTrace.set_xlabel('Epoch')
@@ -430,7 +434,7 @@ def demoFN2d():
     gStd = g.std()
     gStand = (g - gMean) / gStd
 
-    model = FN(xStand, gStand, nHidden=(4,4,4), transFunc=transfer.gaussian,
+    model = FN(xStand, gStand, nHidden=(4, 4, 4), transFunc=transfer.gaussian,
             optimFunc=optim.scg, maxIter=1000, precision=0.0, accuracy=0.0,
             eTrace=True, pTrace=True, verbose=True)
     results = model.trainResult
@@ -441,31 +445,31 @@ def demoFN2d():
 
     fig = plt.figure()
 
-    axTargSurf = fig.add_subplot(2,3,1, projection='3d')
+    axTargSurf = fig.add_subplot(2, 3, 1, projection='3d')
     targSurf = axTargSurf.plot_surface(xx1, xx2, gg, linewidth=0.0, cmap=plt.cm.jet)
     targSurf.set_edgecolor('black')
 
-    axTargCont = fig.add_subplot(2,3,2)
+    axTargCont = fig.add_subplot(2, 3, 2)
     axTargCont.contour(x1, x2, gg, 40, color='black',
             marker='o', s=400, linewidth=3, cmap=plt.cm.jet)
 
     eTrace = results['eTrace']
-    axError = fig.add_subplot(2,3,3)
+    axError = fig.add_subplot(2, 3, 3)
     axError.plot(eTrace)
     axError.set_title('Training Error')
     axError.set_xlabel('Epoch')
     axError.set_ylabel('Mean-Squared Error')
 
-    axPredSurf = fig.add_subplot(2,3,4, projection='3d')
+    axPredSurf = fig.add_subplot(2, 3, 4, projection='3d')
     predSurf = axPredSurf.plot_surface(xx1, xx2, yy, linewidth=0.0, cmap=plt.cm.jet)
     predSurf.set_edgecolor('black')
 
-    axPredCont = fig.add_subplot(2,3,5)
+    axPredCont = fig.add_subplot(2, 3, 5)
     axPredCont.contour(x1, x2, yy, 40, color='black',
             marker='o', s=400, linewidth=3, cmap=plt.cm.jet)
 
     pTrace = np.array(results['pTrace'])
-    axHWTrace = fig.add_subplot(2,3,6)
+    axHWTrace = fig.add_subplot(2, 3, 6)
     axHWTrace.plot(pTrace)
     axHWTrace.set_title('Weight Trace')
     axHWTrace.set_xlabel('Epoch')

@@ -38,10 +38,8 @@ class RidgeRegression(Regression):
         b = x1.T @ g
 
         if self.pseudoInv is None:
-            if np.linalg.cond(a) < 1.0 / np.finfo(self.dtype).eps:
-                pseudoInv = True
-            else:
-                pseudoInv = False
+            cond = np.linalg.cond(a) * np.finfo(self.dtype).eps
+            pseudoInv = cond < 1.0
         else:
             pseudoInv = self.pseudoInv
 

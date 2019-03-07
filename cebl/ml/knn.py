@@ -15,8 +15,8 @@ class KNearestNeighbors(Classifier):
         self.k = k
         minObs = min([len(cls) for cls in classData])
         if self.k > minObs:
-            raise RuntimeError('k=%d exceeds the number of examples in ' +
-                'smallest training class %d.' % (k, minObs))
+            raise RuntimeError(('k=%d exceeds the number of examples in ' % k) +
+                ('smallest training class %d.' % minObs))
 
         if callable(distMetric):
             self.distFunc = lambda x1, x2: distMetric(x1, x2, **kwargs)

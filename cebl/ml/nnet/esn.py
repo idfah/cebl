@@ -1,3 +1,5 @@
+"""Echo State Network (ESN).
+"""
 import matplotlib.pyplot as plt
 import numpy as np
 import scipy.sparse as spsparse
@@ -413,6 +415,8 @@ class EchoStateNetworkReservoir:
 
 
 class ESNReservoir(EchoStateNetworkReservoir):
+    """Alias for EchoStateNetworkReservoir.
+    """
     pass
 
 
@@ -486,6 +490,8 @@ class EchoStateNetworkFromReservoir(Regression):
             return act
 
 class ESNFromReservoir(EchoStateNetworkFromReservoir):
+    """Alias for EchoStateNetworkFromReservoir.
+    """
     pass
 
 
@@ -505,6 +511,8 @@ class EchoStateNetwork(EchoStateNetworkFromReservoir):
             verbose=verbose, **kwargs)
 
 class ESN(EchoStateNetwork):
+    """Alias for EchoStateNetwork.
+    """
     pass
 
 

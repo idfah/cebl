@@ -1,3 +1,5 @@
+"""Linear signal transforms.
+"""
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -5,7 +7,7 @@ from cebl import util
 
 
 class STrans:
-    """Base class for linear, spatial signal transforms.
+    """Base class for linear signal transforms.
     """
     def __init__(self, s, lags=0, demean=True):
         s = util.colmat(s)

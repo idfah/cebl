@@ -1,7 +1,7 @@
-matplotlib
-munch
-numpy
-pylibftdi
-scipy
-serial
-wxpython
+matplotlib==2.0
+munch==2.2
+numpy==1.13
+pylibftdi==0.17
+pyserial==3.4
+scipy==1.0
+wxPython==4.0

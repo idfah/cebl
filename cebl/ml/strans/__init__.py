@@ -1,6 +1,5 @@
-"""Linear spatial transformations.
+"""Linear signal transforms.
 """
-
 from .csp import *
 from .ica import *
 from .msf import *

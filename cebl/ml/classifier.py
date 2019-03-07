@@ -1,7 +1,9 @@
+"""Base class for classifiers.
+"""
 import numpy as np
 
 from cebl import util
-from cebl.util.clsm import *
+from cebl.util import clsm
 
 from . import label
 
@@ -15,7 +17,7 @@ class Classifier:
         Args:
             nCls:   Number of classes.
 
-            nIn:   Number of input dimensions.
+            nIn:    Number of input dimensions.
         """
         self.nIn = nIn
         self.nCls = nCls
@@ -31,6 +33,21 @@ class Classifier:
         raise NotImplementedError('train not implemented.')
 
     def discrim(self, x, *args, **kwargs):
+        """Discriminant function for a classifier.  This method is used to
+        discriminate between classes, i.e., assign class labels.  It simply
+        calss self.probs in order to establish the default discriminant
+        function but it is faster for some classifiers to override this
+        and return discriminants without performing full probability
+        computations.
+
+        Args:
+            x:  A numpy array of shape (nObs, [nIn]) containing the
+                input data for which we seek to find the discriminants.
+
+        Returns:
+            A numpy array of shape (nObs, nCls) containing the discriminant
+            values for each observation and class.
+        """
         return self.probs(x, *args, **kwargs)
 
     def discrimKnown(self, classData, *args, **kwargs):
@@ -42,7 +59,9 @@ class Classifier:
         by ALL classifiers.
 
         Args:
-            x:  Input data.  A numpy array with shape (nObs[,nIn]).
+            x:  A numpy array of shape (nObs, [nIn]) containing the
+                input data for which we seek to find class membership
+                probabilities.
 
         Returns:
             A numpy array of shape (nObs,nCls) containing the
@@ -57,9 +76,11 @@ class Classifier:
         raise NotImplementedError('probs not implemented.')
 
     def probsKnown(self, classData, *args, **kwargs):
+        """Assign probabilities to data with known class membership.
+        """
         return [self.probs(cls, *args, **kwargs) for cls in classData]
 
-    def label(self, x, method='single', *args, **kwargs):
+    def label(self, x, *args, method='single', **kwargs):
         """Assign class labels to novel data.
 
         Args:
@@ -90,7 +111,7 @@ class Classifier:
         dv = self.discrim(x, *args, **kwargs)
         return np.argmax(dv, axis=1)
 
-    def labelVote(self, x, n, truncate=True, *args, **kwargs):
+    def labelVote(self, x, n, *args, truncate=True, **kwargs):
         """Assign class labels by voting across successive class labels.
 
         Args:
@@ -121,7 +142,7 @@ class Classifier:
 
         return util.accum(labels, n, accumf=voteCount, truncate=truncate, axis=None)
 
-    def labelIntersect(self, x, n, truncate=True, *args, **kwargs):
+    def labelIntersect(self, x, n, *args, truncate=True, **kwargs):
         """Assign class labels using the intersection of independent
         probabilities across successive observations.
 
@@ -155,9 +176,6 @@ class Classifier:
         # find the class membership probabilities
         probs = self.probs(x, *args, **kwargs)
 
-        # use log probabilities for performance and stability
-        logProbs = np.log(util.capZero(probs))
-
         # accumulate by summing log probs across n observations
         # equivalent to multiplying probs since we are only interested in the argmax
         intersect = util.accum(probs, n, accumf=np.sum, truncate=truncate, axis=0)
@@ -165,7 +183,7 @@ class Classifier:
         # label is argmax of accumulated/summed log probabilities
         return np.argmax(intersect, axis=1)
 
-    def labelUnion(self, x, n, truncate=True, *args, **kwargs):
+    def labelUnion(self, x, n, *args, truncate=True, **kwargs):
         """Assign class labels using the union of independent probabilities
         across successive observations.
 
@@ -206,27 +224,55 @@ class Classifier:
         return np.argmax(probs, axis=1)
 
     def labelKnown(self, classData, *args, **kwargs):
+        """Assign class labels to data with known class membership.
+        """
         return [self.label(cls, *args, **kwargs) for cls in classData]
 
     def auc(self, classData, *args, **kwargs):
-        return auc(self.probsKnown(classData, *args, **kwargs))
+        """Area under the roc curve.
+        """
+        return clsm.auc(self.probsKnown(classData, *args, **kwargs))
 
     def bca(self, classData, *args, **kwargs):
-        return bca(self.labelKnown(classData, *args, **kwargs))
+        """Balanced classification accuracy.
+
+        See util.clsm.bca for details.
+        """
+        return clsm.bca(self.labelKnown(classData, *args, **kwargs))
 
     def ca(self, classData, *args, **kwargs):
-        return ca(self.labelKnown(classData, *args, **kwargs))
+        """Classification accuracy.
 
-    def confusion(self, classData, normalize=True, *args, **kwargs):
-        return confusion(self.labelKnown(classData, *args, **kwargs), normalize=True)
+        See util.clsm.ca for details.
+        """
+        return clsm.ca(self.labelKnown(classData, *args, **kwargs))
 
-    def itr(self, classData, decisionRate=60.0, *args, **kwargs):
-        return itr(self.labelKnown(classData, *args, **kwargs), decisionRate=decisionRate)
+    def confusion(self, classData, *args, normalize=True, **kwargs):
+        """Confusion matrix.
+
+        See util.clsm.confusion for details.
+        """
+        return clsm.confusion(self.labelKnown(classData, *args, **kwargs), normalize=normalize)
+
+    def itr(self, classData, *args, decisionRate=60.0, **kwargs):
+        """Information transfer rate.
+
+        See util.clsm.itr for details.
+        """
+        return clsm.itr(self.labelKnown(classData, *args, **kwargs), decisionRate=decisionRate)
 
     def lloss(self, classData, *args, **kwargs):
+        """Log loss.
+
+        See util.clsm.lloss for details.
+        """
         classProbs = self.probsKnown(classData, *args, **kwargs)
         probs, g = label.indicatorsFromList(classProbs)
-        return lloss(probs, g)
+        return clsm.lloss(probs, g)
 
     def roc(self, classData, *args, **kwargs):
-        return roc(self.probsKnown(classData, *args, **kwargs))
+        """Receiver operating characteristic.
+
+        See util.clsm.roc for details.
+        """
+        return clsm.roc(self.probsKnown(classData, *args, **kwargs))

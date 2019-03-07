@@ -1,3 +1,5 @@
+"""Particle Swarm Optimization (PSO).
+"""
 import matplotlib.pyplot as plt
 import matplotlib.cm as pltcm
 from mpl_toolkits.mplot3d import Axes3D
@@ -6,14 +8,15 @@ import numpy as np
 from . import tests
 
 
-def pso(optable, nParticles=10, pInit=0.5, vInit=0.01,
+def pso(optable, *args,
+        nParticles=10, pInit=0.5, vInit=0.01,
         #momentum=0.9, pAttract=0.3, gAttract=0.3,
         momentum=0.9, pAttract=0.3, gAttract=0.3,
         accuracy=0.0, precision=0.0,
         divergeThresh=1.0e10, maxIter=10000,
         eTrace=False, pTrace=False,
         callback=None, verbose=False,
-        *args, **kwargs):
+        **kwargs):
     """Particle Swarm Optimization (PSO).
     """
     params = optable.parameters()
@@ -53,7 +56,7 @@ def pso(optable, nParticles=10, pInit=0.5, vInit=0.01,
         callback(optable, iteration, paramTrace, errorTrace)
 
     while True:
-        for i,p in enumerate(pParams):
+        for i, p in enumerate(pParams):
             pr = np.random.random(params.size)
             gr = np.random.random(params.size)
 
@@ -116,22 +119,26 @@ def pso(optable, nParticles=10, pInit=0.5, vInit=0.01,
         print(reason)
 
     # save result into a dictionary
-    result = {}
-    result['error'] = gError
-    result['iteration'] = iteration
-    result['reason'] = reason
+    result = {
+        "error": gError,
+        "iteration": iteration,
+        "reason": reason
+    }
 
-    if eTrace: result['eTrace'] = errorTrace
-    if pTrace: result['pTrace'] = paramTrace
+    # pylint: disable=multiple-statements
+    if eTrace: result["eTrace"] = errorTrace
+    if pTrace: result["pTrace"] = paramTrace
 
     return result
 
 def demoPSO():
+    """Demonstration of particle swarm optimization.
+    """
     rosen = tests.Rosen(optimFunc=pso, nParticles=10, accuracy=0.01,
                 maxIter=5000, verbose=True)#, initialSolution=(2.5, -2.5))
 
     n = 200
-    rng=(-3.0,3.0, -4.0,8.0)
+    rng = (-3.0, 3.0, -4.0, 8.0)
 
     x = np.linspace(rng[0], rng[1], n)
     y = np.linspace(rng[2], rng[3], n)
@@ -142,20 +149,21 @@ def demoPSO():
     values = rosen.eval(points)
     zz = values.reshape((xx.shape[0], yy.shape[1]))
 
-    fig = plt.figure(figsize=(12,6))
-    axSurf = fig.add_subplot(1,2,1, projection='3d')
+    fig = plt.figure(figsize=(12, 6))
+    axSurf = fig.add_subplot(1, 2, 1, projection='3d')
 
     surf = axSurf.plot_surface(xx, yy, zz, linewidth=1.0, cmap=pltcm.jet)
     surf.set_edgecolor('black')
 
-    axCont = fig.add_subplot(1,2,2)
+    axCont = fig.add_subplot(1, 2, 2)
     axCont.contour(x, y, zz, 40, color='black')
     axCont.scatter(rosen.a, rosen.a**2, color='black', marker='o', s=400, linewidth=3)
     axCont.scatter(*rosen.solution, color='red', marker='x', s=400, linewidth=3)
 
     paramTrace = np.array(rosen.trainResult['pTrace'])
     for i in range(paramTrace.shape[1]):
-        axCont.plot(paramTrace[:,i:,0], paramTrace[:,i:,1], color=plt.cm.jet(i/float(paramTrace.shape[1])), linewidth=1)
+        axCont.plot(paramTrace[:,i:,0], paramTrace[:,i:,1],
+            color=plt.cm.jet(i/float(paramTrace.shape[1])), linewidth=1)
 
     fig.tight_layout()
 

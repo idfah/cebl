@@ -1,6 +1,5 @@
 """Principal Components Analysis.
 """
-
 import matplotlib.pyplot as plt
 import numpy as np
 import scipy.signal as spsig
@@ -11,11 +10,25 @@ from .strans import STrans
 
 
 class PrincipalComponentsAnalysis(STrans):
+    """Principal components analysis signal transform.
+    """
     def __init__(self, s, *args, **kwargs):
+        """Construct a new principal components analysis signal transform.
+
+        Args:
+            x:          A numpy array of shape (nObs, nDim) containing the
+                        values of the training signal.
+
+            *args:      Additional arguments are passed to STrans.
+            **kwargs:
+        """
         STrans.__init__(self, s, *args, **kwargs)
         self.train(s)
 
     def train(self, s):
+        """Train a new principal components analysis signal transform.
+        Called during class construction.
+        """
         s = self.prep(s)
 
         if s.shape[0] >= s.shape[1]:
@@ -33,9 +46,13 @@ class PrincipalComponentsAnalysis(STrans):
         self.wInv[...] = v * d
 
     def getMags(self):
+        """Get the magnitudes of each component.
+        """
         return self.mags
 
     def plotMags(self, standardize=True, ax=None, **kwargs):
+        """Plot the magnitudes of the principal components.
+        """
         result = {}
         if ax is None:
             fig = plt.figure()
@@ -52,9 +69,13 @@ class PrincipalComponentsAnalysis(STrans):
         return result
 
 class PCA(PrincipalComponentsAnalysis):
+    """Alias for PrincipalComponentsAnalysis
+    """
     pass
 
 def demoPCA():
+    """Demonstration of PCA.
+    """
     n = 1000
     t = np.linspace(0.0, 30*np.pi, n)
 
@@ -67,7 +88,7 @@ def demoPCA():
     theta1 = np.pi/6.0
     rot1 = np.array([[np.cos(theta1), -np.sin(theta1), 0.0],
                      [np.sin(theta1),  np.cos(theta1), 0.0],
-                     [0.0,            0.0,           1.0]])
+                     [0.0,            0.0,             1.0]])
 
     theta2 = np.pi/4.0
     rot2 = np.array([[ np.cos(theta2), 0.0, np.sin(theta2)],
@@ -111,6 +132,8 @@ def demoPCA():
     fig.tight_layout()
 
 def demoPCA2d():
+    """Demonstrate PCA in two dimensions.
+    """
     n = 1000
     theta = np.pi/6.0
     rot = np.array([[np.cos(theta), -np.sin(theta)],
@@ -122,7 +145,6 @@ def demoPCA2d():
     s = np.vstack((s1, s2))
 
     pca = PCA(s)
-    y = pca.transform(s)
 
     fig = plt.figure()
     ax = fig.add_subplot(1, 1, 1)

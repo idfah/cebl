@@ -1,6 +1,5 @@
 """Optimization.
 """
-
 import scipy.optimize as spopt
 
 from .alopex import *
