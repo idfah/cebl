@@ -60,36 +60,36 @@ class Cache:
     def __len__(self):
         return len(self.store)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     cache = Cache(3)
 
-    print('adding a: 1')
-    cache['a'] = 1
+    print("adding a: 1")
+    cache["a"] = 1
 
-    print('adding b: 2')
-    cache['b'] = 2
+    print("adding b: 2")
+    cache["b"] = 2
 
-    print('adding c: 3')
-    cache['c'] = 3
-
-    print(cache)
-
-    print('getting b')
-    print(cache['b'])
-
-    print('adding a')
-    cache['a'] = 10
+    print("adding c: 3")
+    cache["c"] = 3
 
     print(cache)
 
-    print('adding d')
-    cache['d'] = 4
+    print("getting b")
+    print(cache["b"])
 
-    print('getting x')
-    print(cache['x'])
+    print("adding a")
+    cache["a"] = 10
+
+    print(cache)
+
+    print("adding d")
+    cache["d"] = 4
+
+    print("getting x")
+    print(cache["x"])
 
     print(cache)
     print(len(cache))
 
-    print('d' in cache)
-    print('c' in cache)
+    print("d" in cache)
+    print("c" in cache)

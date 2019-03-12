@@ -354,39 +354,39 @@ def demoFN1d():
     fig = plt.figure(figsize=(16, 12))
 
     axFit = fig.add_subplot(3, 2, 1)
-    axFit.plot(x, gClean, linewidth=2, color='blue')
-    axFit.plot(x, g, linewidth=2, color='black')
-    axFit.plot(x, model.eval(x), linewidth=2, color='red')
-    axFit.legend(['True Target', 'Noisy Target', 'Network Output'])
-    axFit.set_title('Network Output')
-    axFit.set_xlabel('Input')
-    axFit.set_ylabel('Output')
+    axFit.plot(x, gClean, linewidth=2, color="blue")
+    axFit.plot(x, g, linewidth=2, color="black")
+    axFit.plot(x, model.eval(x), linewidth=2, color="red")
+    axFit.legend(["True Target", "Noisy Target", "Network Output"])
+    axFit.set_title("Network Output")
+    axFit.set_xlabel("Input")
+    axFit.set_ylabel("Output")
 
     axError = fig.add_subplot(3, 2, 2)
-    axError.plot(results['eTrace'])
-    axError.set_title('Training Error')
-    axError.set_xlabel('Epoch')
-    axError.set_ylabel('Mean-Squared Error')
+    axError.plot(results["eTrace"])
+    axError.set_title("Training Error")
+    axError.set_xlabel("Epoch")
+    axError.set_ylabel("Mean-Squared Error")
 
     axHResponse = fig.add_subplot(3, 2, 3)
     axHResponse.plot(x, model.evalHiddens(x)[0], linewidth=2)
-    axHResponse.set_title('Hidden Unit Response')
-    axHResponse.set_xlabel('Input')
-    axHResponse.set_ylabel('Hidden Unit Output')
+    axHResponse.set_title("Hidden Unit Response")
+    axHResponse.set_xlabel("Input")
+    axHResponse.set_ylabel("Hidden Unit Output")
 
     axHWeight = fig.add_subplot(3, 2, 4)
-    img = axHWeight.imshow(model.hws[0], aspect='auto',
-        interpolation='none', cmap=plt.cm.winter)
+    img = axHWeight.imshow(model.hws[0], aspect="auto",
+        interpolation="none", cmap=plt.cm.winter)
     cbar = plt.colorbar(img)
-    cbar.set_label('Weight')
-    axHWeight.set_title('Hidden Weights')
-    axHWeight.set_xlabel('Hidden Unit')
-    axHWeight.set_ylabel('Input')
+    cbar.set_label("Weight")
+    axHWeight.set_title("Hidden Weights")
+    axHWeight.set_xlabel("Hidden Unit")
+    axHWeight.set_ylabel("Input")
     axHWeight.set_yticks(range(model.hws[0].shape[0]))
-    axHWeight.set_yticklabels(list(range(1, model.hws[0].shape[0])) + ['bias'])
+    axHWeight.set_yticklabels(list(range(1, model.hws[0].shape[0])) + ["bias"])
 
-    pTrace = np.array(results['pTrace'])
-    #sTrace = np.array(results['sTrace'])
+    pTrace = np.array(results["pTrace"])
+    #sTrace = np.array(results["sTrace"])
     hwTrace = pTrace[:,:model.hws[0].size]
     #hwTrace = sTrace[:,:model.hws[0].size]
     #hwTrace = sTrace
@@ -394,15 +394,15 @@ def demoFN1d():
 
     axHWTrace = fig.add_subplot(3, 2, 5)
     axHWTrace.plot(hwTrace)
-    axHWTrace.set_title('Hidden Weight Trace')
-    axHWTrace.set_xlabel('Epoch')
-    axHWTrace.set_ylabel('Weight')
+    axHWTrace.set_title("Hidden Weight Trace")
+    axHWTrace.set_xlabel("Epoch")
+    axHWTrace.set_ylabel("Weight")
 
     axVWTrace = fig.add_subplot(3, 2, 6)
     axVWTrace.plot(vwTrace)
-    axVWTrace.set_title('Visible Weight Trace')
-    axVWTrace.set_xlabel('Epoch')
-    axVWTrace.set_ylabel('Weight')
+    axVWTrace.set_title("Visible Weight Trace")
+    axVWTrace.set_xlabel("Epoch")
+    axVWTrace.set_ylabel("Weight")
 
     fig.tight_layout(pad=0.4)
 
@@ -445,37 +445,37 @@ def demoFN2d():
 
     fig = plt.figure()
 
-    axTargSurf = fig.add_subplot(2, 3, 1, projection='3d')
+    axTargSurf = fig.add_subplot(2, 3, 1, projection="3d")
     targSurf = axTargSurf.plot_surface(xx1, xx2, gg, linewidth=0.0, cmap=plt.cm.jet)
-    targSurf.set_edgecolor('black')
+    targSurf.set_edgecolor("black")
 
     axTargCont = fig.add_subplot(2, 3, 2)
-    axTargCont.contour(x1, x2, gg, 40, color='black',
-            marker='o', s=400, linewidth=3, cmap=plt.cm.jet)
+    axTargCont.contour(x1, x2, gg, 40, color="black",
+            marker="o", s=400, linewidth=3, cmap=plt.cm.jet)
 
-    eTrace = results['eTrace']
+    eTrace = results["eTrace"]
     axError = fig.add_subplot(2, 3, 3)
     axError.plot(eTrace)
-    axError.set_title('Training Error')
-    axError.set_xlabel('Epoch')
-    axError.set_ylabel('Mean-Squared Error')
+    axError.set_title("Training Error")
+    axError.set_xlabel("Epoch")
+    axError.set_ylabel("Mean-Squared Error")
 
-    axPredSurf = fig.add_subplot(2, 3, 4, projection='3d')
+    axPredSurf = fig.add_subplot(2, 3, 4, projection="3d")
     predSurf = axPredSurf.plot_surface(xx1, xx2, yy, linewidth=0.0, cmap=plt.cm.jet)
-    predSurf.set_edgecolor('black')
+    predSurf.set_edgecolor("black")
 
     axPredCont = fig.add_subplot(2, 3, 5)
-    axPredCont.contour(x1, x2, yy, 40, color='black',
-            marker='o', s=400, linewidth=3, cmap=plt.cm.jet)
+    axPredCont.contour(x1, x2, yy, 40, color="black",
+            marker="o", s=400, linewidth=3, cmap=plt.cm.jet)
 
-    pTrace = np.array(results['pTrace'])
+    pTrace = np.array(results["pTrace"])
     axHWTrace = fig.add_subplot(2, 3, 6)
     axHWTrace.plot(pTrace)
-    axHWTrace.set_title('Weight Trace')
-    axHWTrace.set_xlabel('Epoch')
-    axHWTrace.set_ylabel('Weight')
+    axHWTrace.set_title("Weight Trace")
+    axHWTrace.set_xlabel("Epoch")
+    axHWTrace.set_ylabel("Weight")
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     demoFN1d()
     #demoFN2d()
     plt.show()

@@ -32,7 +32,7 @@ def tanh(x, prime=0):
         return 1.0 - util.tanh(x)**2
 
     else:
-        raise NotImplementedError('%d order derivative not implemented.' % int(prime))
+        raise NotImplementedError("%d order derivative not implemented." % int(prime))
 
 def tanhTwist(x, prime=0, **kwargs):
     return _twist(x, tanh, prime, **kwargs)
@@ -45,7 +45,7 @@ def lecun(x, prime=0):
         return 1.7159 * (2.0/3.0) * (1.0 - util.tanh((2.0/3.0) * x)**2)
 
     else:
-        raise NotImplementedError('%d order derivative not implemented.' % int(prime))
+        raise NotImplementedError("%d order derivative not implemented." % int(prime))
 
 def lecunTwist(x, prime=0, **kwargs):
     return _twist(x, lecun, prime, **kwargs)
@@ -71,7 +71,7 @@ def logistic(x, prime=0):
         return logistic(x) * (1.0 - logistic(x))
 
     else:
-        raise NotImplementedError('%d order derivative not implemented.' % int(prime))
+        raise NotImplementedError("%d order derivative not implemented." % int(prime))
 
 def logisticTwist(x, prime=0, **kwargs):
     return _twist(x, logistic, prime, **kwargs)
@@ -84,7 +84,7 @@ def gaussian(x, prime=0):
         return -2.0*x*np.exp(-x**2)
 
     else:
-        raise NotImplementedError('%d order derivative not implemented.' % int(prime))
+        raise NotImplementedError("%d order derivative not implemented." % int(prime))
 
 def gaussianTwist(x, prime=0, **kwargs):
     return _twist(x, logistic, prime, **kwargs)
@@ -122,7 +122,7 @@ def softplus(x, prime=0):
         return logistic(x)
 
     else:
-        raise NotImplementedError('%d order derivative not implemented.' % int(prime))
+        raise NotImplementedError("%d order derivative not implemented." % int(prime))
 
 def softplusTwist(x, prime=0, **kwargs):
     return _twist(x, softplus, prime, **kwargs)

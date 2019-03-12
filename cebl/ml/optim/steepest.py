@@ -90,7 +90,7 @@ def steepest(optable,
     errorTrace = []
 
     # termination reason
-    reason = ''
+    reason = ""
 
     iteration = 0
     while True:
@@ -102,7 +102,7 @@ def steepest(optable,
         #curLearningRate = learningRate + learningRateDecay * iteration
 
         if verbose:
-            print('%d %3f %6f' % (iteration, curLearningRate, error))
+            print("%d %3f %6f" % (iteration, curLearningRate, error))
 
         if callback is not None:
             callback(optable, iteration, paramTrace, errorTrace)
@@ -117,22 +117,22 @@ def steepest(optable,
 
         # terminate if desired accuracy reached
         if error < accuracy:
-            reason = 'accuracy'
+            reason = "accuracy"
             break
 
         # terminate if desired precision reached
         if np.abs(error - errorPrev) < precision:
-            reason = 'precision'
+            reason = "precision"
             break
 
         # terminate if the error function diverges
         if error > divergeThresh:
-            reason = 'diverge'
+            reason = "diverge"
             break
 
         # terminate if maximum iterations reached
         if iteration >= maxIter:
-            reason = 'maxiter'
+            reason = "maxiter"
             break
 
         # move in direction of negative gradient
@@ -239,7 +239,7 @@ def steepestl(optable, stepInitial=0.1, lineSearchPrecision=1.0e-4,
     errorTrace = []
 
     # termination reason
-    reason = ''
+    reason = ""
 
     iteration = 0
     while True:
@@ -248,7 +248,7 @@ def steepestl(optable, stepInitial=0.1, lineSearchPrecision=1.0e-4,
         error, grad = optable.gradient(*args, returnError=True, **kwargs)
 
         if verbose:
-            print('%d %6f' % (iteration, error))
+            print("%d %6f" % (iteration, error))
 
         if callback is not None:
             callback(optable, iteration, paramTrace, errorTrace)
@@ -263,22 +263,22 @@ def steepestl(optable, stepInitial=0.1, lineSearchPrecision=1.0e-4,
 
         # terminate if desired accuracy reached
         if error < accuracy:
-            reason = 'accuracy'
+            reason = "accuracy"
             break
 
         # terminate if desired precision reached
         if np.abs(error - errorPrev) < precision:
-            reason = 'precision'
+            reason = "precision"
             break
 
         # terminate if the error function diverges
         if error > divergeThresh:
-            reason = 'diverge'
+            reason = "diverge"
             break
 
         # terminate if maximum iterations reached
         if iteration >= maxIter:
-            reason = 'maxiter'
+            reason = "maxiter"
             break
 
         # initialize line search parameters
@@ -300,7 +300,7 @@ def steepestl(optable, stepInitial=0.1, lineSearchPrecision=1.0e-4,
                 break
 
             if verbose:
-                print('ls:  %3f %6f' % (stepSize, lsError))
+                print("ls:  %3f %6f" % (stepSize, lsError))
 
             # if error got worse
             if lsError > lsErrorPrev:
@@ -332,8 +332,8 @@ def steepestl(optable, stepInitial=0.1, lineSearchPrecision=1.0e-4,
     }
 
     # pylint: disable=multiple-statements
-    if pTrace: result['pTrace'] = paramTrace
-    if eTrace: result['eTrace'] = errorTrace
+    if pTrace: result["pTrace"] = paramTrace
+    if eTrace: result["eTrace"] = errorTrace
 
     return result
 
@@ -347,6 +347,6 @@ def demoSteepestl():
     quad.plot()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     demoSteepestl()
     plt.show()

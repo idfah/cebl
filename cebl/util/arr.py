@@ -67,7 +67,7 @@ def accum(x, n, accumf=np.sum, truncate=True, axis=None):
                [[3, 3, 3]]])
     """
     if n < 1:
-        raise ValueError('n must be >= 1')
+        raise ValueError("n must be >= 1")
 
     # make sure we have a numpy array
     x = np.asarray(x)

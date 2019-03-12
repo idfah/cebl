@@ -13,7 +13,7 @@ class SelfOrganizingMap:
     """Self-Organizing Map (SOM).
     """
     def __init__(self, x, latticeSize=(64, 64), maxIter=5000,
-                 distMetric='euclidean', learningRate=0.02, learningRateFinal=None,
+                 distMetric="euclidean", learningRate=0.02, learningRateFinal=None,
                  radius=None, radiusFinal=None, weightRange=(0.0, 1.0),
                  callback=None, verbose=False):
         """Construct a new Self-Organizing Map (SOM).
@@ -120,7 +120,7 @@ class SelfOrganizingMap:
                 neighborHood[...,None] * (curObs[None,None,:] - self.weights)
 
             if self.verbose:
-                print('%d %.3f %.3f' % (iteration, curLearningRate, curRadius))
+                print("%d %.3f %.3f" % (iteration, curLearningRate, curRadius))
 
             if self.callback is not None:
                 self.callback(iteration, self.weights, curLearningRate, curRadius)
@@ -159,7 +159,7 @@ def demoSOM():
             animFunc.fig = plt.figure(figsize=(10, 10))
             animFunc.ax = animFunc.fig.add_subplot(1, 1, 1)
             animFunc.wimg = animFunc.ax.imshow(weights,
-                    interpolation='none', origin='lower', animated=True)
+                    interpolation="none", origin="lower", animated=True)
 
             animFunc.fig.tight_layout()
             animFunc.fig.show()
@@ -177,7 +177,7 @@ def demoSOM():
             animFunc.ax.draw_artist(animFunc.wimg)
             animFunc.fig.canvas.blit(animFunc.ax.bbox)
 
-            plt.savefig('frame-%04d.png' % animFunc.frame, dpi=200)
+            plt.savefig("frame-%04d.png" % animFunc.frame, dpi=200)
             animFunc.frame += 1
 
     som = SOM(data, latticeSize=(32, 32), maxIter=20000,
@@ -193,12 +193,12 @@ def demoSOM():
     xlim = animFunc.ax.get_xlim()
     ylim = animFunc.ax.get_ylim()
 
-    #plt.plot(bindex, linestyle='', marker='p', color=('red', 'green', 'blue'))
+    #plt.plot(bindex, linestyle="", marker="p", color=("red", "green", "blue"))
     animFunc.ax.scatter(bindex[:,1], bindex[:,0], c=data, s=100)
 
     animFunc.ax.set_xlim(xlim)
     animFunc.ax.set_ylim(ylim)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     demoSOM()
     plt.show()

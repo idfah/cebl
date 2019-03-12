@@ -9,7 +9,7 @@ def slidingWindow(s, span, stride=None, axis=0):
     """Sliding window.
     """
     #s = np.ascontiguousarray(s)
-    s = np.require(s, requirements=['C', 'O'])
+    s = np.require(s, requirements=["C", "O"])
 
     if stride is None:
         stride = span
@@ -17,13 +17,13 @@ def slidingWindow(s, span, stride=None, axis=0):
     # catch some bad values since this is a common place for
     # bugs to crop up in other routines
     if span > s.shape[axis]:
-        raise ValueError('Span of %d exceeds input length of %d.' % (span, s.shape[axis]))
+        raise ValueError("Span of %d exceeds input length of %d." % (span, s.shape[axis]))
 
     if span < 0:
-        raise ValueError('Negative span of %d is invalid.' % span)
+        raise ValueError("Negative span of %d is invalid." % span)
 
     if stride < 1:
-        raise ValueError('Stride of %d is not positive.' % stride)
+        raise ValueError("Stride of %d is not positive." % stride)
 
     nWin = int(np.ceil((s.shape[axis]-span+1) / float(stride)))
 
@@ -43,7 +43,7 @@ def timeEmbed(s, lags=1, stride=1, axis=0):
         Only copies s if necessary.
     """
     #s = np.ascontiguousarray(s)
-    s = np.require(s, requirements=['C', 'O'])
+    s = np.require(s, requirements=["C", "O"])
 
     if lags == 0:
         return s

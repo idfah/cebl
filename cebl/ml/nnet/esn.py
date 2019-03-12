@@ -70,18 +70,18 @@ def rayleigh(x, eigVal=None, eigVec=None, precision=1e-16, maxIter=500, verbose=
         iteration += 1
 
         if np.abs(eigVal-eigValPrev) < precision:
-            reason = 'precision'
+            reason = "precision"
             break
 
         if iteration > maxIter:
-            reason = 'maxiter'
+            reason = "maxiter"
             break
 
     results = dict()
-    results['eigVal'] = eigVal
-    results['eigVec'] = eigVec
-    results['reason'] = reason
-    results['iterations'] = iteration
+    results["eigVal"] = eigVal
+    results["eigVec"] = eigVec
+    results["reason"] = reason
+    results["iterations"] = iteration
 
     return results
 
@@ -109,7 +109,7 @@ def miniRProp(x, errFunc, step=0.1, stepUp=1.01, stepDown=0.6,
 
         if iteration >= maxIter:
             if verbose:
-                print('Maximum iterations %d reached.' % iteration)
+                print("Maximum iterations %d reached." % iteration)
             break
 
         if np.abs(err) < accuracy:
@@ -166,16 +166,16 @@ class EchoStateNetworkReservoir:
         ##if self.sparse:
         ##    iw = iw.todense()
         ##    rw = rw.todense()
-        ##print('iw.shape: ', iw.shape)
-        ##print('iw min/max: ', (np.min(iw), np.max(iw)))
-        ##print('iwMult: ', self.iwMult)
-        ##print('rw.shape: ', rw.shape)
+        ##print("iw.shape: ", iw.shape)
+        ##print("iw min/max: ", (np.min(iw), np.max(iw)))
+        ##print("iwMult: ", self.iwMult)
+        ##print("rw.shape: ", rw.shape)
         ##l = np.max(np.abs(np.linalg.eigvals(rw)))
-        ##print('rwScale: ', l)
+        ##print("rwScale: ", l)
 
     def initIW(self, iwScale, iwConn):
         if self.verbose:
-            print('Initializing input weights...')
+            print("Initializing input weights...")
 
         self.iwMult = 1.0
         self.iwScale = iwScale
@@ -191,7 +191,7 @@ class EchoStateNetworkReservoir:
 
     def initRW(self, rwScale, rwConn):
         if self.verbose:
-            print('Initializing recurrent weights...')
+            print("Initializing recurrent weights...")
 
         self.rwScale = rwScale
         self.rwConn = rwConn
@@ -207,32 +207,32 @@ class EchoStateNetworkReservoir:
         rw[loneNeurons,newConns] = np.random.uniform(-1.0, 1.0, size=loneNeurons.size)
 
         if self.verbose:
-            print('Eliminated %d lone reservor units.' % loneNeurons.size)
+            print("Eliminated %d lone reservor units." % loneNeurons.size)
 
         if self.sparse:
             if self.verbose:
-                print('Using sparse linalg to find spectral radius...')
+                print("Using sparse linalg to find spectral radius...")
             try:
                 ncv = int(np.max((10, rwConn*self.nRes)))
                 l = np.abs(spsparse.linalg.eigs(spsparse.csr_matrix(rw, dtype=self.dtype),
                            k=1, ncv=ncv, tol=0, return_eigenvectors=False)[0])
             except spsparse.linalg.ArpackNoConvergence as e:
                 if self.verbose:
-                    print('ARPACK did not converge, using dense matrices.')
+                    print("ARPACK did not converge, using dense matrices.")
                 l = np.max(np.abs(np.linalg.eigvals(rw)))
         else:
             #if self.verbose:
-            #    print('Using dense Rayleigh iteration to find spectral radius...')
+            #    print("Using dense Rayleigh iteration to find spectral radius...")
 
             # need to take a closer look at rayleigh, finding all eigenvalues for now XXX - idfah
             # rayleigh only works for positive matrices
             ##rayl = rayleigh(rw, eigVal=self.nRes*0.5*self.rwConn, verbose=self.verbose)
-            #if rayl['reason'] != 'precision':
-            #    print('ESN Warning: rayleigh did not converge: ' + rayl['reason'])
-            #l = rayl['eigVal']
+            #if rayl["reason"] != "precision":
+            #    print("ESN Warning: rayleigh did not converge: " + rayl["reason"])
+            #l = rayl["eigVal"]
 
             if self.verbose:
-                print('Finding spectral radius using dense matrices...')
+                print("Finding spectral radius using dense matrices...")
             l = np.max(np.abs(np.linalg.eigvals(rw)))
 
         rw[:,:] *= self.rwScale / l
@@ -249,10 +249,10 @@ class EchoStateNetworkReservoir:
            self.actCache.getMaxSize() > 0:
                 key = util.hashArray(x)
                 if key in self.actCache:
-                    #print('cache hit.')
+                    #print("cache hit.")
                     return self.actCache[key]
                 else:
-                    #print('cache miss.')
+                    #print("cache miss.")
                     cacheAct = True
 
         nSeg = x.shape[0]
@@ -308,9 +308,9 @@ class EchoStateNetworkReservoir:
 
         self.iwMult = mult
 
-    def scaleIW(self, x, method='brentq'):
+    def scaleIW(self, x, method="brentq"):
         if self.verbose:
-            print('Scaling input weights...')
+            print("Scaling input weights...")
 
         self.actCache.disable()
 
@@ -326,7 +326,7 @@ class EchoStateNetworkReservoir:
             act = self.eval(x)
             err = np.abs(np.std(act)-scale)
             if self.verbose:
-                print('scale, mult: ', (np.std(act), m))
+                print("scale, mult: ", (np.std(act), m))
             return err
 
         def stdRoot(m):
@@ -334,26 +334,26 @@ class EchoStateNetworkReservoir:
             act = self.eval(x)
             err = np.std(act) - scale
             if self.verbose:
-                print('scale, mult: ', (np.std(act), m))
+                print("scale, mult: ", (np.std(act), m))
             return err
 
-        if method == 'rprop':
+        if method == "rprop":
             miniRProp(0.75, errFunc=stdErr,
                       maxIter=maxIter, accuracy=accuracy)
                       #verbose=self.verbose)
 
-        elif method == 'brentq':
+        elif method == "brentq":
             m, r = spopt.brentq(stdRoot, 1.0e-5, 10.0, xtol=accuracy, full_output=True)
             if self.verbose:
-                print('brentq iterations: %d' % r.iterations)
+                print("brentq iterations: %d" % r.iterations)
 
-        elif method == 'simplex':
-            r = spopt.minimize(stdErr, scale, method='Nelder-Mead', tol=accuracy,
-                    options={'maxiter': 100})
+        elif method == "simplex":
+            r = spopt.minimize(stdErr, scale, method="Nelder-Mead", tol=accuracy,
+                    options={"maxiter": 100})
             m = r.x
 
         else:
-            raise RuntimeError('Invalid scaleIW method %s.' % method)
+            raise RuntimeError("Invalid scaleIW method %s." % method)
 
         self.actCache.enable()
 
@@ -387,17 +387,17 @@ class EchoStateNetworkReservoir:
             fig = plt.figure()
             ax = fig.add_subplot(1, 1, 1)
 
-        ax.set_xlabel('Density')
-        ax.set_ylabel('Reservoir Activation')
+        ax.set_xlabel("Density")
+        ax.set_ylabel("Reservoir Activation")
 
         n, bins, patches = ax.hist(act.ravel(), normed=True,
-                        orientation='horizontal', label='Activations')
+                        orientation="horizontal", label="Activations")
 
         lines = ax.plot(np.linspace(0.0, np.max(n), t.size), np.tanh(t-2.0),
-                        linewidth=2, label=r'$\phi$') # label=r'$\phi='+self.phi.__name__)
-        leg = ax.legend(loc='lower right')
+                        linewidth=2, label=r"$\phi$") # label=r"$\phi="+self.phi.__name__)
+        leg = ax.legend(loc="lower right")
 
-        return {'ax': ax, 'n': n, 'bins': bins, 'patches': patches, 'lines': lines, 'leg': leg}
+        return {"ax": ax, "n": n, "bins": bins, "patches": patches, "lines": lines, "leg": leg}
 
     def plotWeightImg(self, ax=None):
         if self.sparse:
@@ -409,9 +409,9 @@ class EchoStateNetworkReservoir:
             fig = plt.figure()
             ax = fig.add_subplot(1, 1, 1)
 
-        img = ax.imshow(hw[self.nIn:,:], interpolation='none')
+        img = ax.imshow(hw[self.nIn:,:], interpolation="none")
 
-        return {'ax': ax, 'img': img}
+        return {"ax": ax, "img": img}
 
 
 class ESNReservoir(EchoStateNetworkReservoir):
@@ -454,7 +454,7 @@ class EchoStateNetworkFromReservoir(Regression):
             gf = g.ravel()
 
         if self.verbose:
-            print('Training readout layer...')
+            print("Training readout layer...")
 
         self.readout = readoutClass(actf[self.transient:], gf[self.transient:], **kwargs)
 
@@ -484,7 +484,7 @@ class EchoStateNetworkFromReservoir(Regression):
 
         if self.sideTrack:
             if self.verbose:
-                print('adding side track...')
+                print("adding side track...")
             return np.concatenate((x, act), axis=2)
         else:
             return act
@@ -534,12 +534,12 @@ def demoESP():
     fig = plt.figure()
 
     impulseAx = fig.add_subplot(2, 1, 1)
-    impulseAx.plot(sig, color='grey', linewidth=3)
-    impulseAx.plot(sigi, color='red')
+    impulseAx.plot(sig, color="grey", linewidth=3)
+    impulseAx.plot(sigi, color="red")
 
     actAx = fig.add_subplot(2, 1, 2)
-    actAx.plot(act, color='black', linewidth=2)
-    actAx.plot(acti, color='red')
+    actAx.plot(act, color="black", linewidth=2)
+    actAx.plot(acti, color="red")
 
 def demoESNTXOR():
     def xor(a, b):
@@ -601,13 +601,13 @@ def demoESNSine():
     fig = plt.figure()
     ax = fig.add_subplot(1, 1, 1)
 
-    ax.plot(time, s, color='blue')
-    ax.plot(time[1:], pred[0], color='red')
+    ax.plot(time, s, color="blue")
+    ax.plot(time[1:], pred[0], color="red")
 
     ax.autoscale(tight=True)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     #demoESP()
     demoESNTXOR()
     #demoESNSine()

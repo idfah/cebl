@@ -74,7 +74,7 @@ class STrans:
         y = self.transform(s, comp=comp, remove=remove)
         lines = ax.plot(y+util.colsep(y), **kwargs)
 
-        return {'ax': ax, 'lines': lines}
+        return {"ax": ax, "lines": lines}
 
     def plotFilter(self, s, comp, remove=False, ax=None, **kwargs):
         if ax is None:
@@ -84,4 +84,4 @@ class STrans:
         filt = self.filter(s, comp=comp, remove=remove)
         lines = ax.plot(filt+util.colsep(filt), **kwargs)
 
-        return {'ax': ax, 'lines': lines}
+        return {"ax": ax, "lines": lines}

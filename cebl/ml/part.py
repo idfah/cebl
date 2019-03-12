@@ -92,7 +92,7 @@ def stratified(x, g, nFold):
     ng = len(g) // nFold
 
     if nx != ng:
-        raise RuntimeError('size of x and g do not match.')
+        raise RuntimeError("size of x and g do not match.")
 
     for fold in range(nFold):
         start = fold * nx

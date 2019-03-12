@@ -10,10 +10,10 @@ class Regression:
         self.nOut = nOut
 
     def train(self, x, g):
-        raise NotImplementedError('train not implemented.')
+        raise NotImplementedError("train not implemented.")
 
     def eval(self, x):
-        raise NotImplementedError('eval not implemented.')
+        raise NotImplementedError("eval not implemented.")
 
     def evals(self, xs, *args, **kwargs):
         xs = np.asarray(xs)

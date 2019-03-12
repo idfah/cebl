@@ -90,27 +90,27 @@ def demoMSF():
 
     axOrig = fig.add_subplot(4, 1, 1)
     axOrig.plot(s+util.colsep(s))
-    axOrig.set_title('Unmixed Signal')
+    axOrig.set_title("Unmixed Signal")
     axOrig.autoscale(tight=True)
 
     axMixed = fig.add_subplot(4, 1, 2)
     axMixed.plot(sMixed+util.colsep(sMixed))
-    axMixed.set_title('Mixed Signal (random transform)')
+    axMixed.set_title("Mixed Signal (random transform)")
     axMixed.autoscale(tight=True)
 
     axUnmixed = fig.add_subplot(4, 1, 3)
     msfFilt.plotTransform(sMixed, ax=axUnmixed)
-    axUnmixed.set_title('MSF Components')
+    axUnmixed.set_title("MSF Components")
     axUnmixed.autoscale(tight=True)
 
     axCleaned = fig.add_subplot(4, 1, 4)
     msfFilt.plotFilter(sMixed, comp=(2,), remove=True, ax=axCleaned)
-    axCleaned.set_title('Cleaned Signal (Last Component Removed)')
+    axCleaned.set_title("Cleaned Signal (Last Component Removed)")
     axCleaned.autoscale(tight=True)
 
     fig.tight_layout()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     demoMSF()
     plt.show()

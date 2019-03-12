@@ -42,7 +42,7 @@ def sgd(optable, x, g, batchSize=30,
         start = 0
         np.random.shuffle(batchInd)
         if verbose:
-            print('batch: %d' % batch)
+            print("batch: %d" % batch)
 
         xShuff = x[batchInd]
         gShuff = g[batchInd]
@@ -66,7 +66,7 @@ def sgd(optable, x, g, batchSize=30,
             velocity[...] = momentum * velocity + curLearningRate * grad
 
             if verbose:
-                print('%d %3f %6f' % (iteration, curLearningRate, error))
+                print("%d %3f %6f" % (iteration, curLearningRate, error))
 
             if callback is not None:
                 callback(optable, iteration, paramTrace, errorTrace)
@@ -81,22 +81,22 @@ def sgd(optable, x, g, batchSize=30,
 
             # terminate if desired accuracy reached
             if error < accuracy:
-                reason = 'accuracy'
+                reason = "accuracy"
                 break
 
             # terminate if desired precision reached
             if np.abs(error - errorPrev) < precision:
-                reason = 'precision'
+                reason = "precision"
                 break
 
             # terminate if the error function diverges
             if error > divergeThresh:
-                reason = 'diverge'
+                reason = "diverge"
                 break
 
             # terminate if maximum iterations reached
             if iteration >= maxIter:
-                reason = 'maxiter'
+                reason = "maxiter"
                 break
 
             # move in direction of negative gradient

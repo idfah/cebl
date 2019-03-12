@@ -77,17 +77,17 @@ def demoRidgeRegression1dQuad():
     fig = plt.figure()
     ax = fig.add_subplot(1, 1, 1)
 
-    ax.plot(x, y, marker='o', color='black')
+    ax.plot(x, y, marker="o", color="black")
 
     linearModel = RidgeRegression(x, y)
 
-    ax.plot(x, linearModel.eval(x), color='green')
+    ax.plot(x, linearModel.eval(x), color="green")
 
     x2 = x.repeat(2).reshape((-1, 2))
     x2[:,1] **= 2
     quadraticModel = RidgeRegression(x2, y)
 
-    ax.plot(x, quadraticModel.eval(x2), color='red')
+    ax.plot(x, quadraticModel.eval(x2), color="red")
 
 def demoRidgeRegression1d():
     x = np.linspace(0.0, 3.0, 50)
@@ -101,7 +101,7 @@ def demoRidgeRegression1d():
 
     model = RidgeRegression(x, y)
 
-    ax.plot(x, model.eval(x), color='green')
+    ax.plot(x, model.eval(x), color="green")
 
 
 class LinearRegressionElastic(Regression, optim.Optable):
@@ -222,26 +222,26 @@ def demoLinearRegressionElastic():
     fig = plt.figure()
     axLines = fig.add_subplot(1, 2, 1)
 
-    #ax.scatter(x, g1, color='red')
-    #ax.scatter(x, g2, color='green')
-    #ax.scatter(x, g3, color='blue')
+    #ax.scatter(x, g1, color="red")
+    #ax.scatter(x, g2, color="green")
+    #ax.scatter(x, g3, color="blue")
 
-    axLines.plot(y, color='green')
+    axLines.plot(y, color="green")
 
     axWeights = fig.add_subplot(1, 2, 2)
-    img = axWeights.imshow(np.abs(model.weights), aspect='auto', interpolation='none')
+    img = axWeights.imshow(np.abs(model.weights), aspect="auto", interpolation="none")
     cbar = plt.colorbar(img)
-    cbar.set_label('Weight Magnitude')
+    cbar.set_label("Weight Magnitude")
 
     axWeights.set_xticks((0, 1))
-    axWeights.set_xticklabels(('y1', 'y2'))
+    axWeights.set_xticklabels(("y1", "y2"))
     axWeights.set_yticks((0, 1, 2, 3))
-    axWeights.set_yticklabels(('x1', 'x2', 'x3', 'bias'))
+    axWeights.set_yticklabels(("x1", "x2", "x3", "bias"))
 
     print(model.weights)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     demoRidgeRegression1d()
     demoRidgeRegression1dQuad()
     demoLinearRegressionElastic()

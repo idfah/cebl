@@ -33,7 +33,7 @@ class PSDBase:
     def getFreqsPowers(self):
         return self.freqs, self.powers
 
-    def plotPower(self, scale='log', ax=None, **kwargs):
+    def plotPower(self, scale="log", ax=None, **kwargs):
         """Plot a PSD estimate on a log scale.
 
         Returns
@@ -47,40 +47,40 @@ class PSDBase:
         scale = scale.lower()
         if ax is None:
             fig = plt.figure()
-            result['fig'] = fig
+            result["fig"] = fig
             ax = fig.add_subplot(1, 1, 1)
-        result['ax'] = ax
+        result["ax"] = ax
 
         ax.grid()
-        ax.set_title('Power Spectral Density')
-        ax.set_xlabel(r'Freqency ($Hz$)')
+        ax.set_title("Power Spectral Density")
+        ax.set_xlabel(r"Freqency ($Hz$)")
         ax.set_xlim((np.min(self.freqs), np.max(self.freqs)))
-        if scale in ('linear', 'log'):
-            ax.set_ylabel(r'Power Density ($\mu V^2 / Hz$)')
-        elif scale in ('db', 'decibels'):
-            ax.set_ylabel(r'Power Density (dB)')
-        if scale == 'log':
-            ax.set_yscale('log')
+        if scale in ("linear", "log"):
+            ax.set_ylabel(r"Power Density ($\mu V^2 / Hz$)")
+        elif scale in ("db", "decibels"):
+            ax.set_ylabel(r"Power Density (dB)")
+        if scale == "log":
+            ax.set_yscale("log")
 
-        if scale in ('linear', 'log'):
+        if scale in ("linear", "log"):
             scaledPowers = self.powers
-        elif scale in ('db', 'decibels'):
+        elif scale in ("db", "decibels"):
             scaledPowers = 10.0*np.log10(self.powers/np.max(self.powers))
         else:
-            raise RuntimeError('Invalid scale %s.' % str(scale))
+            raise RuntimeError("Invalid scale %s." % str(scale))
 
         lines = ax.plot(self.freqs, scaledPowers, **kwargs)
-        result['lines'] = lines
+        result["lines"] = lines
 
         return result
 
 
 class WelchPSD(PSDBase):
-    """PSD smoothed using Welch's method.
+    """PSD smoothed using Welch"s method.
     """
 
     def __init__(self, s, sampRate=1.0, span=3.0, overlap=0.5, windowFunc=windows.hann, pad=False):
-        """Construct a new PSD using Welch's method.
+        """Construct a new PSD using Welch"s method.
 
         Args:
             s:          Numpy array with shape (observations[,dimensions])
@@ -126,10 +126,10 @@ class WelchPSD(PSDBase):
 
         # check span parameter
         if wObs > nObs:
-            raise RuntimeError('Span of %.2f exceedes length of input %.2f.' %
+            raise RuntimeError("Span of %.2f exceedes length of input %.2f." %
                 (span, nObs/float(sampRate)))
         if wObs < 7:
-            raise RuntimeError('Span of %.2f is too small.' % span)
+            raise RuntimeError("Span of %.2f is too small." % span)
 
         if pad:
             # find next largest power of two
@@ -161,7 +161,7 @@ class WelchPSD(PSDBase):
         dft = dft[:,:int(np.ceil(nPad/2.0)),:]
 
         # scale to power/Hz
-        # numpy fft doesn't support complex64 so can't preserve float32 dtype XXX - idfah
+        # numpy fft doesn"t support complex64 so can"t preserve float32 dtype XXX - idfah
         dftmag = np.abs(dft).astype(s.dtype, copy=False)
         powers = 2.0*(dftmag**2)/scaleDenom
 
@@ -362,16 +362,16 @@ class AutoRegPSD(PSDBase):
 
 # wrapper around class constructors
 # pylint: disable=invalid-name
-def PowerSpectralDensity(s, method='welch', **kwargs):
+def PowerSpectralDensity(s, method="welch", **kwargs):
     method = method.lower()
-    if method == 'welch':
+    if method == "welch":
         return WelchPSD(s, **kwargs)
-    elif method in ('raw', 'fft'):
+    elif method in ("raw", "fft"):
         return RawPSD(s, **kwargs)
-    elif method in ('ar', 'autoreg'):
+    elif method in ("ar", "autoreg"):
         return AutoRegPSD(s, **kwargs)
     else:
-        raise RuntimeError('Unknown PSD estimation method: ' + str(method))
+        raise RuntimeError("Unknown PSD estimation method: " + str(method))
 
 def PSD(*args, **kwargs):
     return PowerSpectralDensity(*args, **kwargs)
@@ -389,26 +389,26 @@ def demoPSD():
     noise2 = np.random.normal(loc=0.0, scale=0.2, size=s.shape)
 
     y = np.vstack((np.sin(2*f1*np.pi*s)+noise1, 10.0*np.sin(2*f2*np.pi*s)+noise2)).T
-    print('True max power: ', np.mean(y**2, axis=0))
+    print("True max power: ", np.mean(y**2, axis=0))
 
-    scale = 'log'
+    scale = "log"
 
     raw = RawPSD(y, sampRate)
-    ax = raw.plotPower(scale=scale, label='raw')['ax']
-    print('Raw max power: ', np.max(raw.getPowers()*sampRate, axis=0))
+    ax = raw.plotPower(scale=scale, label="raw")["ax"]
+    print("Raw max power: ", np.max(raw.getPowers()*sampRate, axis=0))
 
     welch = WelchPSD(y, sampRate, span=4)
-    welch.plotPower(scale=scale, ax=ax, label='welch')
-    print('Welch max power: ', np.max(welch.getPowers()*sampRate, axis=0))
+    welch.plotPower(scale=scale, ax=ax, label="welch")
+    print("Welch max power: ", np.max(welch.getPowers()*sampRate, axis=0))
 
     autoreg = AutoRegPSD(y, sampRate, order=10)
-    autoreg.plotPower(scale=scale, ax=ax, label='autoreg')
-    print('AR max power: ', np.max(autoreg.getPowers()*sampRate, axis=0))
+    autoreg.plotPower(scale=scale, ax=ax, label="autoreg")
+    print("AR max power: ", np.max(autoreg.getPowers()*sampRate, axis=0))
 
     ax.legend()
 
     ax.autoscale(tight=True)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     demoPSD()
     plt.show()

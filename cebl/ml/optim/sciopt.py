@@ -7,7 +7,7 @@ from . import tests
 
 
 def sciopt(optable, *args,
-           method='CG', options=None,
+           method="CG", options=None,
            maxIter=1000, precision=1.0e-10,
            pTrace=False, eTrace=False,
            callback=None, verbose=False,
@@ -24,14 +24,14 @@ def sciopt(optable, *args,
         params.flat[...] = p
         return optable.error(*args, **kwargs)
 
-    if method in ('CG', 'BFGS', 'Newton-CG', 'dogleg', 'trust-ncg'):
+    if method in ("CG", "BFGS", "Newton-CG", "dogleg", "trust-ncg"):
         def gradFunc(p):
             params.flat[...] = p
             return optable.gradient(*args, returnError=False, **kwargs)
     else:
         gradFunc = None
 
-    if method == 'Newton-CG':
+    if method == "Newton-CG":
         def grad2Func(p):
             params.flat[...] = p
             return optable.gradient2(*args, returnError=False, **kwargs)
@@ -45,7 +45,7 @@ def sciopt(optable, *args,
             error = optable.error(*args, **kwargs)
 
         if verbose:
-            print('%d %6f' % (cb.iteration, error))
+            print("%d %6f" % (cb.iteration, error))
 
         # keep parameter history if requested
         if pTrace:
@@ -62,7 +62,7 @@ def sciopt(optable, *args,
 
     if options is None:
         options = {}
-    options['maxiter'] = maxIter
+    options["maxiter"] = maxIter
 
     optres = spopt.minimize(fun=errFunc, method=method,
                 x0=params, tol=precision,
@@ -71,9 +71,9 @@ def sciopt(optable, *args,
 
     if verbose:
         print(optres)
-        print('\n')
+        print("\n")
 
-    params.flat[...] = optres['x']
+    params.flat[...] = optres["x"]
 
     result = {
         "error": optres["fun"],
@@ -89,25 +89,25 @@ def sciopt(optable, *args,
     return result
 
 def demoScioptPowell():
-    """Demonstration of Powell's method for gradient-free optimization.
+    """Demonstration of Powell"s method for gradient-free optimization.
     """
-    rosen = tests.Rosen(optimFunc=sciopt, method='Powell', verbose=True, options={'maxfev': 1000})
+    rosen = tests.Rosen(optimFunc=sciopt, method="Powell", verbose=True, options={"maxfev": 1000})
     rosen.plot()
 
 def demoScioptBFGS():
     """Demonstration of BFGS optimization.
     """
-    rosen = tests.Rosen(optimFunc=sciopt, method='BFGS', verbose=True)
+    rosen = tests.Rosen(optimFunc=sciopt, method="BFGS", verbose=True)
     rosen.plot()
 
 def demoScioptCG():
     """Demonstration of conjugate gradient optimization with line search.
     """
-    rosen = tests.Rosen(optimFunc=sciopt, method='CG', verbose=True)
+    rosen = tests.Rosen(optimFunc=sciopt, method="CG", verbose=True)
     rosen.plot()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     #demoScioptPowell()
     #demoScioptBFGS()
     demoScioptCG()

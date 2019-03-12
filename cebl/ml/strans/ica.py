@@ -51,7 +51,7 @@ class IndependentComponentsAnalysis(STrans):
           publisher={MIT Press}
         }
     """
-    def __init__(self, s, lags=0, kurtosis='adapt',
+    def __init__(self, s, lags=0, kurtosis="adapt",
                  learningRate=1.5, tolerance=1.0e-6, maxIter=10000,
                  callback=None, verbose=False, *args, **kwargs):
         STrans.__init__(self, s, lags=lags, *args, **kwargs)
@@ -74,11 +74,11 @@ class IndependentComponentsAnalysis(STrans):
         while True:
             y = s.dot(self.w)
 
-            if kurtosis == 'sub':
+            if kurtosis == "sub":
                 k = -1
-            elif kurtosis == 'super':
+            elif kurtosis == "super":
                 k = 1
-            elif kurtosis == 'adapt':
+            elif kurtosis == "adapt":
                 #k = np.sign(np.mean(1.0-util.tanh(y)**2, axis=0) *
                 #            np.mean(y**2, axis=0) -
                 #            np.mean(y*util.tanh(y), axis=0))
@@ -94,27 +94,27 @@ class IndependentComponentsAnalysis(STrans):
             wtol = np.max(np.abs(wPrev-self.w))
 
             if verbose:
-                print('%d %6f' % (iteration, wtol))
+                print("%d %6f" % (iteration, wtol))
 
             if callback is not None:
                 callback(iteration, wtol)
 
             if wtol < tolerance:
-                self.reason = 'tolerance'
+                self.reason = "tolerance"
                 break
 
             elif np.max(np.abs(self.w)) > 1.0e100:
-                self.reason = 'diverge'
+                self.reason = "diverge"
                 break
 
             if iteration >= maxIter:
-                self.reason = 'maxiter'
+                self.reason = "maxiter"
                 break
 
             iteration += 1
 
         if verbose:
-            print('Reason: ' + self.reason)
+            print("Reason: " + self.reason)
 
         self.w /= np.sqrt(np.sum(self.w**2, axis=0))
         self.wInv[...] = np.linalg.pinv(self.w)
@@ -135,33 +135,33 @@ def demoICA():
 
     sMixed = s.dot(m)
 
-    icaFilt = ICA(sMixed, kurtosis='sub', verbose=True)
+    icaFilt = ICA(sMixed, kurtosis="sub", verbose=True)
 
     fig = plt.figure()
 
     axOrig = fig.add_subplot(4, 1, 1)
     axOrig.plot(s+util.colsep(s))
-    axOrig.set_title('Unmixed Signal')
+    axOrig.set_title("Unmixed Signal")
     axOrig.autoscale(tight=True)
 
     axMixed = fig.add_subplot(4, 1, 2)
     axMixed.plot(sMixed+util.colsep(sMixed))
-    axMixed.set_title('Mixed Signal (random transform)')
+    axMixed.set_title("Mixed Signal (random transform)")
     axMixed.autoscale(tight=True)
 
     axUnmixed = fig.add_subplot(4, 1, 3)
     icaFilt.plotTransform(sMixed, ax=axUnmixed)
-    axUnmixed.set_title('ICA Components')
+    axUnmixed.set_title("ICA Components")
     axUnmixed.autoscale(tight=True)
 
     axCleaned = fig.add_subplot(4, 1, 4)
     icaFilt.plotFilter(sMixed, comp=(0, 1,), ax=axCleaned)
-    axCleaned.set_title('Cleaned Signal (First two components kept)')
+    axCleaned.set_title("Cleaned Signal (First two components kept)")
     axCleaned.autoscale(tight=True)
 
     fig.tight_layout()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     demoICA()
     plt.show()

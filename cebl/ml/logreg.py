@@ -148,20 +148,20 @@ def demoLogisticRegression1d():
     c2Probs = model.probs(c2)
     c3Probs = model.probs(c3)
 
-    print('c1:')
+    print("c1:")
     print(model.label(c1))
-    print('c2:')
+    print("c2:")
     print(model.label(c2))
-    print('c3:')
+    print("c3:")
     print(model.label(c3))
 
     x = np.linspace(-2.0, 4.0, 500)
     xProbs = model.probs(x)
 
     plt.plot(x, xProbs, linewidth=2)
-    plt.scatter(c1, np.zeros_like(c1), color='blue')
-    plt.scatter(c2, np.zeros_like(c2), color='green')
-    plt.scatter(c3, np.zeros_like(c3), color='red')
+    plt.scatter(c1, np.zeros_like(c1), color="blue")
+    plt.scatter(c2, np.zeros_like(c2), color="green")
+    plt.scatter(c3, np.zeros_like(c3), color="red")
 
 def demoLogisticRegression2d():
     # covariance matrix for each training class
@@ -190,7 +190,7 @@ def demoLogisticRegression2d():
     model = LogisticRegression(classData=classData, verbose=True)
         #optimFunc=optim.rprop, accuracy=0.0, precision=0.0, maxIter=100, penalty=0.3)
     #print(model.weights)
-    #plt.imshow(np.abs(model.weights), interpolation='none')
+    #plt.imshow(np.abs(model.weights), interpolation="none")
     #plt.colorbar()
 
     # find class labels
@@ -198,16 +198,16 @@ def demoLogisticRegression2d():
     greenLabel = model.label(green)
     blueLabel = model.label(blue)
 
-    print('red labels\n-------')
+    print("red labels\n-------")
     print(redLabel)
-    print('\ngreen labels\n-------')
+    print("\ngreen labels\n-------")
     print(greenLabel)
-    print('\nblue labels\n-------')
+    print("\nblue labels\n-------")
     print(blueLabel)
 
-    print('ca:', model.ca(classData))
-    print('bca:', model.bca(classData))
-    print('confusion:\n', model.confusion(classData))
+    print("ca:", model.ca(classData))
+    print("bca:", model.bca(classData))
+    print("confusion:\n", model.confusion(classData))
 
     # first figure shows training data and class intersections
     fig = plt.figure()
@@ -238,12 +238,12 @@ def demoLogisticRegression2d():
     diffRG = pRed   - pGreen
     diffRB = pRed   - pBlue
     diffGB = pGreen - pBlue
-    ax.contour(x, y, diffRG, colors='black', levels=(0,))
-    ax.contour(x, y, diffRB, colors='black', levels=(0,))
-    ax.contour(x, y, diffGB, colors='black', levels=(0,))
+    ax.contour(x, y, diffRG, colors="black", levels=(0,))
+    ax.contour(x, y, diffRB, colors="black", levels=(0,))
+    ax.contour(x, y, diffGB, colors="black", levels=(0,))
 
     # second figure shows 3d plots of probability densities
-    ax = fig.add_subplot(2, 2, 2, projection='3d')
+    ax = fig.add_subplot(2, 2, 2, projection="3d")
 
     # straight class colors for suface plots
     color = np.reshape([pRed, pGreen, pBlue], (3, x.shape[0], x.shape[1]))
@@ -265,30 +265,30 @@ def demoLogisticRegression2d():
     #surf = ax.plot_surface(x, y, pMax, cmap=matplotlib.cm.jet, linewidth=0)
     surf = ax.plot_surface(x, y, pMax, facecolors=colorFlip,
                            linewidth=0.02, shade=True)
-    surf.set_edgecolor('black') # add edgecolor back in, bug?
+    surf.set_edgecolor("black") # add edgecolor back in, bug?
 
     # third figure shows contours and color image of probability densities
     ax = fig.add_subplot(2, 2, 3)
 
     #ax.pcolor(x, y, pMax)
-    ax.imshow(colorFlip, origin='lower',
-              extent=(mn[0], mx[0], mn[1], mx[1]), aspect='auto')
+    ax.imshow(colorFlip, origin="lower",
+              extent=(mn[0], mx[0], mn[1], mx[1]), aspect="auto")
 
     # contours
     nLevel = 4
-    cs = ax.contour(x, y, pMax, colors='black',
+    cs = ax.contour(x, y, pMax, colors="black",
                     levels=np.linspace(np.min(pMax), np.max(pMax), nLevel))
     cs.clabel(fontsize=6)
 
     # fourth figure
-    ax = fig.add_subplot(2, 2, 4, projection='3d')
+    ax = fig.add_subplot(2, 2, 4, projection="3d")
 
     labels = model.label(z)
     lMax = np.reshape(labels, x.shape)
 
     surf = ax.plot_surface(x, y, lMax, facecolors=colorFlip,
                            linewidth=0.02)#, antialiased=False)
-    surf.set_edgecolor('black')
+    surf.set_edgecolor("black")
 
 
 class LogisticRegressionElastic(LogisticRegression):
@@ -350,6 +350,6 @@ class LGRE(LogisticRegressionElastic):
     pass
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     demoLogisticRegression2d()
     plt.show()

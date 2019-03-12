@@ -19,7 +19,7 @@ from .ddembed import *
 
 class ConvolutionalNetwork(Classifier, optim.Optable):
     def __init__(self, classData, convs=((8,16), (16,8)), nHidden=8,
-                 poolSize=2, poolMethod='average',
+                 poolSize=2, poolMethod="average",
                  transFunc=transfer.lecun, weightInitFunc=pinit.lecun,
                  penalty=None, elastic=1.0, optimFunc=optim.scg, **kwargs):
         Classifier.__init__(self, util.segmat(classData[0]).shape[2], len(classData))
@@ -32,8 +32,8 @@ class ConvolutionalNetwork(Classifier, optim.Optable):
         self.nHidden = nHidden
 
         self.poolMethod = poolMethod.lower()
-        if not self.poolMethod in ('stride', 'average'):
-            raise RuntimeError('Invalid poolMethod %s.' % str(self.poolMethod))
+        if not self.poolMethod in ("stride", "average"):
+            raise RuntimeError("Invalid poolMethod %s." % str(self.poolMethod))
 
         self.poolSize = poolSize if util.isiterable(poolSize) \
                 else (poolSize,) * self.nConvLayers
@@ -50,10 +50,10 @@ class ConvolutionalNetwork(Classifier, optim.Optable):
         ravelLen = util.segmat(classData[0]).shape[1] # nObs in first seg
 
         for width, poolSize in zip(self.convWidths, self.poolSize):
-            if self.poolMethod == 'stride':
+            if self.poolMethod == "stride":
                 ravelLen = int(np.ceil((ravelLen - width + 1) / float(poolSize)))
 
-            elif self.poolMethod == 'average':
+            elif self.poolMethod == "average":
                 ravelLen = (ravelLen - width + 1) // poolSize
 
         if self.nHidden is None:
@@ -107,7 +107,7 @@ class ConvolutionalNetwork(Classifier, optim.Optable):
 
     def train(self, classData, optimFunc, **kwargs):
         x, g = label.indicatorsFromList(classData)
-        x = np.require(x, requirements=['O', 'C'])
+        x = np.require(x, requirements=["O", "C"])
         self.trainResult = optimFunc(self, x=x, g=g, **kwargs)
 
     def parameters(self):
@@ -127,11 +127,11 @@ class ConvolutionalNetwork(Classifier, optim.Optable):
                 c = util.timeEmbed(c, lags=width-1, axis=1)
                 c = phi(util.segdot(c, cw[:-1]) + cw[-1])
 
-            elif self.poolMethod == 'stride':
+            elif self.poolMethod == "stride":
                 c = util.timeEmbed(c, lags=width-1, axis=1, stride=poolSize)
                 c = util.segdot(c, cw[:-1]) + cw[-1]
 
-            elif self.poolMethod == 'average':
+            elif self.poolMethod == "average":
                 c = util.timeEmbed(c, lags=width-1, axis=1)
                 c = phi(util.segdot(c, cw[:-1]) + cw[-1])
                 c = util.accum(c, poolSize, axis=1) / poolSize
@@ -147,7 +147,7 @@ class ConvolutionalNetwork(Classifier, optim.Optable):
         c = self.evalConvs(x)[-1]
 
         # flatten to fully-connected
-        c = c.reshape((c.shape[0], -1), order='F')
+        c = c.reshape((c.shape[0], -1), order="F")
 
         # evaluate hidden and visible layers
         if self.nHidden is not None:
@@ -233,10 +233,10 @@ class ConvolutionalNetwork(Classifier, optim.Optable):
             if poolSize == 1:
                 c = util.timeEmbed(c, lags=width-1, axis=1)
 
-            elif self.poolMethod == 'stride':
+            elif self.poolMethod == "stride":
                 c = util.timeEmbed(c, lags=width-1, axis=1, stride=poolSize)
 
-            elif self.poolMethod == 'average':
+            elif self.poolMethod == "average":
                 c = util.timeEmbed(c, lags=width-1, axis=1)
 
             c1 = util.bias(c)
@@ -251,11 +251,11 @@ class ConvolutionalNetwork(Classifier, optim.Optable):
             if poolSize == 1:
                 pass
 
-            elif self.poolMethod == 'average':
+            elif self.poolMethod == "average":
                 c = util.accum(c, poolSize, axis=1) / poolSize
 
         # flatten to fully-connected
-        c = c.reshape((c.shape[0], -1), order='F')
+        c = c.reshape((c.shape[0], -1), order="F")
         c1 = util.bias(c)
 
         # evaluate hidden and visible layers
@@ -294,7 +294,7 @@ class ConvolutionalNetwork(Classifier, optim.Optable):
             delta = delta.dot(self.hw[:-1].T)
 
         # unflatten deltas back to convolution
-        delta = delta.reshape((delta.shape[0], -1, self.nConvHiddens[-1]), order='F')
+        delta = delta.reshape((delta.shape[0], -1, self.nConvHiddens[-1]), order="F")
 
         widths = list(self.convWidths[1:]) + [None,]
 
@@ -307,7 +307,7 @@ class ConvolutionalNetwork(Classifier, optim.Optable):
             if poolSize == 1:
                 pass
 
-            elif self.poolMethod == 'average':
+            elif self.poolMethod == "average":
                 deltaPool = np.empty_like(cPrime)
                 deltaPool[:,:delta.shape[1]*poolSize] = \
                     delta.repeat(poolSize, axis=1) / poolSize
@@ -323,13 +323,13 @@ class ConvolutionalNetwork(Classifier, optim.Optable):
             cgs[l][...] = c1f.T.dot(deltaf)
             cgs[l] += self.penaltyGradient(l)
 
-            if l > 0: # won't propigate back to inputs
+            if l > 0: # won"t propigate back to inputs
                 delta = util.segdot(delta, self.cws[l][:-1].T)
 
                 if poolSize == 1:
                     pass
 
-                elif self.poolMethod == 'stride':
+                elif self.poolMethod == "stride":
                     deltaPoolShape = list(delta.shape)
                     deltaPoolShape[1] *= poolSize
                     deltaPool = np.zeros(deltaPoolShape, dtype=delta.dtype)
@@ -421,45 +421,45 @@ def demoCN():
     testData = standardizer.apply(testData)
 
     model = CN(trainData, convs=((2,11),(4,9),(6,7)), nHidden=None,
-               poolSize=2, poolMethod='average', verbose=True,
+               poolSize=2, poolMethod="average", verbose=True,
                optimFunc=optim.scg, maxIter=1000, transFunc=transfer.lecun,
                precision=1.0e-16, accuracy=0.0, pTrace=True, eTrace=True)
 
-    print('Training Performance:')
-    print('=======')
-    print('Labels: ', model.labelKnown(trainData))
-    print('CA:     ', model.ca(trainData))
-    print('BCA:    ', model.bca(trainData))
-    print('AUC:    ', model.auc(trainData))
+    print("Training Performance:")
+    print("=======")
+    print("Labels: ", model.labelKnown(trainData))
+    print("CA:     ", model.ca(trainData))
+    print("BCA:    ", model.bca(trainData))
+    print("AUC:    ", model.auc(trainData))
     print()
-    print('Test Performance:')
-    print('=======')
-    print('Labels: ', model.labelKnown(testData))
-    print('CA:     ', model.ca(testData))
-    print('BCA:    ', model.bca(testData))
-    print('AUC:    ', model.auc(testData))
+    print("Test Performance:")
+    print("=======")
+    print("Labels: ", model.labelKnown(testData))
+    print("CA:     ", model.ca(testData))
+    print("BCA:    ", model.bca(testData))
+    print("AUC:    ", model.auc(testData))
     print()
 
     nCol = max(model.nConvLayers, 3)
 
     fig = plt.figure(figsize=(20,6))
     axSigs = fig.add_subplot(3,nCol, 1)
-    axSigs.plot(x, trainData[0][0].T.squeeze(), color='blue', linewidth=2)#, label=r'$\mathbf{sin}(x)$')
-    axSigs.plot(x, trainData[0].T.squeeze(), color='blue', alpha=0.1, linewidth=2)
-    axSigs.plot(x, 10.0+trainData[1][0].T.squeeze(), color='red', linewidth=2)#, label=r'$\mathbf{sin}(2x)$')
-    axSigs.plot(x, 10.0+trainData[1].T.squeeze(), color='red', alpha=0.1, linewidth=2)
-    axSigs.set_title('')
-    axSigs.set_xlabel('Time')
-    axSigs.set_ylabel('Signal')
+    axSigs.plot(x, trainData[0][0].T.squeeze(), color="blue", linewidth=2)#, label=r"$\mathbf{sin}(x)$")
+    axSigs.plot(x, trainData[0].T.squeeze(), color="blue", alpha=0.1, linewidth=2)
+    axSigs.plot(x, 10.0+trainData[1][0].T.squeeze(), color="red", linewidth=2)#, label=r"$\mathbf{sin}(2x)$")
+    axSigs.plot(x, 10.0+trainData[1].T.squeeze(), color="red", alpha=0.1, linewidth=2)
+    axSigs.set_title("")
+    axSigs.set_xlabel("Time")
+    axSigs.set_ylabel("Signal")
     #axSigs.legend()
     axSigs.autoscale(tight=True)
 
     axETrace = fig.add_subplot(3,nCol, 2)
-    eTrace = np.array(model.trainResult['eTrace'])
+    eTrace = np.array(model.trainResult["eTrace"])
     axETrace.plot(eTrace)
 
     axPTrace = fig.add_subplot(3,nCol, 3)
-    pTrace = np.array(model.trainResult['pTrace'])
+    pTrace = np.array(model.trainResult["pTrace"])
     axPTrace.plot(pTrace)
 
     cs1 = model.evalConvs(trainData[0])
@@ -469,8 +469,8 @@ def demoCN():
         c1 = cs1[i][0,:,:]
         c2 = cs2[i][0,:,:]
         sep = util.colsep(np.vstack((c1,c2)))
-        axConvs.plot(c1+sep, color='blue', linewidth=2, alpha=0.25)
-        axConvs.plot(c2+sep, color='red', linewidth=2, alpha=0.25)
+        axConvs.plot(c1+sep, color="blue", linewidth=2, alpha=0.25)
+        axConvs.plot(c2+sep, color="red", linewidth=2, alpha=0.25)
         #axConvs.set_xlim(0.0, 120)
 
         axRespon = fig.add_subplot(3,nCol, 2*nCol+1+i)
@@ -479,7 +479,7 @@ def demoCN():
         responses = np.array(responses)
         axRespon.plot(freqs.T, np.abs(responses).T)
 
-    print('nParams: ', model.parameters().size)
+    print("nParams: ", model.parameters().size)
 
     #for l,cw in enumerate(model.cws):
     #    plt.figure()
@@ -488,14 +488,14 @@ def demoCN():
 
     #plt.figure()
     #plt.hist(model.hw.ravel())
-    #plt.title('hw')
+    #plt.title("hw")
 
     #plt.figure()
     #plt.hist(model.vw.ravel())
-    #plt.title('vw')
+    #plt.title("vw")
 
     #fig.tight_layout()
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     demoCN()
     plt.show()

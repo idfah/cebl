@@ -30,7 +30,7 @@ class Classifier:
             classData:  Training data as a list of numpy arrays with shape
                         (nCls,nObs[,nIn]).
         """
-        raise NotImplementedError('train not implemented.')
+        raise NotImplementedError("train not implemented.")
 
     def discrim(self, x, *args, **kwargs):
         """Discriminant function for a classifier.  This method is used to
@@ -70,17 +70,17 @@ class Classifier:
 
         Notes:
             If a classifier does not follow a probabilistic model,
-            it can simple return 1's for positive labels and zeros
+            it can simple return 1"s for positive labels and zeros
             everywhere else.
         """
-        raise NotImplementedError('probs not implemented.')
+        raise NotImplementedError("probs not implemented.")
 
     def probsKnown(self, classData, *args, **kwargs):
         """Assign probabilities to data with known class membership.
         """
         return [self.probs(cls, *args, **kwargs) for cls in classData]
 
-    def label(self, x, *args, method='single', **kwargs):
+    def label(self, x, *args, method="single", **kwargs):
         """Assign class labels to novel data.
 
         Args:
@@ -96,16 +96,16 @@ class Classifier:
 
         method = method.lower()
 
-        if method == 'single':
+        if method == "single":
             return self.labelSingle(x, *args, **kwargs)
-        elif method == 'vote':
+        elif method == "vote":
             return self.labelVote(x, *args, **kwargs)
-        elif method == 'intersect':
+        elif method == "intersect":
             return self.labelIntersect(x, *args, **kwargs)
-        elif method == 'union':
+        elif method == "union":
             return self.labelUnion(x, *args, **kwargs)
         else:
-            raise RuntimeError('Unknown method.')
+            raise RuntimeError("Unknown method.")
 
     def labelSingle(self, x, *args, **kwargs):
         dv = self.discrim(x, *args, **kwargs)

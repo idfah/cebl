@@ -6,11 +6,11 @@ from .scg import scg
 def minibatch(optable, x, g, batchSize=10, maxRound=10,
               maxTotalIter=np.inf, pTrace=False, eTrace=False,
               miniOptimFunc=scg, verbose=0, *args, **kwargs):
-    '''
+    """
     only works for supervised problems, must have x and g
 
-    args and kwargs are passed to miniOptimFunc, doesn't pass extra args to optable.error
-    '''
+    args and kwargs are passed to miniOptimFunc, doesn"t pass extra args to optable.error
+    """
     # make sure x and g are numpy arrays
     x = np.asarray(x)
     g = np.asarray(g)
@@ -49,11 +49,11 @@ def minibatch(optable, x, g, batchSize=10, maxRound=10,
     done = False
     while not done:
         if verbose > 0:
-            print('=======')
-            print('iterations: %d' % totalIter)
-            print('error: %.5f' % optable.error(x=x, g=g))
-            print('round: %d' % curRound)
-            print('=======')
+            print("=======")
+            print("iterations: %d" % totalIter)
+            print("error: %.5f" % optable.error(x=x, g=g))
+            print("round: %d" % curRound)
+            print("=======")
 
         # start index into current minibatch
         start = 0
@@ -67,12 +67,12 @@ def minibatch(optable, x, g, batchSize=10, maxRound=10,
         curBatch = 0
         while True:
             if verbose > 0:
-                print('minibatch: %d' % curBatch)
+                print("minibatch: %d" % curBatch)
 
             # end index into current minibatch
             end = start + batchSize
 
-            # don't process last minibatch
+            # don"t process last minibatch
             # if smaller than batchSize
             if end > nObs:
                 break
@@ -90,16 +90,16 @@ def minibatch(optable, x, g, batchSize=10, maxRound=10,
 
             # keep parameter history if requested
             if pTrace:
-                #paramTrace += miniResult['pTrace']
+                #paramTrace += miniResult["pTrace"]
                 paramTrace.append(optable.parameters().copy())
 
             # keep error function history if requested
             if eTrace:
-                #errorTrace += miniResult['eTrace']
+                #errorTrace += miniResult["eTrace"]
                 errorTrace.append(optable.error(x=x, g=g))
 
             # increment total iterations
-            totalIter += miniResult['iteration']
+            totalIter += miniResult["iteration"]
 
             # increment batch counters
             curBatch += 1
@@ -107,7 +107,7 @@ def minibatch(optable, x, g, batchSize=10, maxRound=10,
 
             # terminate if maximum total iterations reached
             if totalIter >= maxTotalIter:
-                reason = 'maxiter'
+                reason = "maxiter"
                 done = True
                 break
 
@@ -119,13 +119,13 @@ def minibatch(optable, x, g, batchSize=10, maxRound=10,
 
         # terminate if maximum total rounds is reached
         if curRound >= maxRound:
-            reason = 'maxround'
+            reason = "maxround"
             done = True
 
     if verbose > 0:
-        print('reason: %s' % reason)
-        print('round: %d' % curRound)
-        print('iterations: %d' % totalIter)
+        print("reason: %s" % reason)
+        print("round: %d" % curRound)
+        print("iterations: %d" % totalIter)
 
     # save result into a dictionary
     result = {

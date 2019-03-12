@@ -88,7 +88,7 @@ def demoSharpen():
     ss = np.sin(0.2*t)
     #s = (np.vstack((s3, s1+ss, s1+ss, s1+ss, s2+ss, s2+ss, s2, s2, s2, s3, s3, s3))).T
     s = (np.vstack((s1+ss, s1+ss, s1+ss, s2+ss, s2+ss, s2, s2, s2, s3, s3, s3))).T
-    colors = ['blue',]*3 + ['orange',]*2 + ['green',]*3 + ['red',]*3
+    colors = ["blue",]*3 + ["orange",]*2 + ["green",]*3 + ["red",]*3
 
     sepDist = 3.0
     sep = -np.arange(s.shape[1])*sepDist
@@ -103,14 +103,14 @@ def demoSharpen():
     axSig.plot(t, s+sep)
     axSig.set_xlim(xlim)
     axSig.set_ylim(ylim)
-    axSig.set_title('Orignial')
+    axSig.set_title("Orignial")
 
     axCar = fig.add_subplot(1, 3, 2)
     axCar.set_color_cycle(colors)
     axCar.plot(t, commonAverageReference(s)+sep)
     axCar.set_xlim(xlim)
     axCar.set_ylim(ylim)
-    axCar.set_title('Common Average Reference')
+    axCar.set_title("Common Average Reference")
 
     axGaus = fig.add_subplot(1, 3, 3)
     axGaus.set_color_cycle(colors)
@@ -118,17 +118,17 @@ def demoSharpen():
     axGaus.plot(t, sharpen(s, radius=1.0)+sep)
     axGaus.set_xlim(xlim)
     axGaus.set_ylim(ylim)
-    axGaus.set_title('Gaussian Sharpen')
+    axGaus.set_title("Gaussian Sharpen")
 
     #axLanc = fig.add_subplot(1, 3, 3)
     #axLanc.plot(t, sharpen(s, kernelFunc=util.lanczos, freq=0.99, radius=3.0, normalize=False)+sep)
     #axLanc.set_xlim(xlim)
     #axLanc.set_ylim(ylim)
-    #axLanc.set_title('Lanczos Sharpen')
+    #axLanc.set_title("Lanczos Sharpen")
 
     fig.tight_layout()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     demoSharpen()
     plt.show()

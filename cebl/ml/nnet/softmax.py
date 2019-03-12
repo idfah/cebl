@@ -345,9 +345,9 @@ def demoFNS2d():
     ##            batchSize=15, maxRound=5, maxIter=5,
     ##            transFunc=transfer.lecun, precision=1.0e-10,
     ##            verbose=1)
-    ##print('ca:', model.ca(classData))
-    ##print('bca:', model.bca(classData))
-    ##print('confusion:\n', model.confusion(classData))
+    ##print("ca:", model.ca(classData))
+    ##print("bca:", model.bca(classData))
+    ##print("confusion:\n", model.confusion(classData))
     ##model.train(classData, optimFunc=optim.scg,
     ##            maxIter=10, precision=1.0e-10, verbose=True)
 
@@ -360,21 +360,21 @@ def demoFNS2d():
     print(model.probs(classData[1]).dtype)
     print(model.probs(classData[2]).dtype)
 
-    print('red labels\n-------')
+    print("red labels\n-------")
     print(redLabel)
-    print('\ngreen labels\n-------')
+    print("\ngreen labels\n-------")
     print(greenLabel)
-    print('\nblue labels\n-------')
+    print("\nblue labels\n-------")
     print(blueLabel)
 
-    print('ca:', model.ca(classData))
-    print('bca:', model.bca(classData))
-    print('confusion:\n', model.confusion(classData))
+    print("ca:", model.ca(classData))
+    print("bca:", model.bca(classData))
+    print("confusion:\n", model.confusion(classData))
 
     # first figure shows training data and class intersections
     fig = plt.figure()
     ax = fig.add_subplot(2, 2, 1)
-    ax.set_title('Class Data')
+    ax.set_title("Class Data")
 
     # training data
     ax.scatter(red[:,0], red[:,1],   color="red")
@@ -401,13 +401,13 @@ def demoFNS2d():
     diffRG = pRed   - pGreen
     diffRB = pRed   - pBlue
     diffGB = pGreen - pBlue
-    ##ax.contour(x, y, diffRG, colors='black', levels=(0,))
-    ##ax.contour(x, y, diffRB, colors='black', levels=(0,))
-    ##ax.contour(x, y, diffGB, colors='black', levels=(0,))
+    ##ax.contour(x, y, diffRG, colors="black", levels=(0,))
+    ##ax.contour(x, y, diffRB, colors="black", levels=(0,))
+    ##ax.contour(x, y, diffGB, colors="black", levels=(0,))
 
     # second figure shows 3d plots of probability densities
-    ax = fig.add_subplot(2, 2, 2, projection='3d')
-    ax.set_title('P(C = k)')
+    ax = fig.add_subplot(2, 2, 2, projection="3d")
+    ax.set_title("P(C = k)")
 
     # straight class colors for suface plots
     color = np.reshape([pRed, pGreen, pBlue], (3, x.shape[0], x.shape[1]))
@@ -427,33 +427,33 @@ def demoFNS2d():
     #surf = ax.plot_surface(x, y, pMax, cmap=matplotlib.cm.jet, linewidth=0)
     surf = ax.plot_surface(x, y, pMax, facecolors=colorFlip,
                            linewidth=0.02, shade=True)
-    surf.set_edgecolor('black') # add edgecolor back in, bug?
+    surf.set_edgecolor("black") # add edgecolor back in, bug?
 
     # third figure shows contours and color image of probability densities
     ax = fig.add_subplot(2, 2, 3)
-    ax.set_title('max_K P(C = k)')
+    ax.set_title("max_K P(C = k)")
 
     #ax.pcolor(x, y, pMax)
-    ax.imshow(colorFlip, origin='lower',
-              extent=(mn[0], mx[0], mn[1], mx[1]), aspect='auto')
+    ax.imshow(colorFlip, origin="lower",
+              extent=(mn[0], mx[0], mn[1], mx[1]), aspect="auto")
 
     # contours
     nLevel = 4
-    cs = ax.contour(x, y, pMax, colors='black',
+    cs = ax.contour(x, y, pMax, colors="black",
                     levels=np.linspace(np.min(pMax), np.max(pMax), nLevel))
     cs.clabel(fontsize=6)
 
     # fourth figure
-    ax = fig.add_subplot(2, 2, 4, projection='3d')
-    ax.set_title('argmax_K P(C = k)')
+    ax = fig.add_subplot(2, 2, 4, projection="3d")
+    ax.set_title("argmax_K P(C = k)")
 
     labels = model.label(z)
     lMax = np.reshape(labels, x.shape)
 
     surf = ax.plot_surface(x, y, lMax, facecolors=colorFlip,
                            linewidth=0.02)#, antialiased=False)
-    surf.set_edgecolor('black')
+    surf.set_edgecolor("black")
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     demoFNS2d()
     plt.show()

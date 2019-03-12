@@ -3,7 +3,7 @@
 
 import sys
 
-#if sys.platform.startswith('linux'):
+#if sys.platform.startswith("linux"):
 #    from .fasttanh import tanh
 #else:
 #    from numpy import tanh

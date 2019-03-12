@@ -206,11 +206,11 @@ def demoERNTXOR():
     g = np.array([int(xor(x[i-horizon], x[i-horizon-1])) if i > horizon
             else 0 for i in range(len(x))], dtype=np.float32)
 
-    #options = {'maxfev': 1000}
+    #options = {"maxfev": 1000}
     #net = ERN(x[None,...], g[None,...], nHidden=10,
     net = ERN((x[0:250],x[250:500]), (g[0:250],g[250:500]), nHidden=20,
                unrollSteps=unrollSteps, transient=transient,
-               #optimFunc=optim.sciopt, method='Powell',
+               #optimFunc=optim.sciopt, method="Powell",
                #optimFunc=optim.scg,
                #optimFunc=optim.pso, nParticles=20, vInit=0.01, momentum=0.85, pAttract=0.2, gAttract=0.6,
                #optimFunc=optim.alopex, stepInit=0.0001, tempIter=20,
@@ -265,9 +265,9 @@ def demoERNTXORPSO():
     for i,momentum in enumerate(momentums):
         for j,pAttract in enumerate(pAttracts):
             for k,gAttract in enumerate(gAttracts):
-                print('momentum: ', momentum)
-                print('pAttract: ', pAttract)
-                print('gAttract: ', gAttract)
+                print("momentum: ", momentum)
+                print("pAttract: ", pAttract)
+                print("gAttract: ", gAttract)
 
                 net = ERN(xTrain[None,...], gTrain[None,...], nHidden=32,
                            unrollSteps=unrollSteps, transient=transient,
@@ -275,34 +275,34 @@ def demoERNTXORPSO():
                            momentum=momentum, pAttract=pAttract, gAttract=gAttract,
                            maxIter=500, accuracy=0.005, precision=0.0, verbose=False)
 
-                its[i,j,k] = net.trainResult['iteration']
-                ers[i,j,k] = net.trainResult['error']
-                print('Error: ', ers[i,j,k])
-                print('=======')
+                its[i,j,k] = net.trainResult["iteration"]
+                ers[i,j,k] = net.trainResult["error"]
+                print("Error: ", ers[i,j,k])
+                print("=======")
 
     bi, bj, bk = np.unravel_index(np.argmin(ers), ers.shape)
-    print('=======')
-    print('Best: ', ers[bi,bj,bk], momentums[bi], pAttracts[bj], gAttracts[bk])
-    print('=======')
+    print("=======")
+    print("Best: ", ers[bi,bj,bk], momentums[bi], pAttracts[bj], gAttracts[bk])
+    print("=======")
 
     for i,momentum in enumerate(momentums):
         fig = plt.figure()
         ax = fig.add_subplot(1,1,1)
-        im = ax.imshow(ers[i], origin='lowerleft')#, interpolation='none')
+        im = ax.imshow(ers[i], origin="lowerleft")#, interpolation="none")
         fig.colorbar(im)
-        ax.set_title('ers momentum: %.2f' % momentum)
-        ax.set_xlabel('pAttract')
-        ax.set_ylabel('gAttract')
+        ax.set_title("ers momentum: %.2f" % momentum)
+        ax.set_xlabel("pAttract")
+        ax.set_ylabel("gAttract")
 
     for i,momentum in enumerate(momentums):
         fig = plt.figure()
         ax = fig.add_subplot(1,1,1)
-        im = ax.imshow(its[i], origin='lowerleft')#, interpolation='none')
+        im = ax.imshow(its[i], origin="lowerleft")#, interpolation="none")
         fig.colorbar(im)
-        ax.set_title('its momentum: %.2f' % momentum)
-        ax.set_xlabel('pAttract')
-        ax.set_ylabel('gAttract')
+        ax.set_title("its momentum: %.2f" % momentum)
+        ax.set_xlabel("pAttract")
+        ax.set_ylabel("gAttract")
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     demoERNTXOR()
     plt.show()

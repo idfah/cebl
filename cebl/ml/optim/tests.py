@@ -55,14 +55,14 @@ class Quad():
 
         fig = plt.figure()
         axCont = fig.add_subplot(1,1,1)
-        axCont.contour(x, y, zz, 20, color='black')
-        #axCont.scatter(0.0, 0.0, color='black', marker='o', s=300, linewidth=3)
+        axCont.contour(x, y, zz, 20, color="black")
+        #axCont.scatter(0.0, 0.0, color="black", marker="o", s=300, linewidth=3)
 
-        paramTrace = np.array(self.trainResult['pTrace'])
-        axCont.plot(paramTrace[:,0], paramTrace[:,1], color='red', marker='o', linewidth=2)
+        paramTrace = np.array(self.trainResult["pTrace"])
+        axCont.plot(paramTrace[:,0], paramTrace[:,1], color="red", marker="o", linewidth=2)
 
-        axCont.set_xlabel(r'$w_1$')
-        axCont.set_ylabel(r'$w_2$')
+        axCont.set_xlabel(r"$w_1$")
+        axCont.set_ylabel(r"$w_2$")
 
         fig.tight_layout()
 
@@ -122,18 +122,18 @@ class Rosen():
         zz = values.reshape((xx.shape[0], yy.shape[1]))
 
         fig = plt.figure(figsize=(12,6))
-        axSurf = fig.add_subplot(1,2,1, projection='3d')
+        axSurf = fig.add_subplot(1,2,1, projection="3d")
 
         surf = axSurf.plot_surface(xx, yy, zz, linewidth=1.0, cmap=pltcm.jet)
-        surf.set_edgecolor('black')
+        surf.set_edgecolor("black")
 
         axCont = fig.add_subplot(1,2,2)
-        axCont.contour(x, y, zz, 40, color='black')
-        axCont.scatter(self.a, self.a**2, color='black', marker='o', s=400, linewidth=3)
-        axCont.scatter(*self.solution, color='red', marker='x', s=400, linewidth=3)
+        axCont.contour(x, y, zz, 40, color="black")
+        axCont.scatter(self.a, self.a**2, color="black", marker="o", s=400, linewidth=3)
+        axCont.scatter(*self.solution, color="red", marker="x", s=400, linewidth=3)
 
-        paramTrace = np.array(self.trainResult['pTrace'])
-        axCont.plot(paramTrace[:,0], paramTrace[:,1], color='red', linewidth=2)
+        paramTrace = np.array(self.trainResult["pTrace"])
+        axCont.plot(paramTrace[:,0], paramTrace[:,1], color="red", linewidth=2)
 
         fig.tight_layout()
 
@@ -182,20 +182,20 @@ class Ackley():
         zz = values.reshape((xx.shape[0], yy.shape[1]))
 
         fig = plt.figure()
-        axSurf = fig.add_subplot(1,2,1, projection='3d')
+        axSurf = fig.add_subplot(1,2,1, projection="3d")
 
         surf = axSurf.plot_surface(xx, yy, zz, linewidth=1.0, cmap=pltcm.jet)
-        surf.set_edgecolor('black')
+        surf.set_edgecolor("black")
 
         axCont = fig.add_subplot(1,2,2)
-        axCont.contour(x, y, zz, 40, color='black')
-        axCont.scatter(0.0, 0.0, color='black', marker='o', s=400, linewidth=3)
-        axCont.scatter(*self.solution, color='red', marker='x', s=400, linewidth=3)
+        axCont.contour(x, y, zz, 40, color="black")
+        axCont.scatter(0.0, 0.0, color="black", marker="o", s=400, linewidth=3)
+        axCont.scatter(*self.solution, color="red", marker="x", s=400, linewidth=3)
 
-        paramTrace = np.array(self.trainResult['pTrace'])
-        axCont.plot(paramTrace[:,0], paramTrace[:,1], color='red', linewidth=2)
+        paramTrace = np.array(self.trainResult["pTrace"])
+        axCont.plot(paramTrace[:,0], paramTrace[:,1], color="red", linewidth=2)
 
-if __name__ == '__main__':
-    test = Ackley(method='Powell', verbose=True)
+if __name__ == "__main__":
+    test = Ackley(method="Powell", verbose=True)
     test.plot()
     plt.show()

@@ -45,12 +45,12 @@ def pso(optable, *args,
     paramTrace = [np.vstack(pParams)]
 
     # termination reason
-    reason = ''
+    reason = ""
 
     iteration = 0
 
     if verbose:
-        print('%d %6f' % (iteration, gError))
+        print("%d %6f" % (iteration, gError))
 
     if callback is not None:
         callback(optable, iteration, paramTrace, errorTrace)
@@ -80,7 +80,7 @@ def pso(optable, *args,
         iteration += 1
 
         if verbose:
-            print('%d %3f %6f' % (iteration, np.max(pVeloc), gError))
+            print("%d %3f %6f" % (iteration, np.max(pVeloc), gError))
 
         if callback is not None:
             callback(optable, iteration, paramTrace, errorTrace)
@@ -95,22 +95,22 @@ def pso(optable, *args,
 
         # terminate if maximum iterations reached
         if iteration >= maxIter:
-            reason = 'maxiter'
+            reason = "maxiter"
             break
 
         # terminate if desired accuracy reached
         if gError < accuracy:
-            reason = 'accuracy'
+            reason = "accuracy"
             break
 
         # terminate if desired precision reached
         if np.abs(gError - gError) < precision:
-            reason = 'precision'
+            reason = "precision"
             break
 
         # terminate if the error function diverges
         if gError > divergeThresh:
-            reason = 'diverge'
+            reason = "diverge"
             break
 
     params[...] = gBest
@@ -150,23 +150,23 @@ def demoPSO():
     zz = values.reshape((xx.shape[0], yy.shape[1]))
 
     fig = plt.figure(figsize=(12, 6))
-    axSurf = fig.add_subplot(1, 2, 1, projection='3d')
+    axSurf = fig.add_subplot(1, 2, 1, projection="3d")
 
     surf = axSurf.plot_surface(xx, yy, zz, linewidth=1.0, cmap=pltcm.jet)
-    surf.set_edgecolor('black')
+    surf.set_edgecolor("black")
 
     axCont = fig.add_subplot(1, 2, 2)
-    axCont.contour(x, y, zz, 40, color='black')
-    axCont.scatter(rosen.a, rosen.a**2, color='black', marker='o', s=400, linewidth=3)
-    axCont.scatter(*rosen.solution, color='red', marker='x', s=400, linewidth=3)
+    axCont.contour(x, y, zz, 40, color="black")
+    axCont.scatter(rosen.a, rosen.a**2, color="black", marker="o", s=400, linewidth=3)
+    axCont.scatter(*rosen.solution, color="red", marker="x", s=400, linewidth=3)
 
-    paramTrace = np.array(rosen.trainResult['pTrace'])
+    paramTrace = np.array(rosen.trainResult["pTrace"])
     for i in range(paramTrace.shape[1]):
         axCont.plot(paramTrace[:,i:,0], paramTrace[:,i:,1],
             color=plt.cm.jet(i/float(paramTrace.shape[1])), linewidth=1)
 
     fig.tight_layout()
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     demoPSO()
     plt.show()

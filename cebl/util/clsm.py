@@ -10,13 +10,13 @@ def roc(classProbs):
     """Receiver operating characteristic.
     """
     if len(classProbs) > 2:
-        raise RuntimeError('roc is only valid for two-class problems.')
+        raise RuntimeError("roc is only valid for two-class problems.")
 
     probs = np.concatenate([cls[:,1] for cls in classProbs])
     labels = np.ones(probs.size, dtype=np.bool)
     labels[:classProbs[0].shape[0]] = False
 
-    idx = np.argsort(probs, kind='mergesort')[::-1]
+    idx = np.argsort(probs, kind="mergesort")[::-1]
     labels = labels[idx]
 
     # pylint: disable=singleton-comparison
@@ -32,7 +32,7 @@ def roc(classProbs):
 
 #def auc(classProbs):
 #    if len(classProbs) > 2:
-#        raise RuntimeError('auc is only valid for two-class problems.')
+#        raise RuntimeError("auc is only valid for two-class problems.")
 #
 #    fpr, tpr = roc(classProbs)
 #    return np.sum((fpr[1:] - fpr[:-1]) * tpr[1:])
@@ -41,7 +41,7 @@ def auc(classProbs):
     """Area under the roc curve.
     """
     if len(classProbs) > 2:
-        raise RuntimeError('auc is only implemented for two-class problems.')
+        raise RuntimeError("auc is only implemented for two-class problems.")
 
     denom = classProbs[0].shape[0]*classProbs[1].shape[0]
     if denom == 0:

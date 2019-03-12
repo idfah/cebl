@@ -57,7 +57,7 @@ def gini(y, g, normalize=True):
     """Gini coefficient.
     """
     if y.ndim > 1 or g.ndim > 1:
-        raise RuntimeError('Gini does not currently support more than one axis.')
+        raise RuntimeError("Gini does not currently support more than one axis.")
 
     if normalize:
         return gini(y, g, normalize=False) / gini(g, g, normalize=False)

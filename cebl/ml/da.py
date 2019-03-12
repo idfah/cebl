@@ -108,7 +108,7 @@ class QuadraticDiscriminantAnalysis(Classifier):
             #try:
             #    cvi = np.linalg.inv(cv)
             #except np.linalg.LinAlgError:
-            #    raise RuntimeError('Failed to invert covariance matrix, consider using shrinkage.')
+            #    raise RuntimeError("Failed to invert covariance matrix, consider using shrinkage.")
 
             try:
                 # pylint: disable=no-member
@@ -116,14 +116,14 @@ class QuadraticDiscriminantAnalysis(Classifier):
 
             except Exception as e:
                 raise RuntimeError(
-                    'Pseudo inversion of covariance matrix failed: ' + str(e))
+                    "Pseudo inversion of covariance matrix failed: " + str(e))
 
             self.invCovs.append(cvi)
 
             sign, logDet = np.linalg.slogdet(cv)
             if sign == 0:
                 raise RuntimeError(
-                    'Covariance matrix has zero determinant, consider using shrinkage.')
+                    "Covariance matrix has zero determinant, consider using shrinkage.")
 
             #self.intercepts[i] = logDet - 2.0*logPriors[i]
 
@@ -249,19 +249,19 @@ def demoQDA2d():
     greenLabel = model.label(green)
     blueLabel = model.label(blue)
 
-    print('red labels\n-------')
+    print("red labels\n-------")
     print(redLabel)
     print(redLabel.shape)
-    print('\ngreen labels\n-------')
+    print("\ngreen labels\n-------")
     print(greenLabel)
     print(greenLabel.shape)
-    print('\nblue labels\n-------')
+    print("\nblue labels\n-------")
     print(blueLabel)
     print(blueLabel.shape)
 
-    print('ca: ', model.ca(data))
-    print('bca: ', model.bca(data))
-    print('confusion:\n', model.confusion(data))
+    print("ca: ", model.ca(data))
+    print("bca: ", model.bca(data))
+    print("confusion:\n", model.confusion(data))
 
     # first figure shows training data and class intersections
     fig = plt.figure()
@@ -299,12 +299,12 @@ def demoQDA2d():
     diffRG = pRed   - pGreen
     diffRB = pRed   - pBlue
     diffGB = pGreen - pBlue
-    ax.contour(x, y, diffRG, colors='black', levels=(0,))
-    ax.contour(x, y, diffRB, colors='black', levels=(0,))
-    ax.contour(x, y, diffGB, colors='black', levels=(0,))
+    ax.contour(x, y, diffRG, colors="black", levels=(0,))
+    ax.contour(x, y, diffRB, colors="black", levels=(0,))
+    ax.contour(x, y, diffGB, colors="black", levels=(0,))
 
     # second figure shows 3d plots of probability densities
-    ax = fig.add_subplot(2, 2, 2, projection='3d')
+    ax = fig.add_subplot(2, 2, 2, projection="3d")
 
     # straight class colors for suface plots
     color = np.reshape([dRed, dGreen, dBlue], (3, x.shape[0], x.shape[1]))
@@ -323,10 +323,10 @@ def demoQDA2d():
     # probability density surface
     surf = ax.plot_surface(x, y, dMax, facecolors=colorFlip,
                            linewidth=0.02, shade=True)
-    surf.set_edgecolor('black') # add edgecolor back in, bug?
+    surf.set_edgecolor("black") # add edgecolor back in, bug?
 
     # third figure shows 3d plots of probabilities
-    ax = fig.add_subplot(2, 2, 3, projection='3d')
+    ax = fig.add_subplot(2, 2, 3, projection="3d")
 
     # straight class colors for suface plots
     color = np.reshape([pRed, pGreen, pBlue], (3, x.shape[0], x.shape[1]))
@@ -345,24 +345,24 @@ def demoQDA2d():
     # probability density surface
     surf = ax.plot_surface(x, y, pMax, facecolors=colorFlip,
                            linewidth=0.02, shade=True)
-    surf.set_edgecolor('black') # add edgecolor back in, bug?
+    surf.set_edgecolor("black") # add edgecolor back in, bug?
     """
     # third figure shows contours and color image of probability densities
     ax = fig.add_subplot(2, 2, 3)
 
     #ax.pcolor(x, y, pMax)
-    ax.imshow(colorFlip, origin='lower',
-              extent=(mn[0], mx[0], mn[1], mx[1]), aspect='auto')
+    ax.imshow(colorFlip, origin="lower",
+              extent=(mn[0], mx[0], mn[1], mx[1]), aspect="auto")
 
     # contours
     nLevel = 6
-    cs = ax.contour(x, y, pMax, colors='black',
+    cs = ax.contour(x, y, pMax, colors="black",
                     levels=np.linspace(np.min(pMax), np.max(pMax), nLevel))
     cs.clabel(fontsize=6)
     """
 
     # fourth figure
-    ax = fig.add_subplot(2, 2, 4, projection='3d')
+    ax = fig.add_subplot(2, 2, 4, projection="3d")
 
     labels = model.label(z)
     lMax = np.reshape(labels, x.shape)
@@ -370,7 +370,7 @@ def demoQDA2d():
     surf = ax.plot_surface(x, y, lMax, facecolors=colorFlip,
                            linewidth=0.02)#, antialiased=False)
     #surf.set_edgecolor(np.vstack(color))
-    surf.set_edgecolor('black')
+    surf.set_edgecolor("black")
 
     fig.tight_layout()
 
@@ -448,19 +448,19 @@ class LinearDiscriminantAnalysis(Classifier):
         #try:
         #    self.invCov = np.linalg.inv(self.avgCov)
         #except np.linalg.LinAlgError:
-        #    raise RuntimeError('Failed to invert covariance matrix, consider using shrinkage.')
+        #    raise RuntimeError("Failed to invert covariance matrix, consider using shrinkage.")
 
         try:
             # pylint: disable=no-member
             self.invCov = sp.linalg.pinvh(self.avgCov)
         except Exception as e:
             raise RuntimeError(
-                    'Pseudo inversion of covariance matrix failed: ' + str(e))
+                    "Pseudo inversion of covariance matrix failed: " + str(e))
 
         sign, self.logDet = np.linalg.slogdet(self.avgCov)
         if sign == 0:
             raise RuntimeError(
-                'Covariance matrix has zero determinant, consider using shrinkage.')
+                "Covariance matrix has zero determinant, consider using shrinkage.")
 
         # model coefficients
         # (ndim, nCls) = (ndim, ndim) x (ndim, nCls)
@@ -542,7 +542,7 @@ class LinearDiscriminantAnalysis(Classifier):
         return dens / dens.sum(axis=1)[:,None]
 
     # XXX: hack alert
-    # doesn't work for QDA or other algorithms where discrim is not comparable - idfah
+    # doesn"t work for QDA or other algorithms where discrim is not comparable - idfah
     # handles ties better since probs may be equal within precision but not discrims
     def auc(self, classData, *args, **kwargs):
         return util.auc(self.discrimKnown(classData, *args, **kwargs))
@@ -585,16 +585,16 @@ def demoLDA2d():
     greenLabel = model.label(green)
     blueLabel = model.label(blue)
 
-    print('red labels\n-------')
+    print("red labels\n-------")
     print(redLabel)
-    print('\ngreen labels\n-------')
+    print("\ngreen labels\n-------")
     print(greenLabel)
-    print('\nblue labels\n-------')
+    print("\nblue labels\n-------")
     print(blueLabel)
 
-    print('ca: ', model.ca(data))
-    print('bca: ', model.bca(data))
-    print('confusion:\n', model.confusion(data))
+    print("ca: ", model.ca(data))
+    print("bca: ", model.bca(data))
+    print("confusion:\n", model.confusion(data))
 
     # first figure shows training data and class intersections
     fig = plt.figure()
@@ -625,9 +625,9 @@ def demoLDA2d():
     diffRG = pRed - pGreen
     diffRB = pRed - pBlue
     diffGB = pGreen - pBlue
-    ax.contour(x, y, diffRG, colors='black', levels=(0,))
-    ax.contour(x, y, diffRB, colors='black', levels=(0,))
-    ax.contour(x, y, diffGB, colors='black', levels=(0,))
+    ax.contour(x, y, diffRG, colors="black", levels=(0,))
+    ax.contour(x, y, diffRB, colors="black", levels=(0,))
+    ax.contour(x, y, diffGB, colors="black", levels=(0,))
 
     # red, green, blue and max probability densities
     densities = model.dens(z)
@@ -637,7 +637,7 @@ def demoLDA2d():
     dMax = np.reshape(np.max(densities, axis=1), x.shape)
 
     # second figure shows 3d plots of probability densities
-    ax = fig.add_subplot(2, 2, 2, projection='3d')
+    ax = fig.add_subplot(2, 2, 2, projection="3d")
 
     # straight class colors for suface plots
     color = np.reshape([dRed, dGreen, dBlue], (3, x.shape[0], x.shape[1]))
@@ -656,10 +656,10 @@ def demoLDA2d():
     # probability density surface
     surf = ax.plot_surface(x, y, dMax, facecolors=colorFlip,
                            linewidth=0.02, shade=True)
-    surf.set_edgecolor('black') # add edgecolor back in, bug?
+    surf.set_edgecolor("black") # add edgecolor back in, bug?
 
     # third figure shows 3d plots of probabilities
-    ax = fig.add_subplot(2, 2, 3, projection='3d')
+    ax = fig.add_subplot(2, 2, 3, projection="3d")
 
     # straight class colors for suface plots
     color = np.reshape([pRed, pGreen, pBlue], (3, x.shape[0], x.shape[1]))
@@ -678,24 +678,24 @@ def demoLDA2d():
     # probability density surface
     surf = ax.plot_surface(x, y, pMax, facecolors=colorFlip,
                            linewidth=0.02, shade=True)
-    surf.set_edgecolor('black') # add edgecolor back in, bug?
+    surf.set_edgecolor("black") # add edgecolor back in, bug?
     """
     # third figure shows contours and color image of probability densities
     ax = fig.add_subplot(2, 2, 3)
 
     #ax.pcolor(x, y, pMax)
-    ax.imshow(colorFlip, origin='lower',
-              extent=(mn[0], mx[0], mn[1], mx[1]), aspect='auto')
+    ax.imshow(colorFlip, origin="lower",
+              extent=(mn[0], mx[0], mn[1], mx[1]), aspect="auto")
 
     # contours
     nLevel=6
-    cs = ax.contour(x, y, pMax, colors='black',
+    cs = ax.contour(x, y, pMax, colors="black",
                     levels=np.linspace(np.min(pMax), np.max(pMax), nLevel))
     cs.clabel(fontsize=6)
     """
 
     # fourth figure
-    ax = fig.add_subplot(2, 2, 4, projection='3d')
+    ax = fig.add_subplot(2, 2, 4, projection="3d")
 
     labels = model.label(z)
     lMax = np.reshape(labels, x.shape)
@@ -703,12 +703,12 @@ def demoLDA2d():
     surf = ax.plot_surface(x, y, lMax, facecolors=colorFlip,
                            linewidth=0.02)#, antialiased=False)
     #surf.set_edgecolor(np.vstack(color))
-    surf.set_edgecolor('black')
+    surf.set_edgecolor("black")
 
     fig.tight_layout()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     demoLDA2d()
     demoQDA2d()
     plt.show()

@@ -43,7 +43,7 @@ class ReadWriteLock:
 class _CountLock:
     def __init__(self, lock):
         self.lock = lock
-        self.counter = mp.Value('i', 0)
+        self.counter = mp.Value("i", 0)
         self.counterLock = mp.Lock()
 
     def acquire(self):

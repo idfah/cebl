@@ -49,17 +49,17 @@ class SpectrogramBase:
     def getPowers(self):
         return self.powers
 
-    def getPhases(self, scale='radians'):
+    def getPhases(self, scale="radians"):
         scale = scale.lower()
 
-        if scale == 'radians':
+        if scale == "radians":
             return self.phases
-        elif scale == 'cycles':
+        elif scale == "cycles":
             return self.phases / (2.0*np.pi)
-        elif scale == 'degrees':
+        elif scale == "degrees":
             return self.phases * 180.0 / np.pi
         else:
-            raise RuntimeError('Invalid phase scale: %s.' % str(scale))
+            raise RuntimeError("Invalid phase scale: %s." % str(scale))
 
     def getFreqsPowers(self):
         return self.freqs, self.powers
@@ -67,28 +67,28 @@ class SpectrogramBase:
     def getFreqsPowersPhases(self):
         return self.freqs, self.powers, self.phases
 
-    def plotPower(self, scale='log', chanNames=None, colorbar=True, axs=None):
+    def plotPower(self, scale="log", chanNames=None, colorbar=True, axs=None):
         if chanNames is None:
             chanNames = [str(i) for i in range(self.nChan)]
 
-        if scale == 'linear':
+        if scale == "linear":
             powers = self.powers
             norm = plt.Normalize(np.min(powers), np.max(powers))
-            zlabel = (r'Power Density ($\mu V^2 / Hz$)')
+            zlabel = (r"Power Density ($\mu V^2 / Hz$)")
 
-        elif scale == 'log':
+        elif scale == "log":
             powers = self.powers
             norm = pltLogNorm(np.min(powers), np.max(powers))
-            zlabel = (r'Power Density ($\mu V^2 / Hz$)')
+            zlabel = (r"Power Density ($\mu V^2 / Hz$)")
 
-        elif scale == 'db':
+        elif scale == "db":
             me = np.max((np.min(self.powers), np.finfo(self.powers.dtype).tiny))
             powers = 10.0*np.log10(self.powers/me)
             norm = plt.Normalize(np.min(powers), np.max(powers))
-            zlabel = 'Power (db)'
+            zlabel = "Power (db)"
 
         else:
-            raise RuntimeError('Invalid scale %s.' % str(scale))
+            raise RuntimeError("Invalid scale %s." % str(scale))
 
         nRows = int(np.sqrt(self.nChan))
         if nRows*nRows < self.nChan:
@@ -110,20 +110,20 @@ class SpectrogramBase:
             else:
                 ax = axs[i]
 
-            img = ax.imshow(powers[:,:,i].T, interpolation='bicubic', origin='lower',
-                            cmap=plt.cm.get_cmap('jet'), aspect='auto', norm=norm,
+            img = ax.imshow(powers[:,:,i].T, interpolation="bicubic", origin="lower",
+                            cmap=plt.cm.get_cmap("jet"), aspect="auto", norm=norm,
                             extent=(self.times[0], self.times[-1],
                                     self.freqs[0], self.freqs[-1]))
             imgs.append(img)
-            ax.set_xlabel('Time (s)')
-            ax.set_ylabel('Frequency (Hz)')
+            ax.set_xlabel("Time (s)")
+            ax.set_ylabel("Frequency (Hz)")
 
             if len(chanNames) > 1:
                 ax.set_title(chanName)
             else:
-                ax.set_title('Spectrogram')
+                ax.set_title("Spectrogram")
 
-        result = {'axs': axs, 'imgs': imgs}
+        result = {"axs": axs, "imgs": imgs}
 
         if colorbar:
             if newAxs:
@@ -133,7 +133,7 @@ class SpectrogramBase:
             else:
                 cbar = axs[-1].colorbar(imgs[-1], norm=norm)
             cbar.set_label(zlabel)
-            result['cbar'] = cbar
+            result["cbar"] = cbar
 
         return result
 
@@ -158,10 +158,10 @@ class FFTSpectrogram(SpectrogramBase):
 
         # check span parameter
         if wObs > nObs:
-            raise RuntimeError('Span of %.2f exceedes length of input %.2f.' %
+            raise RuntimeError("Span of %.2f exceedes length of input %.2f." %
                 (span, nObs/float(sampRate)))
         if wObs < 7:
-            raise RuntimeError('Span of %.2f is too small.' % span)
+            raise RuntimeError("Span of %.2f is too small." % span)
 
         if pad:
             # find next largest power of two
@@ -209,14 +209,14 @@ class FFTSpectrogram(SpectrogramBase):
 
 # wrapper around class constructors
 # pylint: disable=invalid-name
-def Spectrogram(s, *args, method='cwt', **kwargs):
+def Spectrogram(s, *args, method="cwt", **kwargs):
     method = method.lower()
-    if method == 'cwt':
+    if method == "cwt":
         return CWTSpectrogram(s, *args, **kwargs)
-    elif method in ('fft', 'stft', 'stfft'):
+    elif method in ("fft", "stft", "stfft"):
         return FFTSpectrogram(s, *args, **kwargs)
     else:
-        raise RuntimeError('Unknown Spectrogram  estimation method: ' + str(method))
+        raise RuntimeError("Unknown Spectrogram  estimation method: " + str(method))
 
 
 def demoCWT():
@@ -242,10 +242,10 @@ def demoCWT():
     #s = s.astype(np.float32)
     #freqs, powers, phases = transform.apply(s)
 
-    #transform.plotPower(s, chanNames=('20Hz Sinusoid', 'Noisy 60Hz Sinusoid', 'Random Walk'))
+    #transform.plotPower(s, chanNames=("20Hz Sinusoid", "Noisy 60Hz Sinusoid", "Random Walk"))
 
     #plt.tight_layout()
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     demoCWT()
     plt.show()

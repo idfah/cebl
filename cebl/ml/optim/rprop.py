@@ -112,7 +112,7 @@ def rprop(optable, *args,
     errorTrace = []
 
     # termination reason
-    reason = ''
+    reason = ""
 
     iteration = 0
     while True:
@@ -122,7 +122,7 @@ def rprop(optable, *args,
         error, grad = optable.gradient(*args, returnError=True, **kwargs)
 
         if verbose:
-            print('%d %6f' % (iteration, error))
+            print("%d %6f" % (iteration, error))
 
         if callback is not None:
             callback(optable, iteration, paramTrace, errorTrace)
@@ -141,22 +141,22 @@ def rprop(optable, *args,
 
         # terminate if maximum iterations reached
         if iteration >= maxIter:
-            reason = 'maxiter'
+            reason = "maxiter"
             break
 
         # terminate if desired accuracy reached
         if error < accuracy:
-            reason = 'accuracy'
+            reason = "accuracy"
             break
 
         # terminate if desired precision reached
         if np.abs(error - errorPrev) < precision:
-            reason = 'precision'
+            reason = "precision"
             break
 
         # terminate if the error function diverges
         if error > divergeThresh:
-            reason = 'diverge'
+            reason = "diverge"
             break
 
         flips = grad * gradPrev
@@ -318,7 +318,7 @@ def irprop(optable, *args,
     errorTrace = []
 
     # termination reason
-    reason = ''
+    reason = ""
 
     iteration = 0
     while True:
@@ -328,7 +328,7 @@ def irprop(optable, *args,
         error, grad = optable.gradient(*args, returnError=True, **kwargs)
 
         if verbose:
-            print('%d %6f' % (iteration, error))
+            print("%d %6f" % (iteration, error))
 
         if callback is not None:
             callback(optable, iteration, paramTrace, errorTrace)
@@ -347,22 +347,22 @@ def irprop(optable, *args,
 
         # terminate if maximum iterations reached
         if iteration >= maxIter:
-            reason = 'maxiter'
+            reason = "maxiter"
             break
 
         # terminate if desired accuracy reached
         if error < accuracy:
-            reason = 'accuracy'
+            reason = "accuracy"
             break
 
         # terminate if desired precision reached
         if np.abs(error - errorPrev) < precision:
-            reason = 'precision'
+            reason = "precision"
             break
 
         # terminate if the error function diverges
         if error > divergeThresh:
-            reason = 'diverge'
+            reason = "diverge"
             break
 
         flips = grad * gradPrev
@@ -371,7 +371,7 @@ def irprop(optable, *args,
 
         if error > errorPrev:
             if verbose:
-                print('No success.')
+                print("No success.")
 
             # backtrack flipped steps
             params[flipsNeg] += steps[flipsNeg] * np.sign(grad[flipsNeg])
@@ -422,6 +422,6 @@ def demoIRProp():
     rosen.plot()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     demoRProp()
     plt.show()

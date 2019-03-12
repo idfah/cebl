@@ -89,10 +89,10 @@ class ConvolutionalNetworkRegression(Regression, optim.Optable):
 
     def train(self, x, g, optimFunc, **kwargs):
         x = util.segmat(x)
-        x = np.require(x, requirements=['O', 'C'])
+        x = np.require(x, requirements=["O", "C"])
 
         g = util.segmat(g)
-        g = np.require(g, requirements=['O', 'C'])
+        g = np.require(g, requirements=["O", "C"])
 
         self.trainResult = optimFunc(self, x=x, g=g, **kwargs)
 
@@ -270,7 +270,7 @@ class ConvolutionalNetworkRegression(Regression, optim.Optable):
             cgs[l][...] = c1f.T.dot(deltaf)
             cgs[l] += self.penaltyGradient(l)
 
-            if l > 0: # won't propigate back to inputs
+            if l > 0: # won"t propigate back to inputs
                 delta = util.segdot(delta, self.cws[l][:-1].T)
                 delta = deltaDeEmbedSum(delta, self.convWidths[l])
 
@@ -329,30 +329,30 @@ def demoCNR():
 
     fig = plt.figure(figsize=(20,6))
     axSigs = fig.add_subplot(model.nConvLayers,3, 1)
-    axSigs.plot(t, xTest[0].T.squeeze(), color='blue', linewidth=2)
-    #axSigs.plot(t, xTest.T.squeeze(), color='blue', alpha=0.1, linewidth=2)
-    axSigs.plot(t, -3.0+gTest[0].T.squeeze(), color='red', linewidth=2)
-    #axSigs.plot(t, 3.0-gTest.T.squeeze(), color='red', alpha=0.1, linewidth=2)
-    axSigs.plot(tTrim, -5.5+yTest[0].T.squeeze(), color='red', linewidth=2)
-    #axSigs.plot(tTrim, 5.5-yTest.T.squeeze(), color='red', alpha=0.1, linewidth=2)
-    axSigs.set_title('')
-    axSigs.set_xlabel('Time')
-    axSigs.set_ylabel('Signal')
+    axSigs.plot(t, xTest[0].T.squeeze(), color="blue", linewidth=2)
+    #axSigs.plot(t, xTest.T.squeeze(), color="blue", alpha=0.1, linewidth=2)
+    axSigs.plot(t, -3.0+gTest[0].T.squeeze(), color="red", linewidth=2)
+    #axSigs.plot(t, 3.0-gTest.T.squeeze(), color="red", alpha=0.1, linewidth=2)
+    axSigs.plot(tTrim, -5.5+yTest[0].T.squeeze(), color="red", linewidth=2)
+    #axSigs.plot(tTrim, 5.5-yTest.T.squeeze(), color="red", alpha=0.1, linewidth=2)
+    axSigs.set_title("")
+    axSigs.set_xlabel("Time")
+    axSigs.set_ylabel("Signal")
     axSigs.autoscale(tight=True)
 
     axETrace = fig.add_subplot(model.nConvLayers,3, 2)
-    eTrace = np.array(model.trainResult['eTrace'])
+    eTrace = np.array(model.trainResult["eTrace"])
     axETrace.plot(eTrace)
 
     axPTrace = fig.add_subplot(model.nConvLayers,3, 3)
-    pTrace = np.array(model.trainResult['pTrace'])
+    pTrace = np.array(model.trainResult["pTrace"])
     axPTrace.plot(pTrace)
 
     cs = model.evalConvs(xTest)
     for i in range(model.nConvLayers):
         axConvs = fig.add_subplot(model.nConvLayers,3, 4+i)
         c = cs[i][0,:,:]
-        axConvs.plot(c+util.colsep(c), color='blue', linewidth=2, alpha=0.25)
+        axConvs.plot(c+util.colsep(c), color="blue", linewidth=2, alpha=0.25)
 
         axConvs.autoscale(tight=True)
 
@@ -362,10 +362,10 @@ def demoCNR():
         #responses = np.array(responses)
         #axRespon.plot(freqs.T, np.abs(responses).T)
 
-    print('nParams: ', model.parameters().size)
+    print("nParams: ", model.parameters().size)
 
     fig.tight_layout()
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     demoCNR()
     plt.show()

@@ -93,11 +93,11 @@ def demoCSP():
 
     axS1 = fig.add_subplot(4,1, 1)
     axS1.plot(s1 + util.colsep(s1))
-    axS1.set_title('Class 1 Signal')
+    axS1.set_title("Class 1 Signal")
 
     axS2 = fig.add_subplot(4,1, 2)
     axS2.plot(s2 + util.colsep(s2))
-    axS2.set_title('Class 2 Signal')
+    axS2.set_title("Class 2 Signal")
 
     cspFilt = CSP(s1, s2, lags=0)
 
@@ -109,12 +109,12 @@ def demoCSP():
 
     axCSP1 = fig.add_subplot(4,1, 3)
     axCSP1.plot(csp1 + util.colsep(csp1))
-    axCSP1.set_title('Class 1 Signal CSP')
+    axCSP1.set_title("Class 1 Signal CSP")
 
     axCSP2 = fig.add_subplot(4,1, 4)
     axCSP2.plot(csp2 + util.colsep(csp2))
-    axCSP2.set_title('Class 2 Signal CSP')
+    axCSP2.set_title("Class 2 Signal CSP")
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     demoCSP()
     plt.show()

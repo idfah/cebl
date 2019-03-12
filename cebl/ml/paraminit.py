@@ -29,7 +29,7 @@ def nguyen(size, scale=(-1.0, 1.0), overlap=0.3):
     return weights
     # XXX - idfah
     """
-    raise NotImplementedError('nguyen not yet implemented')
+    raise NotImplementedError("nguyen not yet implemented")
 
 def runif(size, low=-0.01, high=0.01):
     """Random uniform.

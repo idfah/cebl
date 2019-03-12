@@ -118,12 +118,12 @@ def alopex(optable,
     errorTrace = [error]
 
     # termination reason
-    reason = ''
+    reason = ""
 
     iteration = 0
 
     if verbose:
-        print('%d %6f' % (iteration, error))
+        print("%d %6f" % (iteration, error))
 
     if callback is not None:
         callback(optable, iteration, paramTrace, errorTrace)
@@ -167,7 +167,7 @@ def alopex(optable,
         iteration += 1
 
         if verbose:
-            print('%d %6f' % (iteration, error))
+            print("%d %6f" % (iteration, error))
 
         if callback is not None:
             callback(optable, iteration, paramTrace, errorTrace)
@@ -190,22 +190,22 @@ def alopex(optable,
 
         # terminate if maximum iterations reached
         if iteration >= maxIter:
-            reason = 'maxiter'
+            reason = "maxiter"
             break
 
         # terminate if desired accuracy reached
         if error < accuracy:
-            reason = 'accuracy'
+            reason = "accuracy"
             break
 
         # terminate if desired precision reached
         if np.abs(error - errorPrev) < precision:
-            reason = 'precision'
+            reason = "precision"
             break
 
         # terminate if the error function diverges
         if error > divergeThresh:
-            reason = 'diverge'
+            reason = "diverge"
             break
 
         # current change in error
@@ -225,7 +225,7 @@ def alopex(optable,
             corrRun = 0.0
 
             if verbose:
-                print('Cooling: %f' % temp)
+                print("Cooling: %f" % temp)
 
         # probability of taking negative step
         # is drawn from the Boltzman Distribution
@@ -236,15 +236,15 @@ def alopex(optable,
 
     # save result into a dictionary
     result = {}
-    result['params'] = params
-    result['error'] = error
-    result['iteration'] = iteration
-    result['reason'] = reason
+    result["params"] = params
+    result["error"] = error
+    result["iteration"] = iteration
+    result["reason"] = reason
 
-    if pTrace: result['pTrace'] = paramTrace
-    if sTrace: result['sTrace'] = stepTrace
-    if tTrace: result['tTrace'] = tTrace
-    if eTrace: result['eTrace'] = errorTrace
+    if pTrace: result["pTrace"] = paramTrace
+    if sTrace: result["sTrace"] = stepTrace
+    if tTrace: result["tTrace"] = tTrace
+    if eTrace: result["eTrace"] = errorTrace
 
     return result
 
@@ -364,12 +364,12 @@ def alopexas(optable,
     errorTrace = [error]
 
     # termination reason
-    reason = ''
+    reason = ""
 
     iteration = 0
 
     if verbose:
-        print('%d %6f' % (iteration, error))
+        print("%d %6f" % (iteration, error))
 
     if callback is not None:
         callback(optable, iteration, paramTrace, errorTrace)
@@ -398,7 +398,7 @@ def alopexas(optable,
         iteration += 1
 
         if verbose:
-            print('%d %6f' % (iteration, error))
+            print("%d %6f" % (iteration, error))
 
         if callback is not None:
             callback(optable, iteration, paramTrace, errorTrace)
@@ -421,22 +421,22 @@ def alopexas(optable,
 
         # terminate if maximum iterations reached
         if iteration >= maxIter:
-            reason = 'maxiter'
+            reason = "maxiter"
             break
 
         # terminate if desired accuracy reached
         if error < accuracy:
-            reason = 'accuracy'
+            reason = "accuracy"
             break
 
         # terminate if desired precision reached
         if np.abs(error - errorPrev) < precision:
-            reason = 'precision'
+            reason = "precision"
             break
 
         # terminate if the error function diverges
         if error > divergeThresh:
-            reason = 'diverge'
+            reason = "diverge"
             break
 
         # current change in error
@@ -469,7 +469,7 @@ def alopexas(optable,
             corrRun = 0.0
 
             if verbose:
-                print('Cooling: %f' % temp)
+                print("Cooling: %f" % temp)
 
         # probability of taking negative step
         # is drawn from the Boltzman Distribution
@@ -480,15 +480,15 @@ def alopexas(optable,
 
     # save result into a dictionary
     result = {}
-    result['params'] = params
-    result['error'] = error
-    result['iteration'] = iteration
-    result['reason'] = reason
+    result["params"] = params
+    result["error"] = error
+    result["iteration"] = iteration
+    result["reason"] = reason
 
-    if pTrace: result['pTrace'] = paramTrace
-    if sTrace: result['sTrace'] = stepTrace
-    if tTrace: result['tTrace'] = tTrace
-    if eTrace: result['eTrace'] = errorTrace
+    if pTrace: result["pTrace"] = paramTrace
+    if sTrace: result["sTrace"] = stepTrace
+    if tTrace: result["tTrace"] = tTrace
+    if eTrace: result["eTrace"] = errorTrace
 
     return result
 
@@ -600,12 +600,12 @@ def alopexb(optable,
     errorTrace = [error]
 
     # termination reason
-    reason = ''
+    reason = ""
 
     iteration = 0
 
     if verbose:
-        print('%d %6f' % (iteration, error))
+        print("%d %6f" % (iteration, error))
 
     if callback is not None:
         callback(optable, iteration, paramTrace, errorTrace)
@@ -648,7 +648,7 @@ def alopexb(optable,
         iteration += 1
 
         if verbose:
-            print('%d %6f' % (iteration, error))
+            print("%d %6f" % (iteration, error))
 
         if callback is not None:
             callback(optable, iteration, paramTrace, errorTrace)
@@ -667,22 +667,22 @@ def alopexb(optable,
 
         # terminate if maximum iterations reached
         if iteration >= maxIter:
-            reason = 'maxiter'
+            reason = "maxiter"
             break
 
         # terminate if desired accuracy reached
         if error < accuracy:
-            reason = 'accuracy'
+            reason = "accuracy"
             break
 
         # terminate if desired precision reached
         if np.abs(error - errorPrev) < precision:
-            reason = 'precision'
+            reason = "precision"
             break
 
         # terminate if the error function diverges
         if error > divergeThresh:
-            reason = 'diverge'
+            reason = "diverge"
             break
 
         # current change in error
@@ -703,15 +703,15 @@ def alopexb(optable,
 
     # save result into a dictionary
     result = {}
-    result['params'] = params
-    result['error'] = error
-    result['iteration'] = iteration
-    result['reason'] = reason
+    result["params"] = params
+    result["error"] = error
+    result["iteration"] = iteration
+    result["reason"] = reason
 
-    if pTrace: result['pTrace'] = paramTrace
-    if sTrace: result['sTrace'] = stepTrace
-    if tTrace: result['tTrace'] = tTrace
-    if eTrace: result['eTrace'] = errorTrace
+    if pTrace: result["pTrace"] = paramTrace
+    if sTrace: result["sTrace"] = stepTrace
+    if tTrace: result["tTrace"] = tTrace
+    if eTrace: result["eTrace"] = errorTrace
 
     return result
 
@@ -719,7 +719,7 @@ def demoALOPEX():
     rosen = tests.Rosen(optimFunc=alopex, accuracy=0.01, maxIter=np.inf, tempIter=20,
                         stepInit=0.005, sTrace=True, verbose=True)
 
-    #plt.plot(rosen.trainResult['sTrace'])
+    #plt.plot(rosen.trainResult["sTrace"])
     rosen.plot()
 
 def arcticFox(optable,
@@ -751,12 +751,12 @@ def arcticFox(optable,
     errorTrace = []
 
     # termination reason
-    reason = ''
+    reason = ""
 
     iteration = 0
 
     if verbose:
-        print('%d %6f %6f' % (iteration, stepSize, error))
+        print("%d %6f %6f" % (iteration, stepSize, error))
 
     if callback is not None:
         callback(optable, iteration, paramTrace, errorTrace)
@@ -798,29 +798,29 @@ def arcticFox(optable,
         iteration += 1
 
         if verbose:
-            print('%d %6f %6f' % (iteration, curStepSize, error))
+            print("%d %6f %6f" % (iteration, curStepSize, error))
 
         if callback is not None:
             callback(optable, iteration, paramTrace, errorTrace)
 
         # terminate if maximum iterations reached
         if iteration >= maxIter:
-            reason = 'maxiter'
+            reason = "maxiter"
             break
 
         # terminate if desired accuracy reached
         if error < accuracy:
-            reason = 'accuracy'
+            reason = "accuracy"
             break
 
         # terminate if desired precision reached
         if np.abs(error - errorPrev) < precision:
-            reason = 'precision'
+            reason = "precision"
             break
 
         # terminate if the error function diverges
         if error > divergeThresh:
-            reason = 'diverge'
+            reason = "diverge"
             break
 
         # sign of current change in error
@@ -835,14 +835,14 @@ def arcticFox(optable,
 
     # save result into a dictionary
     result = {}
-    result['params'] = params
-    result['error'] = error
-    result['iteration'] = iteration
-    result['reason'] = reason
+    result["params"] = params
+    result["error"] = error
+    result["iteration"] = iteration
+    result["reason"] = reason
 
-    if pTrace: result['pTrace'] = paramTrace
-    if sTrace: result['sTrace'] = stepTrace
-    if eTrace: result['eTrace'] = errorTrace
+    if pTrace: result["pTrace"] = paramTrace
+    if sTrace: result["sTrace"] = stepTrace
+    if eTrace: result["eTrace"] = errorTrace
 
     return result
 
@@ -851,7 +851,7 @@ def demoArcticFox():
                         stepSize=0.01, stepSizeFinal=0.005, forgetFactor=0.5, verbose=True)
     rosen.plot()
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     demoALOPEX()
     #demoArcticFox()
     plt.show()

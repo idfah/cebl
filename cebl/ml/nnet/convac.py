@@ -19,7 +19,7 @@ from .ddembed import *
 
 class ConvolutionalNetworkAccum(Classifier, optim.Optable):
     def __init__(self, classData, convs=((8,16),(16,8)), nHidden=None,
-                 poolSize=2, poolMethod='average', filtOrder=8,
+                 poolSize=2, poolMethod="average", filtOrder=8,
                  transFunc=transfer.lecun, weightInitFunc=pinit.lecun,
                  penalty=None, elastic=1.0, optimFunc=optim.scg, **kwargs):
         Classifier.__init__(self, util.segmat(classData[0]).shape[2], len(classData))
@@ -48,11 +48,11 @@ class ConvolutionalNetworkAccum(Classifier, optim.Optable):
         assert len(self.poolSize) == self.nConvLayers
 
         self.poolMethod = poolMethod.lower()
-        if self.poolMethod == 'lanczos':
+        if self.poolMethod == "lanczos":
             self.initLanczos(filtOrder)
 
-        elif not self.poolMethod in ('stride', 'average'):
-            raise RuntimeError('Invalid poolMethod %s.' % str(self.poolMethod))
+        elif not self.poolMethod in ("stride", "average"):
+            raise RuntimeError("Invalid poolMethod %s." % str(self.poolMethod))
 
         self.transFunc = transFunc if util.isiterable(transFunc) \
                 else (transFunc,) * (len(self.layerDims)-1)
@@ -101,8 +101,8 @@ class ConvolutionalNetworkAccum(Classifier, optim.Optable):
         self.filtOrder = filtOrder
 
         if self.filtOrder % 2 != 0:
-             raise RuntimeError('Invalid filtOrder: ' + str(self.filtOrder) +
-                 ' Must be an even integer.')
+             raise RuntimeError("Invalid filtOrder: " + str(self.filtOrder) +
+                 " Must be an even integer.")
 
         radius = self.filtOrder // 2
         win = np.sinc(np.linspace(-radius, radius, self.filtOrder+1) / float(radius)) # lanczos
@@ -148,10 +148,10 @@ class ConvolutionalNetworkAccum(Classifier, optim.Optable):
 
     def train(self, classData, optimFunc, **kwargs):
         x, g = label.indicatorsFromList(classData)
-        x = np.require(x, requirements=['O', 'C'])
+        x = np.require(x, requirements=["O", "C"])
         self.trainResult = optimFunc(self, x=x, g=g, **kwargs)
 
-        #dv = self.discrim(x, accum='mult')
+        #dv = self.discrim(x, accum="mult")
         #self.normSoftmaxMean = dv.mean()
         #self.normSoftmaxStd = dv.std()
         #self.normSoftmaxMin = dv.min()
@@ -176,18 +176,18 @@ class ConvolutionalNetworkAccum(Classifier, optim.Optable):
                 #c = phi(c.dot(cw[:-1]) + cw[-1])
                 c = phi(util.segdot(c, cw[:-1]) + cw[-1])
 
-            elif self.poolMethod == 'stride':
+            elif self.poolMethod == "stride":
                 c = util.timeEmbed(c, lags=width-1, axis=1, stride=poolSize)
                 #c = phi(c.dot(cw[:-1]) + cw[-1])
                 c = phi(util.segdot(c, cw[:-1]) + cw[-1])
 
-            elif self.poolMethod == 'average':
+            elif self.poolMethod == "average":
                 c = util.timeEmbed(c, lags=width-1, axis=1)
                 #c = phi(c.dot(cw[:-1]) + cw[-1])
                 c = phi(util.segdot(c, cw[:-1]) + cw[-1])
                 c = util.accum(c, poolSize, axis=1) / poolSize
 
-            elif self.poolMethod == 'lanczos':
+            elif self.poolMethod == "lanczos":
                 c = util.timeEmbed(c, lags=width-1, axis=1)
                 #c = phi(c.dot(cw[:-1]) + cw[-1])
                 c = phi(util.segdot(c, cw[:-1]) + cw[-1])
@@ -221,20 +221,20 @@ class ConvolutionalNetworkAccum(Classifier, optim.Optable):
     def stepLikes(self, x):
         return np.log(self.stepProbs(x))
 
-    def discrim(self, x, accum='prod'):
+    def discrim(self, x, accum="prod"):
         x = util.segmat(x)
         accum = accum.lower()
 
         # sum loglikes (multiply probs) accumulation
-        if accum in ('prod', 'mult'):
+        if accum in ("prod", "mult"):
             return self.stepLikes(x).sum(axis=1)
 
         # sum probs accum accumulation
-        elif accum in ('sum', 'add'):
+        elif accum in ("sum", "add"):
             return self.stepProbs(x).sum(axis=1)
 
         # vote likes accumulation
-        elif accum == 'vote':
+        elif accum == "vote":
             likes = self.stepLikes(x)
 
             votes = np.zeros_like(likes)
@@ -245,18 +245,18 @@ class ConvolutionalNetworkAccum(Classifier, optim.Optable):
             return votes.sum(axis=1)
 
         else:
-            raise RuntimeError('Invalid discrim accum method: ' + str(accum))
+            raise RuntimeError("Invalid discrim accum method: " + str(accum))
 
-    def probs(self, x, squash='softmax', accum='prod'):
+    def probs(self, x, squash="softmax", accum="prod"):
         x = util.segmat(x)
         squash = squash.lower()
 
         dv = self.discrim(x, accum=accum)
 
-        if squash == 'softmax':
+        if squash == "softmax":
             return util.softmax(dv)
 
-        #elif squash == 'normsoftmax':
+        #elif squash == "normsoftmax":
         #    #dv -= self.normSoftmaxMin
         #    #dv /= self.normSoftmaxMax
         #    dv -= self.normSoftmaxMean
@@ -264,11 +264,11 @@ class ConvolutionalNetworkAccum(Classifier, optim.Optable):
         #    dv /= self.normSoftmaxStd
         #    return util.softmax(dv)
 
-        elif squash == 'frac':
+        elif squash == "frac":
             return dv / dv.sum(axis=1)[:,None]
 
         else:
-            raise RuntimeError('Invalid probs squash method: ' + str(squash))
+            raise RuntimeError("Invalid probs squash method: " + str(squash))
 
     def penaltyError(self):
         if self.penalty is None:
@@ -344,10 +344,10 @@ class ConvolutionalNetworkAccum(Classifier, optim.Optable):
             if poolSize == 1:
                 c = util.timeEmbed(c, lags=width-1, axis=1)
 
-            elif self.poolMethod == 'stride':
+            elif self.poolMethod == "stride":
                 c = util.timeEmbed(c, lags=width-1, axis=1, stride=poolSize)
 
-            elif self.poolMethod in ('average', 'lanczos'):
+            elif self.poolMethod in ("average", "lanczos"):
                 c = util.timeEmbed(c, lags=width-1, axis=1)
 
             c1 = util.bias(c)
@@ -363,10 +363,10 @@ class ConvolutionalNetworkAccum(Classifier, optim.Optable):
             if poolSize == 1:
                 pass
 
-            elif self.poolMethod == 'average':
+            elif self.poolMethod == "average":
                 c = util.accum(c, poolSize, axis=1) / poolSize
 
-            elif self.poolMethod == 'lanczos':
+            elif self.poolMethod == "lanczos":
                 c = util.timeEmbed(c, lags=self.filtOrder, axis=1, stride=poolSize)
                 #c = c.dot(self.filters[l])
                 c = util.segdot(c, self.filters[l])
@@ -430,7 +430,7 @@ class ConvolutionalNetworkAccum(Classifier, optim.Optable):
             if poolSize == 1:
                 pass
 
-            elif self.poolMethod == 'average':
+            elif self.poolMethod == "average":
                 deltaPool = np.empty_like(cPrime)
                 deltaPool[:,:delta.shape[1]*poolSize] = \
                     delta.repeat(poolSize, axis=1) / poolSize
@@ -438,7 +438,7 @@ class ConvolutionalNetworkAccum(Classifier, optim.Optable):
 
                 delta = deltaPool
 
-            elif self.poolMethod == 'lanczos':
+            elif self.poolMethod == "lanczos":
                 filt = self.filters[l]
 
                 #delta = delta.dot(filt.T)
@@ -467,7 +467,7 @@ class ConvolutionalNetworkAccum(Classifier, optim.Optable):
                 if poolSize == 1:
                     pass
 
-                elif self.poolMethod == 'stride':
+                elif self.poolMethod == "stride":
                     deltaPoolShape = list(delta.shape)
                     deltaPoolShape[1] *= poolSize
                     deltaPool = np.zeros(deltaPoolShape, dtype=delta.dtype)
@@ -556,49 +556,49 @@ def demoCNA():
 
     #model = CNA(trainData, convs=((2,11),(4,9),(6,7)), nHidden=2,
     model = CNA(trainData, convs=((4,9),(8,9)), nHidden=None,
-                 poolSize=2, poolMethod='average', verbose=True,
+                 poolSize=2, poolMethod="average", verbose=True,
                  optimFunc=optim.scg, maxIter=250, transFunc=transfer.rectifier,
                  #optimFunc=optim.rprop, maxIter=1000,
-                 #optimFunc=optim.sciopt, method='Powell', maxIter=1000)
+                 #optimFunc=optim.sciopt, method="Powell", maxIter=1000)
                  precision=1.0e-10, accuracy=0.0, pTrace=True, eTrace=True)
 
-    print('Training Performance:')
-    print('=======')
-    print('Labels: ', model.labelKnown(trainData))
-    print('ProbsA: ', model.probs(trainData[0]))
-    print('ProbsB: ', model.probs(trainData[1]))
-    print('CA:     ', model.ca(trainData))
-    print('BCA:    ', model.bca(trainData))
-    print('AUC:    ', model.auc(trainData))
+    print("Training Performance:")
+    print("=======")
+    print("Labels: ", model.labelKnown(trainData))
+    print("ProbsA: ", model.probs(trainData[0]))
+    print("ProbsB: ", model.probs(trainData[1]))
+    print("CA:     ", model.ca(trainData))
+    print("BCA:    ", model.bca(trainData))
+    print("AUC:    ", model.auc(trainData))
     print()
-    print('Test Performance:')
-    print('=======')
-    print('Labels: ', model.labelKnown(testData))
-    print('ProbsA: ', model.probs(testData[0]))
-    print('ProbsB: ', model.probs(testData[1]))
-    print('CA:     ', model.ca(testData))
-    print('BCA:    ', model.bca(testData))
-    print('AUC:    ', model.auc(testData))
+    print("Test Performance:")
+    print("=======")
+    print("Labels: ", model.labelKnown(testData))
+    print("ProbsA: ", model.probs(testData[0]))
+    print("ProbsB: ", model.probs(testData[1]))
+    print("CA:     ", model.ca(testData))
+    print("BCA:    ", model.bca(testData))
+    print("AUC:    ", model.auc(testData))
     print()
 
     fig = plt.figure(figsize=(20,6))
     axSigs = fig.add_subplot(3,3, 1)
-    axSigs.plot(x, trainData[0][0].T.squeeze(), color='blue', linewidth=2)#, label=r'$\mathbf{sin}(x)$')
-    axSigs.plot(x, trainData[0].T.squeeze(), color='blue', alpha=0.1, linewidth=2)
-    axSigs.plot(x, 10.0+trainData[1][0].T.squeeze(), color='red', linewidth=2)#, label=r'$\mathbf{sin}(2x)$')
-    axSigs.plot(x, 10.0+trainData[1].T.squeeze(), color='red', alpha=0.1, linewidth=2)
-    axSigs.set_title('')
-    axSigs.set_xlabel('Time')
-    axSigs.set_ylabel('Signal')
+    axSigs.plot(x, trainData[0][0].T.squeeze(), color="blue", linewidth=2)#, label=r"$\mathbf{sin}(x)$")
+    axSigs.plot(x, trainData[0].T.squeeze(), color="blue", alpha=0.1, linewidth=2)
+    axSigs.plot(x, 10.0+trainData[1][0].T.squeeze(), color="red", linewidth=2)#, label=r"$\mathbf{sin}(2x)$")
+    axSigs.plot(x, 10.0+trainData[1].T.squeeze(), color="red", alpha=0.1, linewidth=2)
+    axSigs.set_title("")
+    axSigs.set_xlabel("Time")
+    axSigs.set_ylabel("Signal")
     #axSigs.legend()
     axSigs.autoscale(tight=True)
 
     axETrace = fig.add_subplot(3,3, 2)
-    eTrace = np.array(model.trainResult['eTrace'])
+    eTrace = np.array(model.trainResult["eTrace"])
     axETrace.plot(eTrace)
 
     axPTrace = fig.add_subplot(3,3, 3)
-    pTrace = np.array(model.trainResult['pTrace'])
+    pTrace = np.array(model.trainResult["pTrace"])
     axPTrace.plot(pTrace)
 
     cs1 = model.evalConvs(trainData[0])
@@ -609,8 +609,8 @@ def demoCNA():
         c1 = cs1[i][0,:,:]
         c2 = cs2[i][0,:,:]
         sep = util.colsep(np.vstack((c1,c2)))
-        axConvs.plot(c1+sep, color='blue', linewidth=2, alpha=0.25)
-        axConvs.plot(c2+sep, color='red', linewidth=2, alpha=0.25)
+        axConvs.plot(c1+sep, color="blue", linewidth=2, alpha=0.25)
+        axConvs.plot(c2+sep, color="red", linewidth=2, alpha=0.25)
 
         axRespon = fig.add_subplot(3,3, 7+i)
         freqs, responses = zip(*[spsig.freqz(cw) for cw in model.cws[i].T])
@@ -623,10 +623,10 @@ def demoCNA():
     probs2 = model.stepProbs(trainData[1])
     p1 = probs1[0,:,0]
     p2 = probs2[0,:,1]
-    axProbs.plot(p1, color='blue', linewidth=2)
-    axProbs.plot(p2, color='red', linewidth=2)
+    axProbs.plot(p1, color="blue", linewidth=2)
+    axProbs.plot(p2, color="red", linewidth=2)
 
-    print('nParams: ', model.parameters().size)
+    print("nParams: ", model.parameters().size)
 
     #for l,cw in enumerate(model.cws):
     #    plt.figure()
@@ -635,10 +635,10 @@ def demoCNA():
 
     #plt.figure()
     #plt.hist(model.vw.ravel())
-    #plt.title('vw')
+    #plt.title("vw")
 
     #fig.tight_layout()
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     demoCNA()
     plt.show()

@@ -27,7 +27,7 @@ class AutoRegressiveClassifierCosine(Classifier):
             [self.autoRegClass(ss, **autoRegKwargs) for ss in classData]
 
         trainErrors = [self.modelErrors(ss) for ss in classData]
-        self.errorModel = KNN(trainErrors, k=self.k, distMetric='cosine')
+        self.errorModel = KNN(trainErrors, k=self.k, distMetric="cosine")
 
     def modelErrors(self, ss, *args, **kwargs):
         errors = []
@@ -43,7 +43,7 @@ class ARCC(AutoRegressiveClassifierCosine):
     pass
 
 class AutoRegressiveClassifier3(Classifier):
-    def __init__(self, classData, center='none',
+    def __init__(self, classData, center="none",
                  autoRegClass=AutoRegression, **autoRegKwargs):
         # initialize Classifier base class
         Classifier.__init__(self, util.segmat(classData[0]).shape[2], len(classData))
@@ -61,17 +61,17 @@ class AutoRegressiveClassifier3(Classifier):
 
         center = center.lower()
 
-        if center == 'none':
+        if center == "none":
             pass
 
-        elif center == 'mean':
+        elif center == "mean":
             self.center = np.mean([np.mean(te, axis=0) for te in trainErrors], axis=0)
 
-        elif center == 'median':
+        elif center == "median":
             self.center = np.mean([np.median(te, axis=0) for te in trainErrors], axis=0)
 
         else:
-            raise RuntimeError('Invalid center method %s.' % str(center))
+            raise RuntimeError("Invalid center method %s." % str(center))
 
     def modelErrors(self, ss, *args, **kwargs):
         errors = [np.vstack([mdl.rmse(s, *args, **kwargs) for s in ss]) for mdl in self.models]
@@ -156,30 +156,30 @@ def demoARC():
 
     model = ARC(trainData, order=order)
 
-    print('Training Performance:')
-    print('=======')
-    print('Labels: ', model.labelKnown(trainData))
-    print('CA:     ', model.ca(trainData))
-    print('BCA:    ', model.bca(trainData))
-    print('AUC:    ', model.auc(trainData))
+    print("Training Performance:")
+    print("=======")
+    print("Labels: ", model.labelKnown(trainData))
+    print("CA:     ", model.ca(trainData))
+    print("BCA:    ", model.bca(trainData))
+    print("AUC:    ", model.auc(trainData))
     print()
-    print('Test Performance:')
-    print('=======')
-    print('Labels: ', model.labelKnown(testData))
-    print('CA:     ', model.ca(testData))
-    print('BCA:    ', model.bca(testData))
-    print('AUC:    ', model.auc(testData))
+    print("Test Performance:")
+    print("=======")
+    print("Labels: ", model.labelKnown(testData))
+    print("CA:     ", model.ca(testData))
+    print("BCA:    ", model.bca(testData))
+    print("AUC:    ", model.auc(testData))
     print()
 
     fig = plt.figure(figsize=(20,6))
     axSigs = fig.add_subplot(1, 3, 1)
-    axSigs.plot(x, trainData[0][0].T, color='blue', linewidth=2, label=r'$\mathbf{sin}(x)$')
-    axSigs.plot(x, trainData[0].T, color='blue', alpha=0.1, linewidth=2)
-    axSigs.plot(x, 3.0+trainData[1][0].T, color='red', linewidth=2, label=r'$\mathbf{sin}(2x)$')
-    axSigs.plot(x, 3.0+trainData[1].T, color='red', alpha=0.1, linewidth=2)
-    axSigs.set_title('Noisy Sinusoids with Random Phase Shifts')
-    axSigs.set_xlabel('Time')
-    axSigs.set_ylabel('Signal')
+    axSigs.plot(x, trainData[0][0].T, color="blue", linewidth=2, label=r"$\mathbf{sin}(x)$")
+    axSigs.plot(x, trainData[0].T, color="blue", alpha=0.1, linewidth=2)
+    axSigs.plot(x, 3.0+trainData[1][0].T, color="red", linewidth=2, label=r"$\mathbf{sin}(2x)$")
+    axSigs.plot(x, 3.0+trainData[1].T, color="red", alpha=0.1, linewidth=2)
+    axSigs.set_title("Noisy Sinusoids with Random Phase Shifts")
+    axSigs.set_xlabel("Time")
+    axSigs.set_ylabel("Signal")
     axSigs.legend()
     axSigs.autoscale(tight=True)
 
@@ -194,33 +194,33 @@ def demoARC():
 
     axTrainErrs = fig.add_subplot(1, 3, 2)
     #axTrainErrs = fig.add_subplot(1, 2, 1)
-    axTrainErrs.scatter(trainErrors[0][:,0], trainErrors[0][:,1], color='blue')
-    axTrainErrs.scatter(trainErrors[1][:,0], trainErrors[1][:,1], color='red')
-    axTrainErrs.set_title('Training Relative Modeling Errors')
-    axTrainErrs.set_xlabel(r'$\mathbf{sin}(x)$ model error')
-    axTrainErrs.set_ylabel(r'$\mathbf{sin}(2x)$ model error')
+    axTrainErrs.scatter(trainErrors[0][:,0], trainErrors[0][:,1], color="blue")
+    axTrainErrs.scatter(trainErrors[1][:,0], trainErrors[1][:,1], color="red")
+    axTrainErrs.set_title("Training Relative Modeling Errors")
+    axTrainErrs.set_xlabel(r"$\mathbf{sin}(x)$ model error")
+    axTrainErrs.set_ylabel(r"$\mathbf{sin}(2x)$ model error")
 
     allTrainErrs = np.vstack(trainErrors)
     mn = allTrainErrs.min()
     mx = allTrainErrs.max()
 
-    axTrainErrs.plot((mn,mx), (mn,mx), color='grey', linestyle='-.')
+    axTrainErrs.plot((mn,mx), (mn,mx), color="grey", linestyle="-.")
     axTrainErrs.grid()
     axTrainErrs.autoscale(tight=True)
 
     axTestErrs = fig.add_subplot(1, 3, 3)
     #axTestErrs = fig.add_subplot(1, 2, 2)
-    axTestErrs.scatter(testErrors[0][:,0], testErrors[0][:,1], color='blue')
-    axTestErrs.scatter(testErrors[1][:,0], testErrors[1][:,1], color='red')
-    axTestErrs.set_title('Testing Relative Modeling Errors')
-    axTestErrs.set_xlabel(r'$\mathbf{sin}(x)$ model error')
-    axTestErrs.set_ylabel(r'$\mathbf{sin}(2x)$ model error')
+    axTestErrs.scatter(testErrors[0][:,0], testErrors[0][:,1], color="blue")
+    axTestErrs.scatter(testErrors[1][:,0], testErrors[1][:,1], color="red")
+    axTestErrs.set_title("Testing Relative Modeling Errors")
+    axTestErrs.set_xlabel(r"$\mathbf{sin}(x)$ model error")
+    axTestErrs.set_ylabel(r"$\mathbf{sin}(2x)$ model error")
 
     allTestErrs = np.vstack(testErrors)
     mn = allTestErrs.min()
     mx = allTestErrs.max()
 
-    axTestErrs.plot((mn,mx), (mn,mx), color='grey', linestyle='-.')
+    axTestErrs.plot((mn,mx), (mn,mx), color="grey", linestyle="-.")
     axTestErrs.grid()
     axTestErrs.autoscale(tight=True)
 
@@ -272,30 +272,30 @@ def demoRARC():
 
     model = RARC(trainData, nRes=512)
 
-    print('Training Performance:')
-    print('=======')
-    print('Labels: ', model.labelKnown(trainData))
-    print('CA:     ', model.ca(trainData))
-    print('BCA:    ', model.bca(trainData))
-    print('AUC:    ', model.auc(trainData))
+    print("Training Performance:")
+    print("=======")
+    print("Labels: ", model.labelKnown(trainData))
+    print("CA:     ", model.ca(trainData))
+    print("BCA:    ", model.bca(trainData))
+    print("AUC:    ", model.auc(trainData))
     print()
-    print('Test Performance:')
-    print('=======')
-    print('Labels: ', model.labelKnown(testData))
-    print('CA:     ', model.ca(testData))
-    print('BCA:    ', model.bca(testData))
-    print('AUC:    ', model.auc(testData))
+    print("Test Performance:")
+    print("=======")
+    print("Labels: ", model.labelKnown(testData))
+    print("CA:     ", model.ca(testData))
+    print("BCA:    ", model.bca(testData))
+    print("AUC:    ", model.auc(testData))
     print()
 
     fig = plt.figure(figsize=(20, 6))
     axSigs = fig.add_subplot(1, 3, 1)
-    axSigs.plot(x, trainData[0][0].T, color='blue', linewidth=2, label=r'$\mathbf{sin}(x)$')
-    axSigs.plot(x, trainData[0].T, color='blue', alpha=0.1, linewidth=2)
-    axSigs.plot(x, 3.0+trainData[1][0].T, color='red', linewidth=2, label=r'$\mathbf{sin}(2x)$')
-    axSigs.plot(x, 3.0+trainData[1].T, color='red', alpha=0.1, linewidth=2)
-    axSigs.set_title('Noisy Sinusoids with Random Phase Shifts')
-    axSigs.set_xlabel('Time')
-    axSigs.set_ylabel('Signal')
+    axSigs.plot(x, trainData[0][0].T, color="blue", linewidth=2, label=r"$\mathbf{sin}(x)$")
+    axSigs.plot(x, trainData[0].T, color="blue", alpha=0.1, linewidth=2)
+    axSigs.plot(x, 3.0+trainData[1][0].T, color="red", linewidth=2, label=r"$\mathbf{sin}(2x)$")
+    axSigs.plot(x, 3.0+trainData[1].T, color="red", alpha=0.1, linewidth=2)
+    axSigs.set_title("Noisy Sinusoids with Random Phase Shifts")
+    axSigs.set_xlabel("Time")
+    axSigs.set_ylabel("Signal")
     axSigs.legend()
     axSigs.autoscale(tight=True)
 
@@ -310,39 +310,39 @@ def demoRARC():
 
     axTrainErrs = fig.add_subplot(1, 3, 2)
     #axTrainErrs = fig.add_subplot(1, 2, 1)
-    axTrainErrs.scatter(trainErrors[0][:,0], trainErrors[0][:,1], color='blue')
-    axTrainErrs.scatter(trainErrors[1][:,0], trainErrors[1][:,1], color='red')
-    axTrainErrs.set_title('Training Relative Modeling Errors')
-    axTrainErrs.set_xlabel(r'$\mathbf{sin}(x)$ model error')
-    axTrainErrs.set_ylabel(r'$\mathbf{sin}(2x)$ model error')
+    axTrainErrs.scatter(trainErrors[0][:,0], trainErrors[0][:,1], color="blue")
+    axTrainErrs.scatter(trainErrors[1][:,0], trainErrors[1][:,1], color="red")
+    axTrainErrs.set_title("Training Relative Modeling Errors")
+    axTrainErrs.set_xlabel(r"$\mathbf{sin}(x)$ model error")
+    axTrainErrs.set_ylabel(r"$\mathbf{sin}(2x)$ model error")
 
     allTrainErrs = np.vstack(trainErrors)
     mn = allTrainErrs.min()
     mx = allTrainErrs.max()
 
-    axTrainErrs.plot((mn,mx), (mn,mx), color='grey', linestyle='-.')
+    axTrainErrs.plot((mn,mx), (mn,mx), color="grey", linestyle="-.")
     axTrainErrs.grid()
     axTrainErrs.autoscale(tight=True)
 
     axTestErrs = fig.add_subplot(1, 3, 3)
     #axTestErrs = fig.add_subplot(1, 2, 2)
-    axTestErrs.scatter(testErrors[0][:,0], testErrors[0][:,1], color='blue')
-    axTestErrs.scatter(testErrors[1][:,0], testErrors[1][:,1], color='red')
-    axTestErrs.set_title('Testing Relative Modeling Errors')
-    axTestErrs.set_xlabel(r'$\mathbf{sin}(x)$ model error')
-    axTestErrs.set_ylabel(r'$\mathbf{sin}(2x)$ model error')
+    axTestErrs.scatter(testErrors[0][:,0], testErrors[0][:,1], color="blue")
+    axTestErrs.scatter(testErrors[1][:,0], testErrors[1][:,1], color="red")
+    axTestErrs.set_title("Testing Relative Modeling Errors")
+    axTestErrs.set_xlabel(r"$\mathbf{sin}(x)$ model error")
+    axTestErrs.set_ylabel(r"$\mathbf{sin}(2x)$ model error")
 
     allTestErrs = np.vstack(testErrors)
     mn = allTestErrs.min()
     mx = allTestErrs.max()
 
-    axTestErrs.plot((mn,mx), (mn,mx), color='grey', linestyle='-.')
+    axTestErrs.plot((mn,mx), (mn,mx), color="grey", linestyle="-.")
     axTestErrs.grid()
     axTestErrs.autoscale(tight=True)
 
     fig.tight_layout()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     demoARC()
     plt.show()

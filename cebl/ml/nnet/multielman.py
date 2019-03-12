@@ -215,7 +215,7 @@ class MultilayerElmanRecurrentNetwork(Regression, optim.Optable):
             deltaf = delta.reshape((-1, delta.shape[-1]))
             hgs[l][...] = r1cf.T.dot(deltaf)
 
-            #print('hg %d: %f' % (l, np.sqrt(np.mean(hgs[l]**2))))
+            #print("hg %d: %f" % (l, np.sqrt(np.mean(hgs[l]**2))))
 
             w = self.iws[l]
 
@@ -251,7 +251,7 @@ def demoMERNTXOR():
     x = std.apply(x)
     g = std.apply(g)
 
-    #options = {'maxfev': 1000}
+    #options = {"maxfev": 1000}
     #net = MERN(x[None,...], g[None,...], recs=(10,10,),
     net = MERN((x[0:250],x[250:500]), (g[0:250],g[250:500]), recs=(20,10),
                #iwInitFunc=lambda size: np.random.uniform(-0.2, 0.2, size=size),
@@ -259,7 +259,7 @@ def demoMERNTXOR():
                #vwInitFunc=lambda size: np.random.uniform(-0.2, 0.2, size=size),
                phi=transfer.tanhTwist,
                unrollSteps=unrollSteps, transient=transient,
-               #optimFunc=optim.sciopt, method='Powell',
+               #optimFunc=optim.sciopt, method="Powell",
                optimFunc=optim.scg,
                #optimFunc=optim.rprop, stepUp=1.02, stepDown=0.4,
                #optimFunc=optim.pso, nParticles=20, vInit=0.01, momentum=0.85, pAttract=0.2, gAttract=0.6,
@@ -286,14 +286,14 @@ def demoMERNTXOR():
     axTarg.bar(range(len(g)), g)
     axTarg.set_xlim((0, len(g)))
     axTarg.set_ylim((-1.5,1.5))
-    axTarg.set_title('Test Targets')
+    axTarg.set_title("Test Targets")
 
     # network output
     axOut = fig.add_subplot(4,2,3)
     axOut.bar(range(len(g)), out)
     axOut.set_xlim((0, len(g)))
     axOut.set_ylim((-1.5,1.5))
-    axOut.set_title('Test Outputs')
+    axOut.set_title("Test Outputs")
 
     # first layer output
     axH1 = fig.add_subplot(4,2,5)
@@ -301,7 +301,7 @@ def demoMERNTXOR():
     axH1.plot(hout[1] + util.colsep(hout[1]))
     #axH1.set_xlim((0, len(g)))
     #axH1.set_ylim((0.0,1.0))
-    axH1.set_title('H2')
+    axH1.set_title("H2")
 
     # second layer output
     axH2 = fig.add_subplot(4,2,7)
@@ -309,30 +309,30 @@ def demoMERNTXOR():
     axH2.plot(hout[0] + util.colsep(hout[0]))
     #axH2.set_xlim((0, len(g)))
     #axH2.set_ylim((0.0,1.0))
-    axH2.set_title('H1')
+    axH2.set_title("H1")
 
     axETrace = fig.add_subplot(4,2,2)
-    axETrace.plot(np.array(net.trainResult['eTrace']))
+    axETrace.plot(np.array(net.trainResult["eTrace"]))
 
     axPTrace = fig.add_subplot(4,2,4)
-    axPTrace.plot(np.array(net.trainResult['pTrace']))
+    axPTrace.plot(np.array(net.trainResult["pTrace"]))
 
     axH1Dens = fig.add_subplot(4,2,6)
     t = np.arange(0.0,4.0,0.01)
     nb, bins, patches = axH1Dens.hist(hout[0].ravel(), normed=True,
-            orientation='horizontal', label='Activations')
+            orientation="horizontal", label="Activations")
     axH1Dens.plot(np.linspace(0.0,np.max(nb),t.size), np.tanh(t-2.0),
-                  linewidth=2, label=r'$\phi$') # label=r'$\phi='+self.phi.__name__)
-    axH1Dens.legend(loc='lower right')
+                  linewidth=2, label=r"$\phi$") # label=r"$\phi="+self.phi.__name__)
+    axH1Dens.legend(loc="lower right")
 
     axH2Dens = fig.add_subplot(4,2,8)
     t = np.arange(0.0,4.0,0.01)
     nb, bins, patches = axH2Dens.hist(hout[0].ravel(), normed=True,
-            orientation='horizontal', label='Activations')
+            orientation="horizontal", label="Activations")
     axH2Dens.plot(np.linspace(0.0,np.max(nb),t.size), np.tanh(t-2.0),
-                  linewidth=2, label=r'$\phi$') # label=r'$\phi='+self.phi.__name__)
-    axH2Dens.legend(loc='lower right')
+                  linewidth=2, label=r"$\phi$") # label=r"$\phi="+self.phi.__name__)
+    axH2Dens.legend(loc="lower right")
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     demoMERNTXOR()
     plt.show()

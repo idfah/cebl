@@ -47,7 +47,7 @@ def upsample(s, factor):
 
     s = util.colmat(s)
 
-    sup = s.repeat(factor).reshape((-1, s.shape[1]), order='F')
+    sup = s.repeat(factor).reshape((-1, s.shape[1]), order="F")
 
     if flattenOut:
         sup = sup.ravel()
@@ -65,7 +65,7 @@ def decimate(s, factor, lowpassFrac=0.625, **kwargs):
 
     return downsample(sFiltered, factor)
 
-def interpolate(s, factor, order=8, filtType='lanczos'):
+def interpolate(s, factor, order=8, filtType="lanczos"):
     """Interpolate (upsample) a discrete signal by a given factor using a
     Finite Impulse Response (FIR) filter.
 
@@ -107,8 +107,8 @@ def interpolate(s, factor, order=8, filtType='lanczos'):
         New observations (length 4*2=8):   |**|**|**|**
     """
     if order % 2 != 0:
-        raise RuntimeError('Invalid order: ' + str(order) +
-            ' Must be an even integer.')
+        raise RuntimeError("Invalid order: " + str(order) +
+            " Must be an even integer.")
 
     # ensure we have a numpy array
     s = np.asarray(s)
@@ -136,19 +136,19 @@ def interpolate(s, factor, order=8, filtType='lanczos'):
     taps = np.linspace(-radius, radius, newOrder+1).astype(s.dtype, copy=False)
 
     # generate FIR filter
-    if filtType == 'lanczos':
+    if filtType == "lanczos":
         impulseResponse = np.sinc(taps) * windows.lanczos(newOrder+1).astype(s.dtype, copy=False)
-    elif filtType == 'sinc-blackman':
+    elif filtType == "sinc-blackman":
         impulseResponse = np.sinc(taps) * windows.blackman(newOrder+1).astype(s.dtype, copy=False)
     else:
-        raise RuntimeError('Invalid filtType: ' + str(filtType))
+        raise RuntimeError("Invalid filtType: " + str(filtType))
 
     # convolve with FIR filter to smooth across zero padding
     # NOTE:  there is potential for performance improvement here since
     #        zeros could be excluded from the computation XXX - idfah
     # spsig.fftconvolve might also be faster for long signals XXX - idfah
     return np.apply_along_axis(lambda v:
-               np.convolve(v, impulseResponse, mode='same'),
+               np.convolve(v, impulseResponse, mode="same"),
                axis=0, arr=sl)
 
 def resample(s, factorDown, factorUp=1, interpKwargs=None, **decimKwargs):
@@ -207,11 +207,11 @@ def demoInterpolate():
     sLanczos8 = interpolate(s, factor, order=8)
     sLanczos16 = interpolate(s, factor, order=16)
 
-    plt.plot(t, s, marker='o', color='lightgrey', linewidth=3, label='Original')
-    plt.plot(tInterp, sLanczos4, color='blue', label='Lanczos4')
-    plt.plot(tInterp, sLanczos8, color='red', label='Lanczos8')
-    plt.plot(tInterp, sLanczos16, color='green', label='Lanczos16')
-    plt.title('Interpolation of a Random Walk')
+    plt.plot(t, s, marker="o", color="lightgrey", linewidth=3, label="Original")
+    plt.plot(tInterp, sLanczos4, color="blue", label="Lanczos4")
+    plt.plot(tInterp, sLanczos8, color="red", label="Lanczos8")
+    plt.plot(tInterp, sLanczos16, color="green", label="Lanczos16")
+    plt.title("Interpolation of a Random Walk")
     plt.legend()
     plt.tight_layout()
 
@@ -229,69 +229,69 @@ def demoResample():
     fig = plt.figure()
 
     ##axChirp = fig.add_subplot(4, 1, 1)
-    ##axChirp.plot(f, chirp, color='black')
-    ##axChirp.set_title('Chirp')
-    ##axChirp.set_xlabel('Frequency (Hz)')
-    ##axChirp.set_ylabel('Signal')
+    ##axChirp.plot(f, chirp, color="black")
+    ##axChirp.set_title("Chirp")
+    ##axChirp.set_xlabel("Frequency (Hz)")
+    ##axChirp.set_ylabel("Signal")
     ##axChirp.autoscale(tight=True)
 
     #axChirpTwiny = axChirp.twiny()
     #axChirpTwiny.plot(t, chirp, alpha=0.0)
-    #axChirpTwiny.set_xlabel('Time (s)')
+    #axChirpTwiny.set_xlabel("Time (s)")
 
     fDown = downsample(f, factor)
     chirpDown = downsample(chirp, factor)
 
     axDown = fig.add_subplot(2, 2, 1)
-    axDown.plot(f, chirp, color='lightgrey', linewidth=2)
-    axDown.plot(fDown, chirpDown, color='red')
+    axDown.plot(f, chirp, color="lightgrey", linewidth=2)
+    axDown.plot(fDown, chirpDown, color="red")
     axDown.vlines(nyquist/factor, -1.0, 1.0, linewidth=2,
-        linestyle='--', color='green', label='New Nyquist')
-    axDown.set_title('Downsample factor %d' % factor)
-    axDown.set_xlabel('Frequency (Hz)')
-    axDown.set_ylabel('Signal')
+        linestyle="--", color="green", label="New Nyquist")
+    axDown.set_title("Downsample factor %d" % factor)
+    axDown.set_xlabel("Frequency (Hz)")
+    axDown.set_ylabel("Signal")
     axDown.autoscale(tight=True)
 
     chirpDeci = decimate(chirp, factor)
     axDeci = fig.add_subplot(2, 2, 3)
-    axDeci.plot(f, chirp, color='lightgrey', linewidth=2)
-    axDeci.plot(fDown, chirpDeci, color='red')
+    axDeci.plot(f, chirp, color="lightgrey", linewidth=2)
+    axDeci.plot(fDown, chirpDeci, color="red")
     axDeci.vlines(nyquist/factor, -1.0, 1.0, linewidth=2,
-        linestyle='--', color='green', label='New Nyquist')
-    axDeci.set_title('Decimation factor %d' % factor)
-    axDeci.set_xlabel('Frequency (Hz)')
-    axDeci.set_ylabel('Signal')
+        linestyle="--", color="green", label="New Nyquist")
+    axDeci.set_title("Decimation factor %d" % factor)
+    axDeci.set_xlabel("Frequency (Hz)")
+    axDeci.set_ylabel("Signal")
     axDeci.autoscale(tight=True)
 
     fInterp = np.linspace(0.0, nyquist, 2.0*sampRate*factor, endpoint=False)
     chirpInterp = interpolate(chirp, factor)
 
     axInterp = fig.add_subplot(2, 2, 2)
-    axInterp.plot(f, chirp, color='lightgrey', linewidth=2)
-    axInterp.plot(fInterp, chirpInterp, color='red')
+    axInterp.plot(f, chirp, color="lightgrey", linewidth=2)
+    axInterp.plot(fInterp, chirpInterp, color="red")
     #axInterp.vlines(nyquist*factor, -1.0, 1.0, linewidth=2,
-    #  linestyle='--', color='green', label='New Nyquist')
-    axInterp.set_title('Interpolation factor %d' % factor)
-    axInterp.set_xlabel('Frequency (Hz)')
-    axInterp.set_ylabel('Signal')
+    #  linestyle="--", color="green", label="New Nyquist")
+    axInterp.set_title("Interpolation factor %d" % factor)
+    axInterp.set_xlabel("Frequency (Hz)")
+    axInterp.set_ylabel("Signal")
     axInterp.autoscale(tight=True)
 
     fResamp = np.linspace(0.0, nyquist, 2.0*sampRate*(2.0/factor), endpoint=False)
     chirpResamp = resample(chirp, factorUp=2, factorDown=factor)
 
     axResamp = fig.add_subplot(2, 2, 4)
-    axResamp.plot(f, chirp, color='lightgrey', linewidth=2)
-    axResamp.plot(fResamp, chirpResamp, color='red')
+    axResamp.plot(f, chirp, color="lightgrey", linewidth=2)
+    axResamp.plot(fResamp, chirpResamp, color="red")
     axResamp.vlines((2.0/factor)*nyquist, -1.0, 1.0, linewidth=2,
-      linestyle='--', color='green', label='New Nyquist')
-    axResamp.set_title('Resample factor 2/%d' % factor)
-    axResamp.set_xlabel('Frequency (Hz)')
-    axResamp.set_ylabel('Signal')
+      linestyle="--", color="green", label="New Nyquist")
+    axResamp.set_title("Resample factor 2/%d" % factor)
+    axResamp.set_xlabel("Frequency (Hz)")
+    axResamp.set_ylabel("Signal")
     axResamp.autoscale(tight=True)
 
     fig.tight_layout()
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     demoInterpolate()
     demoResample()
     plt.show()

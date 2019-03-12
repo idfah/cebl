@@ -5,9 +5,9 @@ import gzip
 import lzma
 
 
-compressedExtensions = ('xz', 'bz2', 'gz')
+compressedExtensions = ("xz", "bz2", "gz")
 
-def openCompressedFile(fileName, mode='rb', **kwargs):
+def openCompressedFile(fileName, mode="rb", **kwargs):
     """Open a compressed file using an algorithm derived
     from its file extension.
 
@@ -36,11 +36,11 @@ def openCompressedFile(fileName, mode='rb', **kwargs):
     """
     fileNameLower = fileName.lower()
 
-    if fileNameLower.endswith('.xz'):
+    if fileNameLower.endswith(".xz"):
         return lzma.open(fileName, mode, **kwargs)
-    elif fileNameLower.endswith('.bz2'):
+    elif fileNameLower.endswith(".bz2"):
         return bz2.open(fileName, mode, **kwargs)
-    elif fileNameLower.endswith('.gz'):
+    elif fileNameLower.endswith(".gz"):
         return gzip.open(fileName, mode, **kwargs)
     else:
         return open(fileName, mode, **kwargs)

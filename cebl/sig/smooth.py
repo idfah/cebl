@@ -37,7 +37,7 @@ def movingAverage(s, width=2, kernelFunc=windows.boxcar, **kwargs):
 
     return np.apply_along_axis(
         np.convolve, axis=0, arr=s,
-        v=kernel, mode='same')
+        v=kernel, mode="same")
 
 def savitzkyGolay(s, *args, **kwargs):
     """Savitzky Golay filter.
@@ -113,33 +113,33 @@ def demoSmooth():
     fig = plt.figure()
 
     axMA = fig.add_subplot(2, 2, 1)
-    axMA.plot(x, y+sep, color='grey', linewidth=3)
+    axMA.plot(x, y+sep, color="grey", linewidth=3)
     axMA.plot(x, yMA+sep)
-    axMA.set_title('Moving Average %d' % maWidth)
+    axMA.set_title("Moving Average %d" % maWidth)
     axMA.autoscale(tight=True)
 
     axGA = fig.add_subplot(2, 2, 2)
-    axGA.plot(x, y+sep, color='grey', linewidth=3)
+    axGA.plot(x, y+sep, color="grey", linewidth=3)
     axGA.plot(x, yGA+sep)
-    axGA.set_title('Gaussian Moving Average %d' % gaWidth)
+    axGA.set_title("Gaussian Moving Average %d" % gaWidth)
     axGA.autoscale(tight=True)
 
     axSG = fig.add_subplot(2, 2, 3)
-    axSG.plot(x, y+sep, color='grey', linewidth=3)
+    axSG.plot(x, y+sep, color="grey", linewidth=3)
     axSG.plot(x, ySG+sep)
-    axSG.set_title('Savitzky-Golay %d %d' % (sgWidth, sgOrder))
+    axSG.set_title("Savitzky-Golay %d %d" % (sgWidth, sgOrder))
     axSG.autoscale(tight=True)
 
     axWN = fig.add_subplot(2, 2, 4)
-    axWN.plot(x, y+sep, color='grey', linewidth=3)
+    axWN.plot(x, y+sep, color="grey", linewidth=3)
     axWN.plot(x, yWN+sep)
-    axWN.set_title('Wiener %d %3.2f' % (wnSize, wnNoise))
-    #axWN.set_title('Wiener')
+    axWN.set_title("Wiener %d %3.2f" % (wnSize, wnNoise))
+    #axWN.set_title("Wiener")
     axWN.autoscale(tight=True)
 
     fig.tight_layout()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     demoSmooth()
     plt.show()
