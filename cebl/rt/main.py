@@ -16,7 +16,7 @@ class CEBLApp(wx.App):
     def OnInit(self):
         """Create a new CEBLMain frame.
         """
-        self.SetAppName('CEBL')
+        self.SetAppName("CEBL")
         self.main = CEBLMain()
         return True
 
@@ -24,7 +24,7 @@ class CEBLApp(wx.App):
         """Send gracefull exit notice.
         This should go in final release XXX - idfah
         """
-        print('Gracefull exit.')
+        print("Gracefull exit.")
         return True
 
 class CEBLMain(wx.Frame):
@@ -42,7 +42,7 @@ class CEBLMain(wx.Frame):
         displaySize = 1.2*displaySize[1], 0.75*displaySize[1]
 
         # call base class constructor
-        wx.Frame.__init__(self, parent=None, title='CEBL3', size=displaySize)
+        wx.Frame.__init__(self, parent=None, title="CEBL3", size=displaySize)
 
         # initialize the main notebook
         self.initNotebook()
@@ -124,15 +124,15 @@ class CEBLMain(wx.Frame):
             curRollCount, curBuffFill = src.getBufferStats()
             sampRate = src.getEffectiveSampRate()
 
-        self.statusBar.SetStatusText('Source: %s' % str(src), 0)
-        self.statusBar.SetStatusText('Running Pages: %d' % self.mgr.getNRunningPages(), 1)
-        self.statusBar.SetStatusText('Buffer: %d/%d%%' % (curRollCount, int(curBuffFill*100)), 2)
-        self.statusBar.SetStatusText('Sampling Rate: %.2fHz' % sampRate, 3)
-        self.statusBar.SetStatusText('Version: 3.0.0a', 4)
+        self.statusBar.SetStatusText("Source: %s" % str(src), 0)
+        self.statusBar.SetStatusText("Running Pages: %d" % self.mgr.getNRunningPages(), 1)
+        self.statusBar.SetStatusText("Buffer: %d/%d%%" % (curRollCount, int(curBuffFill*100)), 2)
+        self.statusBar.SetStatusText("Sampling Rate: %.2fHz" % sampRate, 3)
+        self.statusBar.SetStatusText("Version: 3.0.0a", 4)
 
 class Splash(wx.adv.SplashScreen):
     def __init__(self, parent):
-        logo = wx.Image(os.path.dirname(__file__) + '/images/CEBL3_splash.png',
+        logo = wx.Image(os.path.dirname(__file__) + "/images/CEBL3_splash.png",
             wx.BITMAP_TYPE_PNG).ConvertToBitmap()
 
         wx.adv.SplashScreen.__init__(self,
@@ -143,5 +143,5 @@ def run():
     bci = CEBLApp()
     bci.MainLoop()
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     run()

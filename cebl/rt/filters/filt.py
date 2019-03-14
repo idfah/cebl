@@ -67,7 +67,7 @@ class Filter:
         return self.name
 
     def apply(self, s):
-        raise NotImplementedError('apply not implemented.')
+        raise NotImplementedError("apply not implemented.")
 
     def genConfigPanel(self, parent, pg, *args, **kwargs):
         """Generate an instance of the configPanelClass, given as an

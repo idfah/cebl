@@ -3,7 +3,7 @@
 # note, the cebl startup script also sets the backend.  This is just in case
 # cebl is started from the console.
 import matplotlib.pyplot as plt
-plt.switch_backend('WXAgg')
+plt.switch_backend("WXAgg")
 
 from . import events
 from . import logging

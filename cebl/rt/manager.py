@@ -3,7 +3,7 @@ import traceback
 import wx
 
 #import warnings
-#warnings.simplefilter('always')
+#warnings.simplefilter("always")
 
 from . import events
 from . import logging
@@ -12,7 +12,7 @@ from . import sources
 
 
 def logExceptionHook(etype, e, trace):
-    wx.LogError(''.join(traceback.format_exception(etype, e, trace)) + 'Uncaught.\n')
+    wx.LogError("".join(traceback.format_exception(etype, e, trace)) + "Uncaught.\n")
 
 class Manager:
     def __init__(self, pageParent, statusPanel=None, sourceList=None,

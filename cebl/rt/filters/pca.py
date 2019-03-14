@@ -2,7 +2,7 @@ from cebl import ml
 
 from .strans import STrans, STransConfigPanel
 
-PrincipalComponentsName = 'Principal Components'
+PrincipalComponentsName = "Principal Components"
 
 
 class PrincipalComponents(STrans):

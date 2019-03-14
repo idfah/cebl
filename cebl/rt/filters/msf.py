@@ -2,7 +2,7 @@ from cebl import ml
 
 from .strans import STrans, STransConfigPanel
 
-MaxSignalFractionName = 'Max Signal Fraction'
+MaxSignalFractionName = "Max Signal Fraction"
 
 
 class MaxSignalFraction(STrans):

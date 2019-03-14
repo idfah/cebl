@@ -8,7 +8,7 @@ from cebl.rt import widgets
 
 from .filt import Filter, FilterConfigPanel
 
-WienerName = 'Wiener'
+WienerName = "Wiener"
 
 
 class WienerConfigPanel(FilterConfigPanel):
@@ -24,7 +24,7 @@ class WienerConfigPanel(FilterConfigPanel):
 
         # sizes should only be odd, easiest way is to implement this as slider with odd values XXX - idfah
 
-        sizeControlBox = widgets.ControlBox(self, label='Size', orient=wx.HORIZONTAL)
+        sizeControlBox = widgets.ControlBox(self, label="Size", orient=wx.HORIZONTAL)
         self.sizeSpinCtrl = wx.SpinCtrl(self, value=str(self.flt.size), min=3, max=100)
         self.Bind(wx.EVT_SPINCTRL, self.setSize, self.sizeSpinCtrl)
         sizeControlBox.Add(self.sizeSpinCtrl, proportion=1, flag=wx.ALL, border=8)

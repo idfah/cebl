@@ -77,24 +77,24 @@ class STransConfigPanel(FilterConfigPanel):
     def initOptions(self):
         optionsSizer = wx.BoxSizer(wx.HORIZONTAL)
 
-        collectControlBox = widgets.ControlBox(self, label='Collect Data', orient=wx.HORIZONTAL)
-        self.collectButton = wx.Button(self, label='Start')
+        collectControlBox = widgets.ControlBox(self, label="Collect Data", orient=wx.HORIZONTAL)
+        self.collectButton = wx.Button(self, label="Start")
         self.Bind(wx.EVT_BUTTON, self.toggleCollect, self.collectButton)
         collectControlBox.Add(self.collectButton, proportion=1, flag=wx.ALL, border=8)
         optionsSizer.Add(collectControlBox, proportion=0, flag=wx.ALL | wx.EXPAND, border=8)
 
-        trainControlBox = widgets.ControlBox(self, label='Retrain', orient=wx.HORIZONTAL)
-        self.trainButton = wx.Button(self, label='Update')
+        trainControlBox = widgets.ControlBox(self, label="Retrain", orient=wx.HORIZONTAL)
+        self.trainButton = wx.Button(self, label="Update")
         self.Bind(wx.EVT_BUTTON, self.updateFilt, self.trainButton)
         trainControlBox.Add(self.trainButton, proportion=1, flag=wx.ALL, border=8)
         optionsSizer.Add(trainControlBox, proportion=0,
                 flag=wx.TOP | wx.RIGHT | wx.BOTTOM | wx.EXPAND, border=8)
 
-        viewControlBox = widgets.ControlBox(self, label='View', orient=wx.HORIZONTAL)
-        self.rawViewRbtn = wx.RadioButton(self, label='Raw', style=wx.RB_GROUP)
+        viewControlBox = widgets.ControlBox(self, label="View", orient=wx.HORIZONTAL)
+        self.rawViewRbtn = wx.RadioButton(self, label="Raw", style=wx.RB_GROUP)
         self.rawViewRbtn.SetValue(True)
         self.Bind(wx.EVT_RADIOBUTTON, self.setRawView, self.rawViewRbtn)
-        self.filteredViewRbtn = wx.RadioButton(self, label='Filtered')
+        self.filteredViewRbtn = wx.RadioButton(self, label="Filtered")
         self.Bind(wx.EVT_RADIOBUTTON, self.setFilteredView, self.filteredViewRbtn)
 
         viewControlBox.Add(self.rawViewRbtn, proportion=1,
@@ -110,25 +110,25 @@ class STransConfigPanel(FilterConfigPanel):
             self.rawViewRbtn.Disable()
             self.filteredViewRbtn.Disable()
 
-        compControlBox = widgets.ControlBox(self, label='Components', orient=wx.HORIZONTAL)
+        compControlBox = widgets.ControlBox(self, label="Components", orient=wx.HORIZONTAL)
         self.compTextCtrl = wx.TextCtrl(parent=self, style=wx.TE_PROCESS_ENTER)
         self.Bind(wx.EVT_TEXT_ENTER, self.setComp, self.compTextCtrl)
         self.compTextCtrl.Bind(wx.EVT_KILL_FOCUS, self.setComp, self.compTextCtrl)
         compControlBox.Add(self.compTextCtrl, proportion=1, flag=wx.ALL | wx.EXPAND, border=10)
 
-        self.removeCheckBox = wx.CheckBox(self, label='Remove')
+        self.removeCheckBox = wx.CheckBox(self, label="Remove")
         self.removeCheckBox.SetValue(self.flt.remove)
         self.Bind(wx.EVT_CHECKBOX, self.setRemove, self.removeCheckBox)
         compControlBox.Add(self.removeCheckBox, proportion=1,
                 flag=wx.TOP | wx.RIGHT | wx.BOTTOM | wx.EXPAND, border=8)
 
-        self.transformCheckBox = wx.CheckBox(self, label='Transform')
+        self.transformCheckBox = wx.CheckBox(self, label="Transform")
         self.transformCheckBox.SetValue(self.flt.transform)
         self.Bind(wx.EVT_CHECKBOX, self.setTransform, self.transformCheckBox)
         compControlBox.Add(self.transformCheckBox, proportion=1,
                 flag=wx.TOP | wx.RIGHT | wx.BOTTOM | wx.EXPAND, border=8)
 
-        lagsControlBox = widgets.ControlBox(self, label='Lags', orient=wx.HORIZONTAL)
+        lagsControlBox = widgets.ControlBox(self, label="Lags", orient=wx.HORIZONTAL)
         self.lagsSpinCtrl = wx.SpinCtrl(self, value=str(self.flt.lags), min=0, max=20)
         self.Bind(wx.EVT_SPINCTRL, self.setLags, self.lagsSpinCtrl)
         lagsControlBox.Add(self.lagsSpinCtrl, proportion=1,
@@ -156,7 +156,7 @@ class STransConfigPanel(FilterConfigPanel):
             self.updateFilt()
 
             # set button label to start
-            self.collectButton.SetLabel('Start')
+            self.collectButton.SetLabel("Start")
 
             # enable view buttons
             self.trainButton.Enable()
@@ -169,7 +169,7 @@ class STransConfigPanel(FilterConfigPanel):
 
         else:
             # set button label to stop
-            self.collectButton.SetLabel('Stop')
+            self.collectButton.SetLabel("Stop")
 
             # start collecting
             self.pg.start()
@@ -195,11 +195,11 @@ class STransConfigPanel(FilterConfigPanel):
 
         if len(compStr) != 0:
             try:
-                toks = compStr.replace(' ', '').split(',')
+                toks = compStr.replace(" ", "").split(",")
 
                 for tok in toks:
-                    if '-' in tok:
-                        low, high = (int(c) for c in tok.split('-'))
+                    if "-" in tok:
+                        low, high = (int(c) for c in tok.split("-"))
                         comp = range(low, high+1)
                     else:
                         comp = [int(tok,)]
@@ -208,7 +208,7 @@ class STransConfigPanel(FilterConfigPanel):
 
             except Exception as e:
                 self.flt.comp = []
-                wx.LogWarning('Invalid component config: %s.' % str(compStr))
+                wx.LogWarning("Invalid component config: %s." % str(compStr))
 
         self.flt.updateFilteredTrain()
         self.updateTrace()
@@ -285,6 +285,6 @@ class STrans(Filter):
 
         filteredCap = eeg.EEG(filteredData, sampRate=self.getOutSampRate(),
                 chanNames=self.getOutChans(), markers=markers,
-                deviceName='Max Signal Fraction')
+                deviceName="Max Signal Fraction")
 
         return filteredCap

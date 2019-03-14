@@ -10,8 +10,8 @@ from cebl.rt import widgets
 
 from .filt import Filter, FilterConfigPanel
 
-IIRBandpassName = 'IIR Bandpass Filter'
-FIRBandpassName = 'FIR Bandpass Filter'
+IIRBandpassName = "IIR Bandpass Filter"
+FIRBandpassName = "FIR Bandpass Filter"
 
 
 class IIRBandpassConfigPanel(FilterConfigPanel):
@@ -38,7 +38,7 @@ class IIRBandpassConfigPanel(FilterConfigPanel):
         optionsSizer.Add(self.filtTypeComboBox, proportion=1,
                 flag=wx.LEFT | wx.TOP | wx.RIGHT | wx.ALIGN_CENTER, border=20)
 
-        self.zeroPhaseCheckBox = wx.CheckBox(self, label='Zero Phase')
+        self.zeroPhaseCheckBox = wx.CheckBox(self, label="Zero Phase")
         self.zeroPhaseCheckBox.SetValue(self.flt.zeroPhase)
         self.Bind(wx.EVT_CHECKBOX, self.setZeroPhase, self.zeroPhaseCheckBox)
         optionsSizer.Add(self.zeroPhaseCheckBox, proportion=1,
@@ -50,7 +50,7 @@ class IIRBandpassConfigPanel(FilterConfigPanel):
         filtType = self.filtTypeComboBox.GetValue()
 
         if filtType not in self.flt.filtMap.keys():
-            raise RuntimeError('Invalid filter type: %s.' % str(filtType))
+            raise RuntimeError("Invalid filter type: %s." % str(filtType))
 
         self.flt.filtType = filtType
         self.updateResponse()
@@ -62,8 +62,8 @@ class IIRBandpassConfigPanel(FilterConfigPanel):
     def initSliders(self):
         sliderSizer = wx.BoxSizer(wx.HORIZONTAL)
 
-        lowFreqControlBox = widgets.ControlBox(self, label='lowFreq', orient=wx.VERTICAL)
-        self.lowFreqText = wx.StaticText(self, label='%6.2f(Hz)' % self.flt.lowFreq)
+        lowFreqControlBox = widgets.ControlBox(self, label="lowFreq", orient=wx.VERTICAL)
+        self.lowFreqText = wx.StaticText(self, label="%6.2f(Hz)" % self.flt.lowFreq)
         lowFreqTextSizer = wx.BoxSizer(orient=wx.VERTICAL)
         lowFreqTextSizer.Add(self.lowFreqText, proportion=0, flag=wx.ALIGN_CENTER_HORIZONTAL)
         self.lowFreqSlider = wx.Slider(self, style=wx.SL_VERTICAL | wx.SL_INVERSE,
@@ -77,8 +77,8 @@ class IIRBandpassConfigPanel(FilterConfigPanel):
         sliderSizer.Add(lowFreqControlBox, proportion=1,
                 flag=wx.ALL | wx.EXPAND, border=10)
 
-        highFreqControlBox = widgets.ControlBox(self, label='highFreq', orient=wx.VERTICAL)
-        self.highFreqText = wx.StaticText(self, label='%6.2f(Hz)' % self.flt.highFreq)
+        highFreqControlBox = widgets.ControlBox(self, label="highFreq", orient=wx.VERTICAL)
+        self.highFreqText = wx.StaticText(self, label="%6.2f(Hz)" % self.flt.highFreq)
         highFreqTextSizer = wx.BoxSizer(orient=wx.VERTICAL)
         highFreqTextSizer.Add(self.highFreqText, proportion=0, flag=wx.ALIGN_CENTER_HORIZONTAL)
         self.highFreqSlider = wx.Slider(self, style=wx.SL_VERTICAL | wx.SL_INVERSE,
@@ -92,8 +92,8 @@ class IIRBandpassConfigPanel(FilterConfigPanel):
         sliderSizer.Add(highFreqControlBox, proportion=1,
                 flag=wx.ALL | wx.EXPAND, border=10)
 
-        orderControlBox = widgets.ControlBox(self, label='Order', orient=wx.VERTICAL)
-        self.orderText = wx.StaticText(self, label='%2d' % self.flt.order)
+        orderControlBox = widgets.ControlBox(self, label="Order", orient=wx.VERTICAL)
+        self.orderText = wx.StaticText(self, label="%2d" % self.flt.order)
         orderTextSizer = wx.BoxSizer(orient=wx.VERTICAL)
         orderTextSizer.Add(self.orderText, proportion=0, flag=wx.ALIGN_CENTER_HORIZONTAL)
         self.orderSlider = wx.Slider(self, style=wx.SL_VERTICAL | wx.SL_INVERSE,
@@ -111,17 +111,17 @@ class IIRBandpassConfigPanel(FilterConfigPanel):
 
     def setLowFreq(self, event):
         self.flt.lowFreq = self.lowFreqSlider.GetValue() / 4.0
-        self.lowFreqText.SetLabel('%6.2f(Hz)' % self.flt.lowFreq)
+        self.lowFreqText.SetLabel("%6.2f(Hz)" % self.flt.lowFreq)
         self.updateResponse()
 
     def setHighFreq(self, event):
         self.flt.highFreq = self.highFreqSlider.GetValue() / 4.0
-        self.highFreqText.SetLabel('%6.2f(Hz)' % self.flt.highFreq)
+        self.highFreqText.SetLabel("%6.2f(Hz)" % self.flt.highFreq)
         self.updateResponse()
 
     def setOrder(self, event):
         self.flt.order = self.orderSlider.GetValue()
-        self.orderText.SetLabel('%2d' % self.flt.order)
+        self.orderText.SetLabel("%2d" % self.flt.order)
         self.updateResponse()
 
     def initResponse(self):
@@ -140,14 +140,14 @@ class IIRBandpassConfigPanel(FilterConfigPanel):
         responseSizer = wx.BoxSizer(wx.VERTICAL)
 
         freqResponseControlBox = widgets.ControlBox(self,
-                label='Freqency Response', orient=wx.VERTICAL)
+                label="Freqency Response", orient=wx.VERTICAL)
         freqResponseControlBox.Add(self.freqResponseCanvas, proportion=1,
                 flag=wx.ALL | wx.EXPAND, border=8)
         responseSizer.Add(freqResponseControlBox, proportion=1,
                 flag=wx.TOP | wx.RIGHT | wx.BOTTOM | wx.EXPAND, border=10)
 
         phaseResponseControlBox = widgets.ControlBox(self,
-                label='Phase Response', orient=wx.VERTICAL)
+                label="Phase Response", orient=wx.VERTICAL)
         phaseResponseControlBox.Add(self.phaseResponseCanvas, proportion=1,
                 flag=wx.ALL | wx.EXPAND, border=8)
         responseSizer.Add(phaseResponseControlBox, proportion=1,
@@ -190,12 +190,12 @@ class IIRBandpassConfigPanel(FilterConfigPanel):
         self.freqResponseAx.cla()
         self.flt.bp.plotFreqResponse(ax=self.freqResponseAx, linewidth=2)
         self.freqResponseAx.autoscale(tight=True)
-        self.freqResponseAx.legend(prop={'size': 12})
+        self.freqResponseAx.legend(prop={"size": 12})
         self.freqResponseCanvas.draw()
 
         self.phaseResponseAx.cla()
         self.flt.bp.plotPhaseResponse(ax=self.phaseResponseAx, linewidth=2)
-        self.phaseResponseAx.legend(prop={'size': 12})
+        self.phaseResponseAx.legend(prop={"size": 12})
         self.phaseResponseAx.autoscale(tight=True)
 
         #if self.flt.zeroPhase:
@@ -213,13 +213,13 @@ class IIRBandpass(Filter):
                         configPanelClass=IIRBandpassConfigPanel, **kwargs)
 
         self.filtMap = odict()
-        self.filtMap['Butterworth'] = 'butter'
-        self.filtMap['Chebyshev I'] = 'cheby1'
-        self.filtMap['Chebyshev II'] = 'cheby2'
-        self.filtMap['Elliptic'] = 'ellip'
-        self.filtMap['Bessel'] = 'bessel'
+        self.filtMap["Butterworth"] = "butter"
+        self.filtMap["Chebyshev I"] = "cheby1"
+        self.filtMap["Chebyshev II"] = "cheby2"
+        self.filtMap["Elliptic"] = "ellip"
+        self.filtMap["Bessel"] = "bessel"
 
-        self.filtType = 'Butterworth'
+        self.filtType = "Butterworth"
         self.nyquist = self.inSampRate/2.0
         self.lowFreq = 0.0
         self.highFreq = self.nyquist
@@ -248,10 +248,10 @@ class IIRBandpass(Filter):
 
         # should be configurable XXX - idfah
         kwargs = {}
-        if filtType in ('ellip', 'cheby1'):
-            kwargs['rp'] = self.rp
-        if filtType in ('ellip', 'cheby2'):
-            kwargs['rs'] = self.rs
+        if filtType in ("ellip", "cheby1"):
+            kwargs["rp"] = self.rp
+        if filtType in ("ellip", "cheby2"):
+            kwargs["rs"] = self.rs
 
         # need dtype argument XXX - idfah
         self.bp = sig.BandpassFilterIIR(lowFreq=lowFreq, highFreq=highFreq, order=self.order,
@@ -295,7 +295,7 @@ class FIRBandpassConfigPanel(FilterConfigPanel):
         filtType = self.filtTypeComboBox.GetValue()
 
         if filtType not in self.flt.filtMap.keys():
-            raise RuntimeError('Invalid filter type: %s.' % str(filtType))
+            raise RuntimeError("Invalid filter type: %s." % str(filtType))
 
         self.flt.filtType = filtType
         self.updateResponse()
@@ -303,8 +303,8 @@ class FIRBandpassConfigPanel(FilterConfigPanel):
     def initSliders(self):
         sliderSizer = wx.BoxSizer(wx.HORIZONTAL)
 
-        lowFreqControlBox = widgets.ControlBox(self, label='lowFreq', orient=wx.VERTICAL)
-        self.lowFreqText = wx.StaticText(self, label='%6.2f(Hz)' % self.flt.lowFreq)
+        lowFreqControlBox = widgets.ControlBox(self, label="lowFreq", orient=wx.VERTICAL)
+        self.lowFreqText = wx.StaticText(self, label="%6.2f(Hz)" % self.flt.lowFreq)
         lowFreqTextSizer = wx.BoxSizer(orient=wx.VERTICAL)
         lowFreqTextSizer.Add(self.lowFreqText, proportion=0, flag=wx.ALIGN_CENTER_HORIZONTAL)
         self.lowFreqSlider = wx.Slider(self, style=wx.SL_VERTICAL | wx.SL_INVERSE,
@@ -318,8 +318,8 @@ class FIRBandpassConfigPanel(FilterConfigPanel):
         sliderSizer.Add(lowFreqControlBox, proportion=1,
                 flag=wx.ALL | wx.EXPAND, border=10)
 
-        highFreqControlBox = widgets.ControlBox(self, label='highFreq', orient=wx.VERTICAL)
-        self.highFreqText = wx.StaticText(self, label='%6.2f(Hz)' % self.flt.highFreq)
+        highFreqControlBox = widgets.ControlBox(self, label="highFreq", orient=wx.VERTICAL)
+        self.highFreqText = wx.StaticText(self, label="%6.2f(Hz)" % self.flt.highFreq)
         highFreqTextSizer = wx.BoxSizer(orient=wx.VERTICAL)
         highFreqTextSizer.Add(self.highFreqText, proportion=0, flag=wx.ALIGN_CENTER_HORIZONTAL)
         self.highFreqSlider = wx.Slider(self, style=wx.SL_VERTICAL | wx.SL_INVERSE,
@@ -333,8 +333,8 @@ class FIRBandpassConfigPanel(FilterConfigPanel):
         sliderSizer.Add(highFreqControlBox, proportion=1,
                 flag=wx.ALL | wx.EXPAND, border=10)
 
-        orderControlBox = widgets.ControlBox(self, label='Order', orient=wx.VERTICAL)
-        self.orderText = wx.StaticText(self, label='%2d' % self.flt.order)
+        orderControlBox = widgets.ControlBox(self, label="Order", orient=wx.VERTICAL)
+        self.orderText = wx.StaticText(self, label="%2d" % self.flt.order)
         orderTextSizer = wx.BoxSizer(orient=wx.VERTICAL)
         orderTextSizer.Add(self.orderText, proportion=0, flag=wx.ALIGN_CENTER_HORIZONTAL)
         self.orderSlider = wx.Slider(self, style=wx.SL_VERTICAL | wx.SL_INVERSE,
@@ -352,17 +352,17 @@ class FIRBandpassConfigPanel(FilterConfigPanel):
 
     def setLowFreq(self, event):
         self.flt.lowFreq = self.lowFreqSlider.GetValue() / 4.0
-        self.lowFreqText.SetLabel('%6.2f(Hz)' % self.flt.lowFreq)
+        self.lowFreqText.SetLabel("%6.2f(Hz)" % self.flt.lowFreq)
         self.updateResponse()
 
     def setHighFreq(self, event):
         self.flt.highFreq = self.highFreqSlider.GetValue() / 4.0
-        self.highFreqText.SetLabel('%6.2f(Hz)' % self.flt.highFreq)
+        self.highFreqText.SetLabel("%6.2f(Hz)" % self.flt.highFreq)
         self.updateResponse()
 
     def setOrder(self, event):
         self.flt.order = self.orderSlider.GetValue() * 2
-        self.orderText.SetLabel('%2d' % self.flt.order)
+        self.orderText.SetLabel("%2d" % self.flt.order)
         self.updateResponse()
 
     def initResponse(self):
@@ -381,14 +381,14 @@ class FIRBandpassConfigPanel(FilterConfigPanel):
         responseSizer = wx.BoxSizer(wx.VERTICAL)
 
         freqResponseControlBox = widgets.ControlBox(self,
-                label='Freqency Response', orient=wx.VERTICAL)
+                label="Freqency Response", orient=wx.VERTICAL)
         freqResponseControlBox.Add(self.freqResponseCanvas, proportion=1,
                 flag=wx.ALL | wx.EXPAND, border=8)
         responseSizer.Add(freqResponseControlBox, proportion=1,
                 flag=wx.TOP | wx.RIGHT | wx.BOTTOM | wx.EXPAND, border=10)
 
         phaseResponseControlBox = widgets.ControlBox(self,
-                label='Phase Response', orient=wx.VERTICAL)
+                label="Phase Response", orient=wx.VERTICAL)
         phaseResponseControlBox.Add(self.phaseResponseCanvas, proportion=1,
                 flag=wx.ALL | wx.EXPAND, border=8)
         responseSizer.Add(phaseResponseControlBox, proportion=1,
@@ -431,12 +431,12 @@ class FIRBandpassConfigPanel(FilterConfigPanel):
         self.freqResponseAx.cla()
         self.flt.bp.plotFreqResponse(ax=self.freqResponseAx, linewidth=2)
         self.freqResponseAx.autoscale(tight=True)
-        self.freqResponseAx.legend(prop={'size': 12})
+        self.freqResponseAx.legend(prop={"size": 12})
         self.freqResponseCanvas.draw()
 
         self.phaseResponseAx.cla()
         self.flt.bp.plotPhaseResponse(ax=self.phaseResponseAx, linewidth=2)
-        self.phaseResponseAx.legend(prop={'size': 12})
+        self.phaseResponseAx.legend(prop={"size": 12})
         self.phaseResponseAx.autoscale(tight=True)
 
         self.phaseResponseCanvas.draw()
@@ -447,12 +447,12 @@ class FIRBandpass(Filter):
                         configPanelClass=FIRBandpassConfigPanel, **kwargs)
 
         self.filtMap = odict()
-        self.filtMap['Lanczos'] = 'lanczos'
-        self.filtMap['Sinc Blackman'] = 'sinc-blackman'
-        self.filtMap['Sinc Hamming'] = 'sinc-hamming'
-        self.filtMap['Sinc Hann'] = 'sinc-hann'
+        self.filtMap["Lanczos"] = "lanczos"
+        self.filtMap["Sinc Blackman"] = "sinc-blackman"
+        self.filtMap["Sinc Hamming"] = "sinc-hamming"
+        self.filtMap["Sinc Hann"] = "sinc-hann"
 
-        self.filtType = 'Sinc Blackman'
+        self.filtType = "Sinc Blackman"
         self.nyquist = self.inSampRate/2.0
         self.lowFreq = 0.0
         self.highFreq = self.nyquist

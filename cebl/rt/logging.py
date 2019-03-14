@@ -9,13 +9,13 @@ class LogTarget(wx.Log):
 
     def DoLogTextAtLevel(self, level, msg):
         if level == wx.LOG_Warning:
-            caption = 'Warning'
+            caption = "Warning"
         elif level == wx.LOG_Error:
-            caption = 'Error'
+            caption = "Error"
         else:
-            caption = 'Message'
+            caption = "Message"
 
-        fullMessage = caption + ': ' + msg + '\n'
+        fullMessage = caption + ": " + msg + "\n"
         if level == wx.LOG_Error:
             sys.stderr.write(fullMessage)
             sys.stderr.flush()

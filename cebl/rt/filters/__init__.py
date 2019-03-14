@@ -1,6 +1,5 @@
 """Real-time filters.
 """
-
 filterChoices = {}
 
 from .filt import *

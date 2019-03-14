@@ -5,14 +5,14 @@ from cebl.rt import widgets
 
 from .filt import Filter, FilterConfigPanel
 
-GNautilusMTPSDName = 'GNautilusMTPSD'
+GNautilusMTPSDName = "GNautilusMTPSD"
 
 
 class GNautilusMTPSDConfigPanel(FilterConfigPanel):
     def __init__(self, *args, **kwargs):
         FilterConfigPanel.__init__(self, *args, **kwargs)
 
-        self.hello = wx.StaticText(self, label='Hello World!')
+        self.hello = wx.StaticText(self, label="Hello World!")
         self.sizer.Add(self.hello, proportion=1, flag=wx.EXPAND, border=10)
 
         self.initLayout()
@@ -23,7 +23,7 @@ class GNautilusMTPSD(Filter):
                         configPanelClass=GNautilusMTPSDConfigPanel, **kwargs)
 
     def apply(self, cap):
-        cap.keepChans(('F3', 'F4', 'C3', 'C4', 'P3', 'P4', 'PO3', 'PO4'))
+        cap.keepChans(("F3", "F4", "C3", "C4", "P3", "P4", "PO3", "PO4"))
 
         cap.demean()
         cap.bandpass(0.0, 20.0, order=3)
