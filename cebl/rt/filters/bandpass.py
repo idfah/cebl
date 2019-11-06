@@ -140,7 +140,7 @@ class IIRBandpassConfigPanel(FilterConfigPanel):
         responseSizer = wx.BoxSizer(wx.VERTICAL)
 
         freqResponseControlBox = widgets.ControlBox(self,
-                label='Freqency Response', orient=wx.VERTICAL)
+                label='Frequency Response', orient=wx.VERTICAL)
         freqResponseControlBox.Add(self.freqResponseCanvas, proportion=1,
                 flag=wx.ALL | wx.EXPAND, border=8)
         responseSizer.Add(freqResponseControlBox, proportion=1,
@@ -381,7 +381,7 @@ class FIRBandpassConfigPanel(FilterConfigPanel):
         responseSizer = wx.BoxSizer(wx.VERTICAL)
 
         freqResponseControlBox = widgets.ControlBox(self,
-                label='Freqency Response', orient=wx.VERTICAL)
+                label='Frequency Response', orient=wx.VERTICAL)
         freqResponseControlBox.Add(self.freqResponseCanvas, proportion=1,
                 flag=wx.ALL | wx.EXPAND, border=8)
         responseSizer.Add(freqResponseControlBox, proportion=1,

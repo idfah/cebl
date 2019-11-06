@@ -638,7 +638,7 @@ class SegmentedEEG(EEGBase):
 
         ax.grid()
         ax.set_title('Power Spectral Density')
-        ax.set_xlabel(r'Freqency ($Hz$)')
+        ax.set_xlabel(r'Frequency ($Hz$)')
         ax.set_xlim((np.min(freqs), np.max(freqs)))
 
         scale = scale.lower()

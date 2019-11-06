@@ -53,7 +53,7 @@ class PSDBase:
 
         ax.grid()
         ax.set_title('Power Spectral Density')
-        ax.set_xlabel(r'Freqency ($Hz$)')
+        ax.set_xlabel(r'Frequency ($Hz$)')
         ax.set_xlim((np.min(self.freqs), np.max(self.freqs)))
         if scale in ('linear', 'log'):
             ax.set_ylabel(r'Power Density ($\mu V^2 / Hz$)')
