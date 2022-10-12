@@ -62,12 +62,6 @@ cython_modules.append(
         sources = ['cebl/rt/widgets/wxlibplot/polyobjects.pyx'],
         extra_compile_args = extra_compile_args))
 
-# cythonized cwt implementation
-cython_modules.append(
-    setuptools.Extension('cebl.sig.cwt',
-        sources = ['cebl/sig/cwt.pyx'],
-        extra_compile_args = extra_compile_args))
-
 ## # g.tec g.MOBILab+
 ## cython_modules.append(
 ##     setuptools.Extension('cebl.rt.sources.gtec.gmobilab.gmobilab',
