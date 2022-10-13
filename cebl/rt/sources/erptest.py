@@ -42,7 +42,7 @@ class ERPTestConfigPanel(SourceConfigPanel):
         scaleTextSizer = wx.BoxSizer(orient=wx.VERTICAL)
         scaleTextSizer.Add(self.scaleText, proportion=1, flag=wx.EXPAND)
         self.scaleSlider = wx.Slider(self, style=wx.SL_HORIZONTAL,
-                value=self.src.scale.value*10.0, minValue=1, maxValue=300)
+                value=int(self.src.scale.value * 10), minValue=1, maxValue=300)
         self.Bind(wx.EVT_SLIDER, self.setScale, self.scaleSlider)
 
         scaleControlBox.Add(scaleTextSizer, proportion=0, flag=wx.ALL, border=10)
@@ -57,7 +57,7 @@ class ERPTestConfigPanel(SourceConfigPanel):
         erpSpeedTextSizer = wx.BoxSizer(orient=wx.VERTICAL)
         erpSpeedTextSizer.Add(self.erpSpeedText, proportion=1, flag=wx.EXPAND)
         self.erpSpeedSlider = wx.Slider(self, style=wx.SL_HORIZONTAL,
-                value=self.src.erpSpeed.value*10.0, minValue=1, maxValue=300)
+                value=int(self.src.erpSpeed.value * 10), minValue=1, maxValue=300)
         self.Bind(wx.EVT_SLIDER, self.setERPSpeed, self.erpSpeedSlider)
 
         erpSpeedControlBox.Add(erpSpeedTextSizer, proportion=0, flag=wx.ALL, border=10)

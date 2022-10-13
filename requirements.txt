@@ -1,3 +1,4 @@
+pybluez
 matplotlib
 numpy
 pylibftdi

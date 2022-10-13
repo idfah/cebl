@@ -4,7 +4,7 @@ import scipy.signal as spsig
 from cebl import util
 
 
-class ContinuousWaveletTransform(object):
+class ContinuousWaveletTransform:
     def __init__(self, sampRate=256.0, freqs=None, span=5, dtype=None):
         """Continuous Wavelet Transform
 

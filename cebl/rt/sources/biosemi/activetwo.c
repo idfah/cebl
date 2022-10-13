@@ -5,6 +5,7 @@
 #include <unistd.h>
 
 #include "bsif.h"
+
 #include "activetwo.h"
 
 
@@ -230,10 +231,10 @@ int bs_poll(double *pollBuffer)
         unsigned off = (head+i) % dataBufferSize;
         unsigned chan = j % bs_nChan;
 
-        int data = (dataBuffer[off+3] << 24 |
-                    dataBuffer[off+2] << 16 |
-                    dataBuffer[off+1] << 8 |
-                    dataBuffer[off+0]);
+        unsigned data = (dataBuffer[off+3] << 24 |
+                         dataBuffer[off+2] << 16 |
+                         dataBuffer[off+1] << 8 |
+                         dataBuffer[off+0]);
 
         /*printf("%d %d %d %d %d\n",
                 dataBuffer[off+3],

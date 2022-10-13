@@ -12,10 +12,10 @@ from cebl import util
 from cebl.rt import widgets
 from cebl.rt import filters
 
-from sourcepanel import SourceConfigPanel
+from .sourcepanel import SourceConfigPanel
 
 
-cdef class Source(object):
+cdef class Source:
     """Base class for all data sources.  Responsible for starting
     and stopping the source and polling for new data.
 
@@ -249,13 +249,7 @@ cdef class Source(object):
         if self.isRunning():
             raise Exception('Cannot change sample rate while source is running.')
 
-        sampRateOrig = self.sampRate
-        try:
-            self.sampRate = sampRate
-
-        except Exception as e:
-            self.sampRate = sampRateOrig
-            raise
+        self.sampRate = sampRate
 
         if self.data is not None:
             self.resetBuffer()
@@ -327,13 +321,7 @@ cdef class Source(object):
         if self.isRunning():
             raise Exception('Cannot change buffSecs while source is running.')
 
-        buffSecsOrig = self.buffSecs
-        try:
-            self.buffSecs = buffSecs
-
-        except Exception as e:
-            self.buffSecs = buffSecsOrig
-            raise
+        self.buffSecs = buffSecs
 
         if self.data is not None:
             self.resetBuffer()
@@ -363,13 +351,7 @@ cdef class Source(object):
         if self.isRunning():
             raise Exception('Cannot change rollBuffSecs while source is running.')
 
-        rollBuffSecsOrig = self.buffSecs
-        try:
-            self.rollBuffSecs = self.buffSecs
-
-        except Exception as e:
-            self.rollBuffSecs = rollBuffSecsOrig
-            raise
+        self.rollBuffSecs = self.buffSecs
 
         if self.data is not None:
             self.resetBuffer()

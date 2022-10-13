@@ -96,7 +96,7 @@ class MTTestConfigPanel(SourceConfigPanel):
         scaleTextSizer = wx.BoxSizer(orient=wx.VERTICAL)
         scaleTextSizer.Add(self.scaleText, proportion=1, flag=wx.EXPAND)
         self.scaleSlider = wx.Slider(self, style=wx.SL_VERTICAL,
-                value=self.src.scale.value*10.0, minValue=1, maxValue=100)
+                value=int(self.src.scale.value * 10), minValue=1, maxValue=100)
         self.Bind(wx.EVT_SLIDER, self.setScale, self.scaleSlider)
 
         scaleControlBox.Add(scaleTextSizer, proportion=0,
