@@ -135,12 +135,13 @@ class GridSpeller(DrawablePanel):
         return self.gridLayout
 
     def setGridLower(self, refresh=True):
-        self.grid = np.array([['a', 'b', 'c', 'd', 'e',  'f'],
-                              ['g', 'h', 'i', 'j', 'k',  'l'],
-                              ['m', 'n', 'o', 'p', 'q',  'r'],
-                              ['s', 't', 'u', 'v', 'w',  'x'],
-                              ['y', 'z', grid.space, ',', '.', grid.ellip],
-                              [grid.upper, grid.num, grid.etc, grid.sym, grid.back, grid.enter]])
+        self.grid = np.array(
+            [['a', 'b', 'c', 'd', 'e',  'f'],
+             ['g', 'h', 'i', 'j', 'k',  'l'],
+             ['m', 'n', 'o', 'p', 'q',  'r'],
+             ['s', 't', 'u', 'v', 'w',  'x'],
+             ['y', 'z', grid.space, ',', '.', grid.ellip],
+             [grid.upper, grid.num, grid.etc, grid.sym, grid.back, grid.enter]])
 
         self.gridLayout = grid.lower
 
@@ -148,12 +149,13 @@ class GridSpeller(DrawablePanel):
             self.refresh()
 
     def setGridUpper(self, refresh=True):
-        self.grid = np.array([['A', 'B', 'C', 'D', 'E',  'F'],
-                              ['G', 'H', 'I', 'J', 'K',  'L'],
-                              ['M', 'N', 'O', 'P', 'Q',  'R'],
-                              ['S', 'T', 'U', 'V', 'W',  'X'],
-                              ['Y', 'Z', grid.space, ',', '.', grid.ellip],
-                              [grid.lower, grid.num, grid.etc, grid.sym, grid.back, grid.enter]])
+        self.grid = np.array(
+            [['A', 'B', 'C', 'D', 'E',  'F'],
+             ['G', 'H', 'I', 'J', 'K',  'L'],
+             ['M', 'N', 'O', 'P', 'Q',  'R'],
+             ['S', 'T', 'U', 'V', 'W',  'X'],
+             ['Y', 'Z', grid.space, ',', '.', grid.ellip],
+             [grid.lower, grid.num, grid.etc, grid.sym, grid.back, grid.enter]])
 
         self.gridLayout = grid.upper
 
@@ -161,12 +163,13 @@ class GridSpeller(DrawablePanel):
             self.refresh()
 
     def setGridNum(self, refresh=True):
-        self.grid = np.array([['1', '2', '3', '4', '5',  '6'],
-                              ['7', '8', '9', '0', '-',  '='],
-                              ['!', '@', '#', '$', '%',  '^'],
-                              ['&', '*', '(', ')', '_',  '+'],
-                              [':', ';', '"', '?', '/',  '@'],
-                              [grid.lower, grid.upper, grid.etc, grid.sym, grid.back, grid.enter]])
+        self.grid = np.array(
+            [['1', '2', '3', '4', '5',  '6'],
+             ['7', '8', '9', '0', '-',  '='],
+             ['!', '@', '#', '$', '%',  '^'],
+             ['&', '*', '(', ')', '_',  '+'],
+             [':', ';', '"', '?', '/',  '@'],
+             [grid.lower, grid.upper, grid.etc, grid.sym, grid.back, grid.enter]])
 
         self.gridLayout = grid.num
 
@@ -174,12 +177,13 @@ class GridSpeller(DrawablePanel):
             self.refresh()
 
     def setGridEtc(self, refresh=True):
-        self.grid = np.array([['Esc', ')', '~',   '[', 'Hom', '|'],
-                              ['Tab', '(', 'Ins', ']', 'End', '/'],
-                              ['Ctl', '}', 'Del', '<', 'Pgu', '\\'],
-                              ['Alt', '{', 'Win', '>', 'Pgd', '\''],
-                              [grid.left, grid.right, grid.up, grid.down, '`', '\"'],
-                              [grid.lower, grid.num, grid.upper, grid.sym, grid.back, grid.enter]])
+        self.grid = np.array(
+            [['Esc', ')', '~',   '[', 'Hom', '|'],
+             ['Tab', '(', 'Ins', ']', 'End', '/'],
+             ['Ctl', '}', 'Del', '<', 'Pgu', '\\'],
+             ['Alt', '{', 'Win', '>', 'Pgd', '\''],
+             [grid.left, grid.right, grid.up, grid.down, '`', '\"'],
+             [grid.lower, grid.num, grid.upper, grid.sym, grid.back, grid.enter]])
 
         self.gridLayout = grid.etc
 
@@ -187,12 +191,13 @@ class GridSpeller(DrawablePanel):
             self.refresh()
 
     def setGridSym(self, refresh=True):
-        self.grid = np.array([['\U0001F44D', '\U0001F4D6', '\U0001F60C', '\U0001F615', '\U0001F60E', '\u2615'    ],
-                              ['\U0001F44E', '\U0001F4FA', '\U0001F603', '\U0001F61C', '\u26C8',     '\U0001F354'],
-                              ['\u267F',     '\u260E',     '\U0001F61E', '\U0001F622', '\u263C',     '\U0001F355'],
-                              ['\u266B',     '\u26A0',     '\U0001F620', '\U0001F60D', '\U0001F319', '\U0001F36D'],
-                              ['\U0001F3AE', '\U0001F48A', '\U0001F62E', '\U0001F607', '\U0001F320', '\U0001F377'],
-                              [grid.lower, grid.num, grid.etc, grid.upper, grid.back, grid.enter]], dtype=np.unicode)
+        self.grid = np.array(
+            [['\U0001F44D', '\U0001F4D6', '\U0001F60C', '\U0001F615', '\U0001F60E', '\u2615'    ],
+             ['\U0001F44E', '\U0001F4FA', '\U0001F603', '\U0001F61C', '\u26C8',     '\U0001F354'],
+             ['\u267F',     '\u260E',     '\U0001F61E', '\U0001F622', '\u263C',     '\U0001F355'],
+             ['\u266B',     '\u26A0',     '\U0001F620', '\U0001F60D', '\U0001F319', '\U0001F36D'],
+             ['\U0001F3AE', '\U0001F48A', '\U0001F62E', '\U0001F607', '\U0001F320', '\U0001F377'],
+             [grid.lower, grid.num, grid.etc, grid.upper, grid.back, grid.enter]], dtype=np.unicode)
 
         self.gridLayout = grid.sym
 
@@ -200,7 +205,7 @@ class GridSpeller(DrawablePanel):
             self.refresh()
 
     def getGridValue(self, row, col):
-        return self.grid[row,col]
+        return self.grid[row, col]
 
     def getGridLocation(self, symbol):
         #return np.where(self.grid == unicode(symbol))
@@ -335,7 +340,7 @@ class GridSpeller(DrawablePanel):
         self.removeHighlight(refresh=False)
 
         # updating the highlights setting
-        self.marked[:,col] = grid.highlighted
+        self.marked[:, col] = grid.highlighted
 
         if refresh:
             self.refresh()
@@ -349,7 +354,7 @@ class GridSpeller(DrawablePanel):
         self.removeHighlight(False) # removing previous highlight without refreshing the page
 
         # updating the highlights settings
-        self.marked[row,:] = grid.highlighted
+        self.marked[row, :] = grid.highlighted
 
         if refresh:
             self.refresh()
@@ -372,8 +377,8 @@ class GridSpeller(DrawablePanel):
             col:    The index of the column of symbol to highlight
         """
         self.marked = np.zeros((self.nRows, self.nCols), dtype=np.int)
-        self.marked[:,:] = grid.unhighlighted
-        self.marked[row,column] = grid.selected
+        self.marked[:, :] = grid.unhighlighted
+        self.marked[row, column] = grid.selected
 
         if refresh:
             self.refresh()
@@ -392,8 +397,9 @@ class GridSpeller(DrawablePanel):
         if how.shape == self.marked.shape:
             self.marked = how.copy()
         else:
-            raise RuntimeError('Shape of how %s does not match grid shape %s.' %\
-                            (str(how.show), str(self.marked.shape)))
+            raise RuntimeError(
+                'Shape of how %s does not match grid shape %s.' %\
+                (str(how.show), str(self.marked.shape)))
 
         if refresh:
             self.refresh()
@@ -401,7 +407,7 @@ class GridSpeller(DrawablePanel):
     def removeHighlight(self, refresh=True):
         """removes every highlight in the grid
         """
-        self.marked[:,:] = grid.normal
+        self.marked[:, :] = grid.normal
 
         if refresh:
             self.refresh()
@@ -428,18 +434,18 @@ class GridSpeller(DrawablePanel):
         ##dc.SetFont(self.gridFont) # setting the font for the text
 
         # figuring out what is the y-offset for the grid of symbols
-        yOffset = self.winHeight*32/340.0
+        yOffset = self.winHeight * 32 // 340
         if not self.copyText:
-            yOffset = self.winHeight * 14/340.0
+            yOffset = self.winHeight * 14 // 340
 
         # figuring out the distances between each symbol horizontaly and vertically
-        dx = (self.winWidth+0.0)/(self.nCols+1)
-        dy = (self.winHeight-yOffset)/(self.nRows+1)
+        dx = self.winWidth // (self.nCols + 1)
+        dy = (self.winHeight - yOffset) // (self.nRows + 1)
 
         for i in range(self.nRows):
             for j in range(self.nCols):
                 # select the color and font for the next symbol
-                mark = self.marked[i,j]
+                mark = self.marked[i, j]
 
                 if mark == grid.normal:
                     dc.SetTextForeground(self.gridColor)
@@ -461,14 +467,15 @@ class GridSpeller(DrawablePanel):
                 dc.SetFont(self.gridFont)
 
                 # get extents of symbol
-                text = self.grid[i,j]
+                text = self.grid[i, j]
                 textWidth, textHeight = dc.GetTextExtent(text)
 
                 # draw next symbol
                 #dc.DrawText(self.grid[i,j], (j+0.7)*dx, (i+0.7)*dy+yOffset)
-                dc.DrawText(self.grid[i,j],
-                        (j+1.0)*dx-textWidth/2.0,
-                        (i+1.0)*dy+yOffset-textHeight/2.0)
+                dc.DrawText(
+                    self.grid[i, j],
+                    (j + 1) * dx - textWidth // 2,
+                    (i + 1) * dy + yOffset - textHeight // 2)
                 self.gridFont.SetWeight(wx.FONTWEIGHT_NORMAL)
 
     def drawCopy(self, dc):
@@ -481,14 +488,14 @@ class GridSpeller(DrawablePanel):
         if not self.copyText:
             return
 
-        dx = (self.winWidth+0.0)/(self.nCols+1)
+        dx = self.winWidth // (self.nCols + 1)
 
         dc.SetFont(self.feedFont)
         dc.SetTextForeground(self.copyColor)
 
         #dc.DrawText(self.copyText, dx*0.7, 4)
-        cornerWidth, cornerHeight = dc.GetTextExtent(self.grid[0,0])
-        dc.DrawText(self.copyText, dx-cornerWidth/2.0, 4)
+        cornerWidth, cornerHeight = dc.GetTextExtent(self.grid[0, 0])
+        dc.DrawText(self.copyText, dx - cornerWidth // 2, 4)
 
     def drawFeed(self, dc):
         """Draw the feedback message.
@@ -500,16 +507,16 @@ class GridSpeller(DrawablePanel):
         dc.SetFont(self.feedFont)
         dc.SetTextForeground(self.feedColor)
 
-        yOffset = 27*self.winHeight/340.0
+        yOffset = 27 * self.winHeight // 340
 
         if not self.copyText:
             yOffset = 4
 
-        dx = (self.winWidth+0.0)/(self.nCols+1)
+        dx = self.winWidth // (self.nCols + 1)
 
         dc.SetFont(self.feedFont)
         dc.SetTextForeground(self.feedColor)
 
         #dc.DrawText(self.feedText, dx*0.7, yOffset)
-        cornerWidth, cornerHeight = dc.GetTextExtent(self.grid[0,0])
-        dc.DrawText(self.feedText, dx-cornerWidth/2.0, yOffset)
+        cornerWidth, cornerHeight = dc.GetTextExtent(self.grid[0, 0])
+        dc.DrawText(self.feedText, dx - cornerWidth // 2, yOffset)

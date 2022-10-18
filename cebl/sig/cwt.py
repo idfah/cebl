@@ -36,7 +36,7 @@ class ContinuousWaveletTransform:
 
         if freqs is None:
             self.freqs = np.arange(1.0, np.floor(sampRate/2.0)).astype(self.dtype, copy=False)
-        elif isinstance(freqs, (int,long)):
+        elif isinstance(freqs, int):
             self.freqs = np.linspace(0.0, sampRate/2.0, freqs+1).astype(self.dtype, copy=False)[1:]
         else:
             self.freqs = np.asarray(freqs)

@@ -695,8 +695,8 @@ class P300Grid(StandardBCIPage):
 
         self.gridSpeller.selectSymbol(self.curRow, self.curCol)
 
-        wx.CallLater(1000.0*self.pause, self.gridSpeller.removeHighlight)
-        wx.CallLater(1000.0*(self.pause+self.windowEnd), self.trainClearStim)
+        wx.CallLater(int(1000 * self.pause), self.gridSpeller.removeHighlight)
+        wx.CallLater(int(1000 * (self.pause + self.windowEnd)), self.trainClearStim)
 
     def trainEpoch(self):
         # if the stim list is empty
@@ -707,15 +707,12 @@ class P300Grid(StandardBCIPage):
             # if we have done all reps, then quit
             if self.curRep > len(self.trainText):
                  self.gridSpeller.removeHighlight()
-                 ##wx.CallLater(1000.0*self.windowEnd*1.1-1000.0*self.si, self.endTrain)
-                 wx.CallLater(1000.0*self.windowEnd*1.1, self.endTrain)
+                 wx.CallLater(int(1000 * self.windowEnd * 1.1), self.endTrain)
 
             # otherwise, reset stim list and show another training symbol
             else:
                 self.initCurStimList()
-                #self.showTrainSymbol()
-                ##wx.CallLater(1000.0*self.windowEnd*1.1-1000.0*self.si, self.showTrainSymbol)
-                wx.CallLater(1000.0*self.windowEnd*1.1, self.showTrainSymbol)
+                wx.CallLater(int(1000 * self.windowEnd * 1.1), self.showTrainSymbol)
 
         # if stim list still had elements to show
         else:
@@ -730,13 +727,13 @@ class P300Grid(StandardBCIPage):
                 self.gridSpeller.highlightCol(curStim - self.nRows - 1)
 
             # clear after si seconds
-            wx.CallLater(1000.0*self.si, self.trainClearStim)
+            wx.CallLater(int(1000 * self.si), self.trainClearStim)
 
     def trainClearStim(self, event=None):
         self.gridSpeller.removeHighlight()
         self.src.setMarker(0.0)
 
-        wx.CallLater(1000.0*self.isi, self.runTrainEpoch)
+        wx.CallLater(int(1000 * self.isi), self.runTrainEpoch)
 
     def trainClassifier(self):
         if self.trainCap is None:
@@ -1033,7 +1030,7 @@ class P300Grid(StandardBCIPage):
         else:
             self.gridSpeller.highlightCol(curStim - self.nRows - 1)
 
-        wx.CallLater(1000.0*self.si, self.testClearStim)
+        wx.CallLater(int(1000 * self.si), self.testClearStim)
 
     def testClearStim(self, event=None):
         self.gridSpeller.removeHighlight()
@@ -1042,9 +1039,9 @@ class P300Grid(StandardBCIPage):
         if len(self.curStimList) == 0:
             self.initCurStimList()
 
-            wx.CallLater(1000.0*self.windowEnd*1.1, self.testClassify)
+            wx.CallLater(int(1000 * self.windowEnd * 1.1), self.testClassify)
         else:
-            wx.CallLater(1000.0*self.isi, self.runTestEpoch)
+            wx.CallLater(int(1000 * self.isi), self.runTestEpoch)
 
     def controlSpeller(self, rowChoice, colChoice):
         choice = self.gridSpeller.getGridValue(rowChoice, colChoice)
@@ -1062,8 +1059,7 @@ class P300Grid(StandardBCIPage):
                 self.gridSpeller.appendFeedText('_')
 
         if len(self.testSyms) == 0:
-             ##wx.CallLater(1000.0*self.windowEnd*1.1-1000.0*self.si, self.endTest)
-             wx.CallLater(1000.0*self.windowEnd*1.1, self.endTest)
+             wx.CallLater(int(1000 * self.windowEnd * 1.1), self.endTest)
 
         else:
             sym = self.testSyms.pop(0)
@@ -1071,9 +1067,8 @@ class P300Grid(StandardBCIPage):
             if not self.freeSpelling:
                 self.curRow, self.curCol = self.gridSpeller.getGridLocation(sym)
 
-            wx.CallLater(1000.0*self.pause, self.gridSpeller.removeHighlight)
-            ##wx.CallLater(1000.0*(self.pause+self.windowEnd), self.testClearStim)
-            wx.CallLater(1000.0*2.0*self.pause, self.testClearStim)
+            wx.CallLater(int(1000 * self.pause), self.gridSpeller.removeHighlight)
+            wx.CallLater(int(2000 * self.pause), self.testClearStim)
 
     def testClassify(self):
         cap = self.src.getEEGSecs(time.time() - self.testTime)

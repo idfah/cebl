@@ -27,7 +27,7 @@ class WelchConfigPanel(wx.Panel):
         spanTextSizer.Add(self.spanText, proportion=1,
                 flag=wx.LEFT | wx.RIGHT | wx.EXPAND, border=8)
         self.spanSlider = wx.Slider(self, style=wx.SL_HORIZONTAL,
-            value=int(self.pg.welchConfig.span*4), minValue=1, maxValue=12)
+            value=int(self.pg.welchConfig.span * 4), minValue=1, maxValue=12)
         spanControlBox.Add(spanTextSizer, proportion=0, flag=wx.TOP, border=10)
         spanControlBox.Add(self.spanSlider, proportion=1,
             flag=wx.ALL | wx.EXPAND, border=10)
@@ -77,7 +77,7 @@ class AutoregConfigPanel(wx.Panel):
         nFreqTextSizer.Add(self.nFreqText, proportion=1,
                 flag=wx.LEFT | wx.RIGHT | wx.EXPAND, border=8)
         self.nFreqSlider = wx.Slider(self, style=wx.SL_HORIZONTAL,
-            value=self.pg.autoregConfig.nFreq/5, minValue=1, maxValue=100)
+            value=int(self.pg.autoregConfig.nFreq / 5), minValue=1, maxValue=100)
         nFreqControlBox.Add(nFreqTextSizer, proportion=0, flag=wx.TOP, border=10)
         nFreqControlBox.Add(self.nFreqSlider, proportion=1,
             flag=wx.ALL | wx.EXPAND, border=10)

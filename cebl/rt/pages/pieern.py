@@ -21,7 +21,7 @@ class ConfigPanel(StandardConfigPanel):
         self.initTrialSecs()
         self.initARParam()
         self.initClassifier()
-        self.initStandardLayout() 
+        self.initStandardLayout()
 
     def initChoices(self):
         choiceControlBox = widgets.ControlBox(self, label='Choices', orient=wx.VERTICAL)
@@ -398,7 +398,7 @@ class PieERN(StandardBCIPage):
 
         self.src.setMarker(self.choices.index(choice)+1.0)
 
-        wx.CallLater(1000.0*self.trialSecs, self.trainClearTrial)
+        wx.CallLater(int(1000 * self.trialSecs), self.trainClearTrial)
 
     def trainClearTrial(self, event=None):
         self.pieMenu.clearAllHighlights()
@@ -406,9 +406,9 @@ class PieERN(StandardBCIPage):
         self.src.setMarker(0.0)
 
         if len(self.curChoices) > 0:
-            wx.CallLater(1000.0*self.iti, self.runTrainEpoch)
+            wx.CallLater(int(1000 * self.iti), self.runTrainEpoch)
         else:
-            wx.CallLater(1000.0*self.iti, self.endTrain)
+            wx.CallLater(int(1000 * self.iti), self.endTrain)
 
     def trainClassifier(self):
         if self.trainCap is None:
@@ -570,7 +570,7 @@ class PieERN(StandardBCIPage):
         self.src.setMarker(10.0*(self.choices.index(self.curChoice)+1.0))
 
         # a little extra at the end to make sure we get the last segment
-        wx.CallLater(1000.0*self.trialSecs*1.1, self.testClassify)
+        wx.CallLater(int(1000 * self.trialSecs * 1.1), self.testClassify)
 
     def testClassify(self):
         testCap = self.getCap(np.min((self.getSessionTime(), 2.0*self.trialSecs)))
@@ -599,7 +599,7 @@ class PieERN(StandardBCIPage):
 
         self.confusion[label, self.choices.index(self.curChoice)] += 1.0
 
-        wx.CallLater(1000.0*self.iti, self.testClearTrial)
+        wx.CallLater(int(1000 * self.iti), self.testClearTrial)
 
     def testClearTrial(self, event=None):
         self.pieMenu.zeroBars()
@@ -608,6 +608,6 @@ class PieERN(StandardBCIPage):
         self.src.setMarker(0.0)
 
         if len(self.curChoices) > 0:
-            wx.CallLater(1000.0*self.iti, self.runTestEpoch)
+            wx.CallLater(int(1000 * self.iti), self.runTestEpoch)
         else:
-            wx.CallLater(1000.0*self.iti, self.endTest)
+            wx.CallLater(int(1000 * self.iti), self.endTest)

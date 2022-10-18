@@ -115,7 +115,7 @@ class ConfigPanel(StandardConfigPanel):
         widthTextSizer = wx.BoxSizer(orient=wx.VERTICAL)
         widthTextSizer.Add(self.widthText, proportion=0, flag=wx.ALIGN_CENTER_HORIZONTAL)
         self.widthSlider = wx.Slider(self, style=wx.SL_VERTICAL,
-            value=int(self.pg.width*4.0), minValue=1, maxValue=240)
+            value=int(self.pg.width * 4), minValue=1, maxValue=240)
         widthControlBox.Add(widthTextSizer, proportion=0,
                 flag=wx.TOP | wx.BOTTOM | wx.EXPAND, border=8)
         widthControlBox.Add(self.widthSlider, proportion=1,
@@ -134,7 +134,7 @@ class ConfigPanel(StandardConfigPanel):
         scaleTextSizer = wx.BoxSizer(orient=wx.VERTICAL)
         scaleTextSizer.Add(self.scaleText, proportion=0, flag=wx.ALIGN_CENTER_HORIZONTAL)
         self.scaleSlider = wx.Slider(self, style=wx.SL_VERTICAL,
-            value=self.pg.scale, minValue=0, maxValue=5000)
+            value=int(self.pg.scale), minValue=0, maxValue=5000)
         scaleControlBox.Add(scaleTextSizer, proportion=0,
                 flag=wx.TOP | wx.BOTTOM | wx.EXPAND, border=8)
         scaleControlBox.Add(self.scaleSlider, proportion=1,

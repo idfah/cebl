@@ -41,7 +41,7 @@ class WelchConfigPanel(wx.Panel):
                 flag=wx.ALL | wx.EXPAND, border=10)
         featureSizer.Add(spanControlBox, proportion=1,
                 flag=wx.LEFT | wx.BOTTOM | wx.RIGHT | wx.EXPAND, border=10)
-        
+
         # radio buttons for turning log transform on and off
         logTransControlBox = widgets.ControlBox(self, label='Log Trans', orient=wx.HORIZONTAL)
 
@@ -374,7 +374,7 @@ class ConfigPanel(StandardConfigPanel):
         self.pg.requireRetrain()
 
     def initLayout(self):
-        self.initStandardLayout() 
+        self.initStandardLayout()
 
         self.FitInside()
         self.autoregPanel.Hide()
@@ -622,7 +622,7 @@ class MentalTasks(StandardBCIPage):
 
         self.src.setMarker(self.choices.index(choice)+1.0)
 
-        wx.CallLater(1000.0*self.trainTrialSecs, self.trainClearTrial)
+        wx.CallLater(int(1000 * self.trainTrialSecs), self.trainClearTrial)
 
     def trainClearTrial(self, event=None):
         self.pieMenu.clearAllHighlights()
@@ -630,9 +630,9 @@ class MentalTasks(StandardBCIPage):
         self.src.setMarker(0.0)
 
         if self.curTrial == self.nTrainTrial and len(self.curChoices) == 0:
-            wx.CallLater(1000.0*self.pauseSecs, self.endTrain)
+            wx.CallLater(int(1000 * self.pauseSecs), self.endTrain)
         else:
-            wx.CallLater(1000.0*self.pauseSecs, self.runTrainEpoch)
+            wx.CallLater(int(1000 * self.pauseSecs), self.runTrainEpoch)
 
     def trainClassifier(self):
         if self.trainCap is None:
@@ -790,7 +790,7 @@ class MentalTasks(StandardBCIPage):
         dialog.Destroy()
 
         resultText = (('Best Num Iterations: %f\n' % bestIter) +
-                      ('Best Mean Training CA: %f\n' % bestMeanTrnCA) + 
+                      ('Best Mean Training CA: %f\n' % bestMeanTrnCA) +
                       ('Best Mean Validation CA: %f\n' % bestMeanValCA) +
                       ('Final Training CA: %f\n' % trainCA) +
                       ('Confusion Matrix:\n' + str(trainConfusion) + '\n') +
@@ -850,7 +850,7 @@ class MentalTasks(StandardBCIPage):
         dialog.Destroy()
 
         resultText = (('Best Order: %f\n' % bestOrder) +
-                      ('Best Mean Training CA: %f\n' % bestMeanTrnCA) + 
+                      ('Best Mean Training CA: %f\n' % bestMeanTrnCA) +
                       ('Best Mean Validation CA: %f\n' % bestMeanValCA) +
                       ('Final Training CA: %f\n' % trainCA) +
                       ('Confusion Matrix:\n' + str(trainConfusion) + '\n') +
@@ -977,11 +977,11 @@ class MentalTasks(StandardBCIPage):
             self.src.setMarker(0.0)
             self.highlightTestTarget()
             self.curDecision += 1
-            wx.CallLater(1000.0*self.width*1.1, self.runTestEpoch)
+            wx.CallLater(int(1000 * self.width * 1.1), self.runTestEpoch)
 
         else:
             # a little extra at the end to make sure we get the last segment
-            wx.CallLater(1000.0*self.decisionSecs*1.1, self.testClassify)
+            wx.CallLater(int(1000 * self.decisionSecs * 1.1), self.testClassify)
 
     def highlightTestTarget(self):
         if len(self.curChoices) == 0:
@@ -1024,7 +1024,7 @@ class MentalTasks(StandardBCIPage):
             self.src.incrementMarker(finalLabel+1)
             self.confusion[finalLabel, self.choices.index(self.curChoice)] += 1.0
 
-            wx.CallLater(1000.0*self.pauseSecs, self.testClearTrial)
+            wx.CallLater(int(1000 * self.pauseSecs), self.testClearTrial)
 
     def testClearTrial(self):
         self.pieMenu.zeroBars(refresh=False)
@@ -1032,6 +1032,6 @@ class MentalTasks(StandardBCIPage):
         self.curDecision = -1
 
         if self.curTrial == self.nTestTrial and len(self.curChoices) == 0:
-            wx.CallLater(1000.0*self.pauseSecs, self.endTest)
+            wx.CallLater(int(1000 * self.pauseSecs), self.endTest)
         else:
-            wx.CallLater(1000.0*self.pauseSecs, self.runTestEpoch)
+            wx.CallLater(int(1000 * self.pauseSecs), self.runTestEpoch)

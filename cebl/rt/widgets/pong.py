@@ -11,19 +11,19 @@ class PongObject:
     def __init__(self):
         self.coords = np.array([0.0,0.0])
         self.velocity = np.array([0.0,0.0])
-   
+
         self.pen = wx.Pen((250,250,250), 2)
         self.brush = wx.Brush((255,255,255))
 
     def outsideOfScreen(self, windowDiameter):
         return False
-    
+
     def update(self, windowDiameter):
-        self.coords += self.velocity 
-  
+        self.coords += self.velocity
+
     def setCoords(self, coords):
         self.coords[:] = coords
-    
+
     def setXCoord(self, x):
         self.coords[0] = x
 
@@ -42,7 +42,7 @@ class Ball(PongObject):
         #self.speedPercentage = 0.01
         self.speedPercentage = 0.004
 
-        self.direction = 2 
+        self.direction = 2
 
         self.touchingBottom = False
 
@@ -53,25 +53,25 @@ class Ball(PongObject):
         gc.SetPen(self.pen)
         gc.SetBrush(self.brush)
 
-        gc.DrawEllipse(0.0, 0.0, self.diameterPercentage * windowDiameter, 
+        gc.DrawEllipse(0.0, 0.0, self.diameterPercentage * windowDiameter,
                                  self.diameterPercentage * windowDiameter)
 
         gc.PopState()
 
     def bounceOfWalls(self):
-        if self.coords[0] + self.diameterPercentage > 0.995: 
+        if self.coords[0] + self.diameterPercentage > 0.995:
             self.reflectVertical()
-            
+
         if self.coords[0] < 0.005:
-            self.reflectVertical() 
+            self.reflectVertical()
 
         if self.coords[1] < 0.005:
             self.reflectHorizontal()
-            
+
         if self.coords[1] + self.diameterPercentage > 0.995:
             self.touchingBottom = True
-        
-        return False  
+
+        return False
 
     def reflectVertical(self):
         self.velocity[0] *= -1
@@ -92,7 +92,7 @@ class Ball(PongObject):
     def squareDistance(self, pointA, pointB):
         xA, yA = pointA[0], pointA[1]
         xB, yB = pointB[0], pointB[1]
-        return (xA - xB)**2 + (yA - yB)**2 
+        return (xA - xB)**2 + (yA - yB)**2
 
     def intersectCircle(self, pointA, pointB):
         circleCenter = self.coords + self.diameterPercentage*0.5
@@ -101,7 +101,7 @@ class Ball(PongObject):
 
         circleCenter[0] -= pointA[0]
         circleCenter[1] -= pointA[1]
-        
+
         pointB[0] -= pointA[0]
         pointB[1] -= pointA[1]
 
@@ -119,12 +119,12 @@ class Ball(PongObject):
     def dealWithPaddle(self, paddle):
         """
         pointA = [paddle.coords[0], paddle.coords[1]]
-        pointB = [paddle.coords[0] + paddle.widthPercentage, paddle.coords[1]] 
+        pointB = [paddle.coords[0] + paddle.widthPercentage, paddle.coords[1]]
         pointC = [paddle.coords[0] + paddle.widthPercentage, paddle.coords[1] + paddle.heightPercentage]
         pointD = [paddle.coords[0], paddle.coords[1] + paddle.heightPercentage]
 
-        circleCenter = [self.coords[0] + self.diameterPercentage*0.5, 
-                        self.coords[1] + self.diameterPercentage*0.5] 
+        circleCenter = [self.coords[0] + self.diameterPercentage*0.5,
+                        self.coords[1] + self.diameterPercentage*0.5]
 
         circleRadius = self.diameterPercentage/2
 
@@ -147,7 +147,7 @@ class Ball(PongObject):
         if circleCenter[0] >= pointD[0] and circleCenter[0] <= pointC[0]:
             if self.intersectCircle(pointD, pointC):
                 self.coords[1] = pointD[1]
-                self.reflectHorizontal()  
+                self.reflectHorizontal()
                 return True
 
         if circleCenter[1] >= pointA[1] and circleCenter[0] <= pointD[1]:
@@ -158,7 +158,7 @@ class Ball(PongObject):
 
         if circleCenter[1] >= pointB[1] and circleCenter[0] <= pointC[1]:
             if self.intersectCircle(pointC, pointB):
-                self.coords[0] = pointC[0] 
+                self.coords[0] = pointC[0]
                 self.reflectVertical()
                 return True
 
@@ -184,7 +184,7 @@ class Ball(PongObject):
 class Paddle(PongObject):
     def __init__(self, widthPercentage = 0.4, heightPercentage = 0.025):
         PongObject.__init__(self)
-        self.widthPercentage = widthPercentage 
+        self.widthPercentage = widthPercentage
         self.heightPercentage = heightPercentage
 
         #self.speedPercentage = 0.015
@@ -214,7 +214,7 @@ class Paddle(PongObject):
 
     def update(self, windowDiameter):
         self.setYCoord(0.95-self.heightPercentage)
-        PongObject.update(self, windowDiameter)  
+        PongObject.update(self, windowDiameter)
 
         if self.coords[0] < 0.005:
             self.coords[0] = 0.005
@@ -224,7 +224,7 @@ class Paddle(PongObject):
 
     def setWidth(self, widthPercentage):
         self.widthPercentaga = widthPercentage
-  
+
     def setHeight(self, heightPercentage):
         self.heightPercentage - heightPercentage
 
@@ -234,7 +234,7 @@ class Paddle(PongObject):
 class Border(PongObject):
     def __init__(self, widthPercentage = 0.4, heightPercentage = 0.05, coords=np.array([0.0,0.0])):
         PongObject.__init__(self)
-        self.widthPercentage = widthPercentage 
+        self.widthPercentage = widthPercentage
         self.heightPercentage = heightPercentage
         self.setCoords(coords)
 
@@ -265,7 +265,7 @@ class Scoreboard(PongObject):
 
     def scoreBad(self):
         self.score[1] += 1
-      
+
     def reset(self):
         self.score[...] = 0
 
@@ -281,7 +281,7 @@ class Scoreboard(PongObject):
         gc.SetFont(gc.CreateFont(self.scoreFont, col='white'))
         gc.DrawText(str(self.score[0]) + ":" + str(self.score[1]),0,0)
 
-        gc.PopState()     
+        gc.PopState()
 
     def update(self, windowDiameter):
         pass
@@ -314,10 +314,10 @@ class Pong(GraphicsPanel):
 
         self.bindKeyboard()
 
-        self.refreshTimer.Start(30.0)
+        self.refreshTimer.Start(30)
 
     def bindKeyboard(self):
-        self.Bind(wx.EVT_KEY_DOWN, self.onKeyPress)    
+        self.Bind(wx.EVT_KEY_DOWN, self.onKeyPress)
         self.Bind(wx.EVT_KEY_UP, self.onKeyRelease)
 
     def onKeyPress(self, event):
@@ -331,7 +331,7 @@ class Pong(GraphicsPanel):
 
         if keycode == ord('R') or keycode == ord('r'):
             self.startGame()
-    
+
     def onKeyRelease(self, event):
         self.stopPaddle()
 
@@ -383,7 +383,7 @@ class Pong(GraphicsPanel):
         # Make the game centered
         gc.PushState()
         gc.Translate((self.GetSize()[0] - self.winRadius*2)*0.5, 0)
- 
+
         [obj.draw(gc, self.winRadius*2) for obj in self.gameObjects]
 
         gc.PopState()
