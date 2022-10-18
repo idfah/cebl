@@ -272,7 +272,7 @@ def demoLogisticRegression2d():
     ax.imshow(colorFlip, origin='lower',
               extent=(mn[0], mx[0], mn[1], mx[1]), aspect='auto')
 
-    # contours 
+    # contours
     nLevel = 4
     cs = ax.contour(x, y, pMax, colors='black',
                     levels=np.linspace(np.min(pMax), np.max(pMax), nLevel))
@@ -299,7 +299,7 @@ class LogisticRegressionElastic(LogisticRegression):
 
             elastic:
 
-            kwargs:   
+            kwargs:
         """
         self.penalty = penalty
         self.elastic = elastic
@@ -313,7 +313,7 @@ class LogisticRegressionElastic(LogisticRegression):
         likes = np.log(util.capZero(self.probs(x)))
 
         pf = self.weights[:-1,:].ravel()
-        return (-np.mean(g*likes) + 
+        return (-np.mean(g*likes) +
                 self.elastic       * self.penalty * pf.dot(pf)/pf.size + # L2-norm penalty
                 (1.0-self.elastic) * self.penalty * np.mean(np.abs(pf))) # L1-norm penalty
 

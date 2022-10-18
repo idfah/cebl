@@ -391,7 +391,7 @@ class BCIPlayer(StandardBCIPage):
         if not os.path.isdir(os.path.expanduser(self.defaultMusicDir)):
             self.defaultMusicDir = '~'
 
-        self.classifierChoices = ('Linear Discriminant', 
+        self.classifierChoices = ('Linear Discriminant',
                                   'K-Nearest Euclidean',
                                   'K-Nearest Cosine',
                                   'Linear Logistic',

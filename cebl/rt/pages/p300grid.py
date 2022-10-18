@@ -48,14 +48,14 @@ class ConfigPanel(StandardConfigPanel):
 
         copyControlBox = widgets.ControlBox(self, label='Copy Text', orient=wx.VERTICAL)
         self.copyTextCtrl = wx.TextCtrl(self)
-        self.Bind(wx.EVT_TEXT, self.setCopyText, self.copyTextCtrl)         
+        self.Bind(wx.EVT_TEXT, self.setCopyText, self.copyTextCtrl)
         self.offlineControls += [self.copyTextCtrl]
         copyControlBox.Add(self.copyTextCtrl, proportion=1,
                 flag=wx.ALL | wx.EXPAND, border=10)
 
         copySizer.Add(copyControlBox, proportion=1,
                 flag =wx.ALL | wx.EXPAND, border=10)
-      
+
         self.sizer.Add(copySizer, proportion=0, flag=wx.EXPAND)
 
     def setCopyText(self, event):
@@ -69,7 +69,7 @@ class ConfigPanel(StandardConfigPanel):
 
     def initNTrial(self):
         trialSizer = wx.BoxSizer(orient=wx.HORIZONTAL)
-        
+
         trialControlBox = widgets.ControlBox(self, label='Num Trials', orient=wx.VERTICAL)
         self.trialSpinCtrl = wx.SpinCtrl(self, #style=wx.SP_WRAP,
                 value=str(self.pg.nTrials), min=1, max=100)
@@ -187,7 +187,7 @@ class ConfigPanel(StandardConfigPanel):
     def initColors(self):
         # first row
         colorSizer1 = wx.BoxSizer(orient=wx.HORIZONTAL)
-        
+
         gridColorControlBox = widgets.ControlBox(self,
                 label='Grid color', orient=wx.VERTICAL)
         self.gridColorCtrl = wx.ColourPickerCtrl(self)
@@ -277,7 +277,7 @@ class ConfigPanel(StandardConfigPanel):
 
     def setBackgroundColor(self, event):
         self.pg.gridSpeller.setBackground(self.backgroundColorCtrl.GetColour())
- 
+
     def setHighlightColor(self, event):
         self.pg.gridSpeller.setHighlightColor(self.highlightColorCtrl.GetColour())
 
@@ -289,7 +289,7 @@ class ConfigPanel(StandardConfigPanel):
 
     def setFeedColor(self, event):
         self.pg.gridSpeller.setFeedColor(self.feedColorCtrl.GetColour())
-    
+
     def initGridLayout(self):
         gridLayoutControlBox = widgets.ControlBox(self, label='Layout', orient=wx.VERTICAL)
 
@@ -333,7 +333,7 @@ class ConfigPanel(StandardConfigPanel):
 
     def setGridLayoutNum(self, event):
         self.pg.gridSpeller.setGridNum()
-    
+
     def setGridLayoutEtc(self, event):
         self.pg.gridSpeller.setGridEtc()
 
@@ -528,7 +528,7 @@ class P300Grid(StandardBCIPage):
         self.windowEnd = 0.75
 
         # classifier parameters
-        self.classifierChoices = ('Linear Discriminant', 
+        self.classifierChoices = ('Linear Discriminant',
                                   'K-Nearest Euclidean',
                                   'K-Nearest Cosine',
                                   'Linear Logistic',

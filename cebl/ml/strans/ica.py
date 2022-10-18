@@ -103,7 +103,7 @@ class IndependentComponentsAnalysis(STrans):
             elif np.max(np.abs(self.w)) > 1.0e100:
                 self.reason = 'diverge'
                 break
-            
+
             if iteration >= maxIter:
                 self.reason = 'maxiter'
                 break

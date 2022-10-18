@@ -23,7 +23,7 @@ filterChoices[MovingAverageName] = MovingAverage
 from .msf import MaxSignalFraction, MaxSignalFractionName
 filterChoices[MaxSignalFractionName] = MaxSignalFraction
 
-from .pca import PrincipalComponents, PrincipalComponentsName 
+from .pca import PrincipalComponents, PrincipalComponentsName
 filterChoices[PrincipalComponentsName] = PrincipalComponents
 
 from .reference import Reference, ReferenceName

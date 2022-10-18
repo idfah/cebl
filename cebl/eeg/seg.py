@@ -56,7 +56,7 @@ class SegmentedEEG(EEGBase):
                         the data argument.
 
             copy:       If False (default) then data will not be copied if
-                        possible.  If True, then the data definitely be 
+                        possible.  If True, then the data definitely be
                         copied.  Warning:  If multiple EEG instances use
                         the same un-copied data array, then modifying one
                         EEG instance may lead to undefined behavior in
@@ -356,7 +356,7 @@ class SegmentedEEG(EEGBase):
         else:
             tSamp = int(t * self.sampRate)
 
-        self.data -= np.mean(self.data[:,:tSamp,:],axis=1).reshape((self.nSeg,1,self.nChan))    
+        self.data -= np.mean(self.data[:,:tSamp,:],axis=1).reshape((self.nSeg,1,self.nChan))
 
         return self
 
@@ -706,7 +706,7 @@ class SegmentedEEGFromEEG(SegmentedEEG):
                  startsFunc=lambda m: np.where(~np.isclose(np.diff(m), 0.0))[0],
                  *args, **kwargs):
 
-        unSegmentedData = unSegmentedEEG.getData() 
+        unSegmentedData = unSegmentedEEG.getData()
         sampRate = unSegmentedEEG.getSampRate()
         chanNames = unSegmentedEEG.getChanNames()
         markers = unSegmentedEEG.getMarkers()
@@ -749,7 +749,7 @@ class SegmentEEGFromSingleEEG(SegmentedEEG):
 
         sampRate = singleEEG.getSampRate()
         chanNames = singleEEG.getChanNames()
-        
+
         SegmentedEEG.__init__(self, data=data, sampRate=sampRate, chanNames=chanNames,
                               markers=markers, *args, **kwargs)
 

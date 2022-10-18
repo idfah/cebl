@@ -326,7 +326,7 @@ def softmaxM1(x):
     terms = capZero(np.exp(x-mx))
     denom = (emx + np.sum(terms, axis=1)).reshape((-1, 1))
     return np.hstack((terms/denom, emx/denom))
-    
+
 def logSoftmaxM1(x):
     mx = np.max((np.max(x), 0.0))
     xmx = x - mx

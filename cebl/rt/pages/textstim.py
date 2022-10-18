@@ -128,7 +128,7 @@ class TextStim(Page):
                 stims = string.ascii_lowercase*3
 
             self.stims = list(chars)
-                
+
             self.si = 0.100
             self.isi = 0.750
 

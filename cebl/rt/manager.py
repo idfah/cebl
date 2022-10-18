@@ -97,7 +97,7 @@ class Manager:
         number of running pages reaches zero.
         """
         self.runningPages.remove(page)
-        
+
         if self.getNRunningPages() == 0:
             self.src.stop()
 

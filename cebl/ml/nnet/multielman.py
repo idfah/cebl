@@ -302,7 +302,7 @@ def demoMERNTXOR():
     #axH1.set_xlim((0, len(g)))
     #axH1.set_ylim((0.0,1.0))
     axH1.set_title('H2')
-    
+
     # second layer output
     axH2 = fig.add_subplot(4,2,7)
     #axH2.bar(range(len(hout[1])), hout[1])

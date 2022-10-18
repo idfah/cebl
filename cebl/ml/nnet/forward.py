@@ -42,7 +42,7 @@ class ForwardNetwork(Regression, optim.Optable):
         self.hws = views[1:-1]
         self.vw  = views[-1]
 
-        if not util.isiterable(weightInitFunc): 
+        if not util.isiterable(weightInitFunc):
             weightInitFunc = (weightInitFunc,) * (self.nHLayers+1)
         assert len(weightInitFunc) == (len(self.hws) + 1)
 

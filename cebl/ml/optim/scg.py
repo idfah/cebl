@@ -45,11 +45,11 @@ def scg(optable,
                             is included in the final results.  If False
                             (default), then a history is not kept.
 
-        callback:           
+        callback:
 
         verbose:            Print extra information to standard out during
                             the training procedure.
-    
+
         args, kwargs:       Additional arguments passed to optable.error
                             and optable.gradient.
 

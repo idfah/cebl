@@ -59,11 +59,11 @@ def rprop(optable,
                             final results.  If False (default), then a history
                             is not kept.
 
-        callback:           
+        callback:
 
         verbose:            Print extra information to standard out during the
                             training procedure.
-    
+
         args, kwargs:       Arguments passed to optable.gradients.
 
     Returns:
@@ -251,11 +251,11 @@ def irprop(optable,
                             final results.  If False (default), then a history
                             is not kept.
 
-        callback:           
+        callback:
 
         verbose:            Print extra information to standard out during the
                             training procedure.
-    
+
         args, kwargs:       Arguments passed to optable.gradients.
 
     Returns:
