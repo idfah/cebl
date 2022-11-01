@@ -34,11 +34,11 @@ class CEBLMain(wx.Frame):
         """Initialize the main GUI frame.
         """
         # set frame size to reasonable value
-        ##displaySize = [int(0.75*s) for s in wx.DisplaySize()]
+        displaySize = wx.DisplaySize()
+        #displaySize = [int(0.75*s) for s in wx.DisplaySize()]
 
         # hack to help on dual-screen, need something better XXX - idfah
-        displaySize = wx.DisplaySize()
-        displaySize = 1.2*displaySize[1], 0.75*displaySize[1]
+        displaySize = int(1.2*displaySize[1]), int(0.75*displaySize[1])
 
         # call base class constructor
         wx.Frame.__init__(self, parent=None, title='CEBL3', size=displaySize)

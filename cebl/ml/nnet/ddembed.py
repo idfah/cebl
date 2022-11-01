@@ -12,7 +12,7 @@ import numpy.lib.stride_tricks as npst
 ###
 ###    pad = np.zeros((lags,nDim))
 ###    delta = np.vstack((pad,delta,pad))
-###    
+###
 ###    d = list()
 ###    sz = delta.itemsize
 ###    for i in range(origDim):
@@ -35,7 +35,7 @@ import numpy.lib.stride_tricks as npst
 ##
 ##    pad = np.zeros((nSeg,lags,nDim))
 ##    delta = np.concatenate((pad,delta,pad), axis=1)
-##    
+##
 ##    d = list()
 ##    sz = delta.itemsize
 ##

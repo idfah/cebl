@@ -87,8 +87,8 @@ class StandardPage(Page):
             minSize = configPanelSizer.GetMinSize()
 
             systemSettings = wx.SystemSettings()
-            bestSize = (minSize[0]+systemSettings.GetMetric(wx.SYS_VSCROLL_X),
-                        minSize[1]+systemSettings.GetMetric(wx.SYS_HSCROLL_Y))
+            bestSize = (minSize[0] + systemSettings.GetMetric(wx.SYS_VSCROLL_X),
+                        minSize[1] + systemSettings.GetMetric(wx.SYS_HSCROLL_Y))
             configPaneAuiInfo.BestSize(bestSize)
 
 
@@ -129,7 +129,7 @@ class StandardPage(Page):
 class StandardMonitorPage(StandardPage):
     def __init__(self, *args, **kwargs):
         self.paused = False         # pause the plot without stopping data acquisition
-        self.refreshDelay = 50.0    # milliseconds between plot updates, does not include draw time
+        self.refreshDelay = 50      # milliseconds between plot updates, does not include draw time
         self.recordingTime = None   # start time for EEG recording, None indicates not started
 
         StandardPage.__init__(self, *args, **kwargs)
@@ -200,7 +200,7 @@ class StandardMonitorPage(StandardPage):
                 self.start(self)
 
                 # start update timer
-                self.updateTimer.Start(self.refreshDelay, oneShot=True)
+                self.updateTimer.Start(int(self.refreshDelay), oneShot=True)
 
 
             except Exception:
@@ -274,7 +274,7 @@ class StandardMonitorPage(StandardPage):
         # if still running
         if self.isRunning():
             # set to run again
-            self.updateTimer.Start(self.refreshDelay, oneShot=True)
+            self.updateTimer.Start(int(self.refreshDelay), oneShot=True)
         else:
             # unPuase if no longer running
             self.unPause()
@@ -297,7 +297,7 @@ class StandardBCIPage(StandardPage):
         self.trainButton = wx.Button(self.toolbar, label='Train')
         self.toolbar.AddControl(self.trainButton, label='Train')
         self.Bind(wx.EVT_BUTTON, self.toggleTrain, self.trainButton)
-        
+
         # button to re-train classifier
         self.retrainButton = wx.Button(self.toolbar, label='Retrain')
         self.retrainButton.Disable()
@@ -359,7 +359,7 @@ class StandardBCIPage(StandardPage):
                 self.startTime = time.time()
                 self.beforeTrain()
 
-                wx.CallLater(1000.0*2.0, self.runTrainEpoch)
+                wx.CallLater(1000, self.runTrainEpoch)
 
             except Exception:
                 self.earlyStopFlag = True
@@ -442,7 +442,7 @@ class StandardBCIPage(StandardPage):
                 self.startTime = time.time()
                 self.beforeTest()
 
-                wx.CallLater(1000.0*2.0, self.runTestEpoch)
+                wx.CallLater(2000, self.runTestEpoch)
 
             except Exception:
                 self.earlyStopFlag = True

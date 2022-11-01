@@ -55,7 +55,7 @@ class EEG(EEGBase):
                         the data argument.
 
             copy:       If False (default) then data will not be copied if
-                        possible.  If True, then the data definitely be 
+                        possible.  If True, then the data definitely be
                         copied.  Warning:  If multiple EEG instances use
                         the same un-copied data array, then modifying one
                         EEG instance may lead to undefined behavior in

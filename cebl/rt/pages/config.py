@@ -148,10 +148,10 @@ class Config(Page):
         ## # add to sizer
         ## chanControlBox.Add(rightChanSizer)
 
-        self.chanSizer = wx.GridSizer(40, 2, 10, 10)
+        self.chanSizer = wx.GridSizer(18, 4, 5, 5)
         #self.chanSizer = wx.BoxSizer(orient=wx.VERTICAL)
 
-        self.chanTextCtrls = [wx.TextCtrl(self.scrolledPanel) for i in range(40*2)]
+        self.chanTextCtrls = [wx.TextCtrl(self.scrolledPanel) for i in range(18*4)]
         self.chanSizer.AddMany(self.chanTextCtrls)
         #for ctc in self.chanTextCtrls:
         #    self.chanSizer.Add(ctc, proportion=0, flag=wx.TOP | wx.LEFT | wx.RIGHT, border=2)
@@ -251,7 +251,7 @@ class Config(Page):
         chanNames = self.src.getChanNames()
         ctls = self.chanTextCtrls[:len(chanNames)]
 
-        for chan, ctl in zip(chanNames, ctls[0::2] + ctls[1::2]):
+        for chan, ctl in zip(chanNames, ctls):
             ctl.Show()
             ctl.AppendText(chan)
 

@@ -47,7 +47,7 @@ class ConfigPanel(StandardConfigPanel):
 
     def initMediaPath(self):
         mediaPathControlBox = widgets.ControlBox(self, label='Media Path', orient=wx.HORIZONTAL)
-        
+
         self.mediaPathTextCtrl = wx.TextCtrl(parent=self, style=wx.TE_PROCESS_ENTER)
         self.mediaPathTextCtrl.SetValue(self.pg.defaultMusicDir)
         mediaPathControlBox.Add(self.mediaPathTextCtrl, proportion=1,
@@ -391,7 +391,7 @@ class BCIPlayer(StandardBCIPage):
         if not os.path.isdir(os.path.expanduser(self.defaultMusicDir)):
             self.defaultMusicDir = '~'
 
-        self.classifierChoices = ('Linear Discriminant', 
+        self.classifierChoices = ('Linear Discriminant',
                                   'K-Nearest Euclidean',
                                   'K-Nearest Cosine',
                                   'Linear Logistic',
@@ -411,7 +411,7 @@ class BCIPlayer(StandardBCIPage):
         self.isi = 0.550
 
         self.trainCap = None
-        
+
     def initCurStimList(self):
         self.curStimList = copy.copy(self.choices)
         np.random.shuffle(self.curStimList)
@@ -514,7 +514,7 @@ class BCIPlayer(StandardBCIPage):
             self.initCurStimList()
 
         if self.curTrainTrial >= self.nTrainTrial:
-            wx.CallLater(1000.0*self.windowEnd*1.05, self.endTrain)
+            wx.CallLater(int(1000 * self.windowEnd * 1.05), self.endTrain)
             return
 
         curStim = self.curStimList.pop()
@@ -522,14 +522,14 @@ class BCIPlayer(StandardBCIPage):
         self.src.setMarker(self.stimToMark(curStim))
         self.pieMenu.highlight(curStim, style='jump')
 
-        wx.CallLater(1000.0*self.si, self.trainClearStim)
+        wx.CallLater(int(1000 * self.si), self.trainClearStim)
 
     def trainClearStim(self, event=None):
         self.pieMenu.clearAllHighlights()
 
         self.src.setMarker(0.0)
 
-        wx.CallLater(1000.0*self.isi, self.runTrainEpoch)
+        wx.CallLater(int(1000 * self.isi), self.runTrainEpoch)
 
     def trainClassifier(self):
         if self.trainCap is None:
@@ -781,7 +781,7 @@ class BCIPlayer(StandardBCIPage):
         self.src.setMarker(self.stimToMark(curStim))
         self.pieMenu.highlight(curStim, style='jump')
 
-        wx.CallLater(1000.0*self.si, self.testClearStim)
+        wx.CallLater(int(1000 * self.si), self.testClearStim)
 
     def testClearStim(self, event=None):
         self.pieMenu.clearAllHighlights()
@@ -789,9 +789,9 @@ class BCIPlayer(StandardBCIPage):
 
         if len(self.curStimList) == 0:
             self.initCurStimList()
-            wx.CallLater(1000.0*self.windowEnd*1.05, self.testClassify)
+            wx.CallLater(int(1000 * self.windowEnd * 1.05), self.testClassify)
         else:
-            wx.CallLater(1000.0*self.isi, self.runTestEpoch)
+            wx.CallLater(int(1000 * self.isi), self.runTestEpoch)
 
     def testClassify(self):
         cap = self.src.getEEGSecs(time.time() - self.testTime)
@@ -815,18 +815,18 @@ class BCIPlayer(StandardBCIPage):
         if self.pieMenu.growBar(choice, amount=1.0/self.nTestTrial):
             wx.CallAfter(self.controlPlayer, choice)
         else:
-            wx.CallLater(1000.0*self.isi, self.runTestEpoch)
+            wx.CallLater(int(1000 * self.isi), self.runTestEpoch)
 
     def controlPlayer(self, choice):
         self.pieMenu.highlight(choice, style='pop')
 
         def moveOn():
-            wx.CallLater(1000.0*1.0, self.clearPieMenu)
-            wx.CallLater(1000.0*2.0, self.runTestEpoch)
+            wx.CallLater(1000, self.clearPieMenu)
+            wx.CallLater(2000, self.runTestEpoch)
 
         if choice == 'Play':
             self.mplayer.play()
-            wx.CallLater(1000.0*2.0, self.pieMenu.zeroBars)
+            wx.CallLater(2000, self.pieMenu.zeroBars)
         elif choice == 'Album ' + rightArrow:
             self.mplayer.forAlbum()
             moveOn()
@@ -841,12 +841,12 @@ class BCIPlayer(StandardBCIPage):
             moveOn()
         elif choice == 'Preview':
             self.mplayer.preview()
-            wx.CallLater(1000.0*2.0, self.pieMenu.zeroBars)
+            wx.CallLater(2000, self.pieMenu.zeroBars)
         else:
             raise RuntimeError('Invalid choice: %s.' % str(choice))
 
     def mplayerFinished(self, event=None):
         if self.isRunning():
             self.pieMenu.clearAllHighlights()
-            wx.CallLater(1000.0*1.0, self.runTestEpoch)
+            wx.CallLater(1000, self.runTestEpoch)
             wx.LogMessage('restarting after EVT_MPLAYER_FINISHED')

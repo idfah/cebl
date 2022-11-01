@@ -1,7 +1,9 @@
 import ctypes
-import numpy as np
+import importlib
 import os
 import time
+
+import numpy as np
 import wx
 
 from cebl import util
@@ -9,12 +11,19 @@ from cebl.rt import widgets
 
 from cebl.rt.sources.source import Source, SourceConfigPanel
 
+# find the .so file for the mindset interface
+# we have to search all possible extensions for this build, feels gross
+# but I'm unsure how else to reliably find the file name
+for _so_ext in importlib.machinery.EXTENSION_SUFFIXES:
+    _mindset_libpath = os.path.join(os.path.dirname(__file__), f'libmindset24r{_so_ext}')
+    if os.path.isfile(_mindset_libpath):
+        _mindset = ctypes.cdll.LoadLibrary(_mindset_libpath)
+        break
+else:
+    raise FileNotFoundError('Unable to find libmindset24r shared library.')
 
-#ms = ctypes.cdll.LoadLibrary(os.path.dirname(__file__) + '/libmindset24r.so')
-ms = ctypes.cdll.LoadLibrary(os.path.dirname(__file__) + '/libmindset24r.cpython-36m-x86_64-linux-gnu.so')
-
-ms.ms_Open.argtypes = [ctypes.POINTER(ctypes.c_char)]
-ms.ms_ReadNextDataBlock.argtypes = [ctypes.POINTER(ctypes.c_double), ctypes.c_int]
+_mindset.ms_Open.argtypes = [ctypes.POINTER(ctypes.c_char)]
+_mindset.ms_ReadNextDataBlock.argtypes = [ctypes.POINTER(ctypes.c_double), ctypes.c_int]
 
 # enums in libmindset24r.h, is there a better way? XXX - idfah
 BLOCKSIZE96  = ctypes.c_int(1)
@@ -145,8 +154,8 @@ class Mindset24R(Source):
         wx.LogMessage(self.getName() + ': connecting.')
         try:
             if not self.connected:
-                ms.ms_Open(ctypes.c_char_p(self.deviceName))
-                if ms.ms_Ready() < 0:
+                _mindset.ms_Open(ctypes.c_char_p(self.deviceName))
+                if _mindset.ms_Ready() < 0:
                     raise RuntimeError('The mindset24r is not ready.')
                 self.connected = True
         except Exception as e:
@@ -157,7 +166,7 @@ class Mindset24R(Source):
         wx.LogMessage(self.getName() + ': disconnecting.')
         try:
             if self.connected:
-                ms.ms_Close()
+                _mindset.ms_Close()
         except Exception as e:
             raise RuntimeError('Failed to disconnect from mindset24r: ' + str(e))
         finally:
@@ -165,11 +174,11 @@ class Mindset24R(Source):
 
     def configure(self):
         try:
-            ms.ms_SetBlockSize(self.blockSizeKey)
-            self.actualBlockSize = ms.ms_ActualBlockSize(self.blockSizeKey)
+            _mindset.ms_SetBlockSize(self.blockSizeKey)
+            self.actualBlockSize = _mindset.ms_ActualBlockSize(self.blockSizeKey)
 
-            ms.ms_SetSampleRate(self.sampRateKey)
-            self.sampRate = ms.ms_ActualSampleRate(self.sampRateKey)
+            _mindset.ms_SetSampleRate(self.sampRateKey)
+            self.sampRate = _mindset.ms_ActualSampleRate(self.sampRateKey)
         except Exception as e:
             raise RuntimeError('Failed to configure mindset24r: ' + str(e))
 
@@ -202,7 +211,7 @@ class Mindset24R(Source):
 
         # better way to handle errors? XXX - idfah
         tryCount = 0
-        while ms.ms_ReadNextDataBlock(
+        while _mindset.ms_ReadNextDataBlock(
                 data.ctypes.data_as(ctypes.POINTER(ctypes.c_double)),
                                     ctypes.c_int(sampPerBlock)) < sampPerBlock:
             if tryCount < 10:

@@ -182,8 +182,8 @@ class PieMenu(GraphicsPanel):
         if refresh:
             self.refresh()
 
-        if secs != None:
-            wx.CallLater(1000.0*secs, self.clearHighlight, choice=choice, refresh=refresh)
+        if secs is not None:
+            wx.CallLater(int(1000 * secs), self.clearHighlight, choice=choice, refresh=refresh)
 
     def growBar(self, choice, amount, refresh=True):
         """Grow a selection bar toward a menu cell.

@@ -8,7 +8,7 @@ class Standardizer:
         """
 
         Args:
-            method: 
+            method:
                 zmus:   Zero mean, unit standard deviation
 
                 range:  Range of [-1,1]

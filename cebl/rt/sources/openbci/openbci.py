@@ -20,7 +20,7 @@ END_BYTE = 0xC0  # end of data packet
 ADS1299_VREF = 4.5  #reference voltage for ADC in ADS1299.  set by its hardware
 ADS1299_GAIN = 24.0  #assumed gain setting for ADS1299.  set by its Arduino code
 SCALE_uVOLTS_PER_COUNT = ADS1299_VREF/float((pow(2,23)-1))/ADS1299_GAIN*1000000.
-SCALE_ACCEL_G_PER_COUNT = 0.002 /(pow(2,4)) #assume set to +/4G, so 2 mG 
+SCALE_ACCEL_G_PER_COUNT = 0.002 /(pow(2,4)) #assume set to +/4G, so 2 mG
 
 class OpenBCIConfigPanel(SourceConfigPanel):
     def __init__(self, parent, src, *args, **kwargs):
@@ -73,7 +73,7 @@ class OpenBCI(Source):
         # observations collected in each poll
         self.pollSize = pollSize
         self.firstPoll = True
-    
+
     ## Connection
     #####################################
 
@@ -133,7 +133,6 @@ class OpenBCI(Source):
                 self.stopAcquisition()
 
                 # self.configuration = self.getConfig()
-                
                 self.connected = True
         except Exception as e:
             self.connected = False
@@ -174,7 +173,6 @@ class OpenBCI(Source):
         #  self.stopAcquisition()   Now done in beforeStart
         print('sending start command b')
         self.device.write(b'b')
-        
 
     def stopAcquisition(self):
         # send stop command
@@ -282,13 +280,13 @@ class OpenBCI(Source):
         # print('pollData after read',len(reply))
 
         startByte,sampleId = struct.unpack('BB',reply[:2])
-        
+
         # print('sampleId',sampleId,'startbyte',startByte,'inwaiting',self.device.inWaiting())
 
         for polli in range(self.pollSize):
             # big-endian
 
-            eeg[polli,:] = [struct.unpack('>i', (b'\x00' if reply[i] < 0x80 else b'\xff') + 
+            eeg[polli,:] = [struct.unpack('>i', (b'\x00' if reply[i] < 0x80 else b'\xff') +
                                           reply[i:i+3])[0] for i in eegIndices+(polli*scanSize)]
             #eeg[polli,:] = np.array([struct.unpack('>i', (b'\x00' if reply[i] < 0x80 else b'\xff') + reply[i:i+3])[0] for i in eegIndices+(polli*self.pollSize)])
 

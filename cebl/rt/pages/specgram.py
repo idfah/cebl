@@ -48,7 +48,7 @@ class WaveletConfigPanel(wx.Panel):
         nFreqTextSizer = wx.BoxSizer(orient=wx.VERTICAL)
         nFreqTextSizer.Add(self.nFreqText, proportion=1, flag=wx.LEFT | wx.RIGHT | wx.EXPAND, border=8)
         self.nFreqSlider = wx.Slider(self, style=wx.SL_HORIZONTAL,
-            value=self.pg.waveletConfig.nFreq/5, minValue=1, maxValue=100)
+            value=int(self.pg.waveletConfig.nFreq / 5), minValue=1, maxValue=100)
         nFreqControlBox.Add(nFreqTextSizer, proportion=0, flag=wx.TOP, border=10)
         nFreqControlBox.Add(self.nFreqSlider, proportion=1,
             flag=wx.ALL | wx.EXPAND, border=10)

@@ -159,7 +159,7 @@ class MPlayerPanel(wx.Panel):
 
     def play(self, event=None):
         self.loadAndPlay()
-        wx.CallLater(1000.0*3.0*self.previewSecs, self.stop)
+        wx.CallLater(int(3000 * self.previewSecs), self.stop)
 
     def stop(self, event=None):
         state = self.mediaCtrl.GetState()
@@ -198,4 +198,4 @@ class MPlayerPanel(wx.Panel):
 
     def preview(self, event=None):
         self.loadAndPlay()
-        wx.CallLater(1000.0*self.previewSecs, self.stop)
+        wx.CallLater(int(1000 * self.previewSecs), self.stop)

@@ -1,7 +1,9 @@
 import ctypes
-import numpy as np
+import importlib
 import os
 import time
+
+import numpy as np
 import wx
 
 from cebl import util
@@ -9,11 +11,21 @@ from cebl.rt import widgets
 
 from cebl.rt.sources.source import Source, SourceConfigPanel
 
+# find the .so file for the biosemi interface
+# we have to search all possible extensions for this build, feels gross
+# but I'm unsure how else to reliably find the file name
+for _so_ext in importlib.machinery.EXTENSION_SUFFIXES:
+    _biosemi_libpath = os.path.join(os.path.dirname(__file__), f'libactivetwo{_so_ext}')
+    if os.path.isfile(_biosemi_libpath):
+        _biosemi = ctypes.cdll.LoadLibrary(_biosemi_libpath)
+        break
+else:
+    raise FileNotFoundError('Unable to find libactivetwo shared library.')
 
 #bs = ctypes.cdll.LoadLibrary(os.path.dirname(__file__) + '/libactivetwo.so')
-bs = ctypes.cdll.LoadLibrary(os.path.dirname(__file__) + '/libactivetwo.cpython-36m-x86_64-linux-gnu.so')
+## bs = ctypes.cdll.LoadLibrary(os.path.dirname(__file__) + '/libactivetwo.cpython-36m-x86_64-linux-gnu.so')
 
-bs.bs_poll.argtypes = [ctypes.POINTER(ctypes.c_double),]
+_biosemi.bs_poll.argtypes = [ctypes.POINTER(ctypes.c_double),]
 
 
 chans32 = ['Fp1', 'AF3', 'F7',  'F3',  'FC1', 'FC5', 'T7',  'C3',
@@ -143,7 +155,7 @@ class ActiveTwo(Source):
 
         try:
             if not self.connected:
-                if bs.bs_open():
+                if _biosemi.bs_open():
                     raise RuntimeError('Failed to open ActiveTwo.')
 
                 self.connected = True
@@ -156,7 +168,7 @@ class ActiveTwo(Source):
         wx.LogMessage(self.getName() + ': disconnecting.')
         try:
             if self.connected:
-                if bs.bs_close():
+                if _biosemi.bs_close():
                     raise RuntimeError('Failed to close ActiveTwo.')
 
         except Exception as e:
@@ -166,14 +178,14 @@ class ActiveTwo(Source):
             self.connected = False
 
     def configure(self):
-        if bs.bs_setScansPerPoll(self.pollSize*2):
+        if _biosemi.bs_setScansPerPoll(self.pollSize*2):
             raise RuntimeError('Failed to set pollSize.')
-        #if bs.bs_setScansPerPoll(self.pollSize):
+        #if _biosemi.bs_setScansPerPoll(self.pollSize):
         #    raise RuntimeError('Failed to set pollSize.')
 
         # only speedmode 4 is supported for now XXX - idfah
         # need to be able to change number of channels after initializing source XXX - idfah
-        if bs.bs_setSpeedMode(4):
+        if _biosemi.bs_setSpeedMode(4):
             raise RuntimeError('Failed to set speedMode.')
 
     def query(self):
@@ -195,7 +207,7 @@ class ActiveTwo(Source):
             self.configure()
             self.connect()
 
-            if bs.bs_start():
+            if _biosemi.bs_start():
                 raise RuntimeError('Failed to start ActiveTwo acquisition.')
 
         except Exception as e:
@@ -203,7 +215,7 @@ class ActiveTwo(Source):
             raise
 
     def afterRun(self):
-        if bs.bs_stop():
+        if _biosemi.bs_stop():
             raise RuntimeError('Failed to stop ActiveTwo acquisition.')
 
         self.disconnect()
@@ -218,7 +230,7 @@ class ActiveTwo(Source):
         #data = np.zeros((self.pollSize, 2+self.nDataChan+self.nAuxChan), dtype=np.float64)
         data = np.zeros((2*self.pollSize, 2+self.nDataChan+self.nAuxChan), dtype=np.float64)
 
-        if bs.bs_poll(data.ctypes.data_as(ctypes.POINTER(ctypes.c_double))):
+        if _biosemi.bs_poll(data.ctypes.data_as(ctypes.POINTER(ctypes.c_double))):
             raise RuntimeError('Failed to poll ActiveTwo.')
 
         return data[::2,self.chanMask] # ::2 is a hack to downsample XXX - idfah

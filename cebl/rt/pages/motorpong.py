@@ -42,7 +42,7 @@ class WelchConfigPanel(wx.Panel):
                 flag=wx.ALL | wx.EXPAND, border=10)
         featureSizer.Add(spanControlBox, proportion=1,
                 flag=wx.LEFT | wx.BOTTOM | wx.RIGHT | wx.EXPAND, border=10)
-        
+
         # radio buttons for turning log transform on and off
         logTransControlBox = widgets.ControlBox(self, label='Log Trans', orient=wx.HORIZONTAL)
 
@@ -161,7 +161,7 @@ class ConfigPanel(StandardConfigPanel):
 
         choiceControlBox.Add(choiceGridSizer, proportion=1,
                              flag=wx.ALL | wx.EXPAND, border=0)
-        
+
         self.sizer.Add(choiceControlBox, proportion=0, flag=wx.ALL | wx.EXPAND, border=10)
 
     def setChoices(self, event):
@@ -365,7 +365,7 @@ class ConfigPanel(StandardConfigPanel):
         self.pg.requireRetrain()
 
     def initLayout(self):
-        self.initStandardLayout() 
+        self.initStandardLayout()
 
         self.FitInside()
         self.autoregPanel.Hide()
@@ -397,8 +397,8 @@ class PlotPanel(wx.Panel):
         self.featureCanvas = FigureCanvas(parent=self, id=wx.ID_ANY, figure=self.featureFig)
 
     def initPongGame(self):
-        self.pongGame = widgets.Pong(self) 
-        
+        self.pongGame = widgets.Pong(self)
+
         # for some reason pongGame.Hide() is not called in showPieMenu. I don't know why
         self.pongGame.Hide()
 
@@ -492,7 +492,7 @@ class MotorPong(StandardBCIPage):
         self.trainButton = wx.Button(self.toolbar, label='Train')
         self.toolbar.AddControl(self.trainButton, label='Train')
         self.Bind(wx.EVT_BUTTON, self.toggleTrain, self.trainButton)
-        
+
         # button to re-train classifier
         self.retrainButton = wx.Button(self.toolbar, label='Retrain')
         self.retrainButton.Disable()
@@ -674,7 +674,7 @@ class MotorPong(StandardBCIPage):
 
         self.src.setMarker(self.choices.index(choice)+1.0)
 
-        wx.CallLater(1000.0*self.trainTrialSecs, self.trainClearTrial)
+        wx.CallLater(int(1000 * self.trainTrialSecs), self.trainClearTrial)
 
     def trainClearTrial(self, event=None):
         self.pieMenu.clearAllHighlights()
@@ -682,9 +682,9 @@ class MotorPong(StandardBCIPage):
         self.src.setMarker(0.0)
 
         if self.curTrial == self.nTrainTrial and len(self.curChoices) == 0:
-            wx.CallLater(1000.0*self.pauseSecs, self.endTrain)
+            wx.CallLater(int(1000 * self.pauseSecs), self.endTrain)
         else:
-            wx.CallLater(1000.0*self.pauseSecs, self.runTrainEpoch)
+            wx.CallLater(int(1000 * self.pauseSecs), self.runTrainEpoch)
 
     def trainClassifier(self):
         if self.trainCap is None:
@@ -920,10 +920,10 @@ class MotorPong(StandardBCIPage):
             self.src.setMarker(0.0)
             self.highlightTestTarget()
             self.curDecision += 1
-            wx.CallLater(1000.0*self.pauseSecs*1.1, self.runTestEpoch)
+            wx.CallLater(int(1000 * self.pauseSecs * 1.1), self.runTestEpoch)
 
         else:
-            wx.CallLater(1000.0*self.decisionSecs*1.1, self.testClassify)
+            wx.CallLater(int(1000 * self.decisionSecs * 1.1), self.testClassify)
 
     def highlightTestTarget(self):
         if len(self.curChoices) == 0:
@@ -979,7 +979,7 @@ class MotorPong(StandardBCIPage):
             self.src.incrementMarker(finalLabel+1)
             self.confusion[finalLabel, self.choices.index(self.curChoice)] += 1.0
 
-            wx.CallLater(1000.0*self.pauseSecs, self.testClearTrial)
+            wx.CallLater(int(1000 * self.pauseSecs), self.testClearTrial)
 
     def testClearTrial(self):
         self.pieMenu.zeroBars(refresh=False)
@@ -987,9 +987,9 @@ class MotorPong(StandardBCIPage):
         self.curDecision = -1
 
         if self.curTrial == self.nTestTrial and len(self.curChoices) == 0:
-            wx.CallLater(1000.0*self.pauseSecs, self.endTest)
+            wx.CallLater(int(1000 * self.pauseSecs), self.endTest)
         else:
-            wx.CallLater(1000.0*self.pauseSecs, self.runTestEpoch)
+            wx.CallLater(int(1000 * self.pauseSecs), self.runTestEpoch)
 
     def gameDecision(self, probs):
         if probs[0] > probs[1]:
@@ -998,10 +998,10 @@ class MotorPong(StandardBCIPage):
             self.pongGame.movePaddleRight()
 
         if self.decisionSecs > 0.25:
-            wx.CallLater(1000.0*self.decisionSecs*0.85, self.pongGame.stopPaddle)
+            wx.CallLater(int(1000 * self.decisionSecs * 0.85), self.pongGame.stopPaddle)
 
         if np.sum(self.pongGame.getScore()) < 10:
-            wx.CallLater(1000.0*self.decisionSecs*1.1, self.runTestEpoch)
+            wx.CallLater(int(1000 * self.decisionSecs * 1.1), self.runTestEpoch)
 
         else:
-            wx.CallLater(1000.0*self.pauseSecs, self.endTest)
+            wx.CallLater(int(1000 * self.pauseSecs), self.endTest)

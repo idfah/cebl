@@ -4,7 +4,7 @@ import scipy.signal as spsig
 from cebl import util
 
 
-class ContinuousWaveletTransform(object):
+class ContinuousWaveletTransform:
     def __init__(self, sampRate=256.0, freqs=None, span=5, dtype=None):
         """Continuous Wavelet Transform
 
@@ -36,7 +36,7 @@ class ContinuousWaveletTransform(object):
 
         if freqs is None:
             self.freqs = np.arange(1.0, np.floor(sampRate/2.0)).astype(self.dtype, copy=False)
-        elif isinstance(freqs, (int,long)):
+        elif isinstance(freqs, int):
             self.freqs = np.linspace(0.0, sampRate/2.0, freqs+1).astype(self.dtype, copy=False)[1:]
         else:
             self.freqs = np.asarray(freqs)
@@ -66,9 +66,7 @@ class ContinuousWaveletTransform(object):
         return (dialation * np.exp(-time**2.0/(2.0*timeScale**2.0)) *
             np.exp(2.0j * np.pi * freq * time))
 
-    ''' pure python.
     def apply(self, s):
-        ##cdef long nObs, nChan, i, padDiff, padFront, padBack
         s = util.colmat(s)
 
         # number of observations and channels
@@ -95,36 +93,6 @@ class ContinuousWaveletTransform(object):
             powers[:,i,:] = 2.0*np.abs(conv)**2 / \
                                 np.sum(np.abs(wlet))**2
             phases[:,i,:] = np.angle(conv)
-
-        powers /= self.sampRate
-
-        return self.freqs, powers, phases
-    '''
-    def apply(self, s):
-        cdef long nObs, nChan, nFreq, i, j, padDiff, padFront, padBack
-        
-        s = util.colmat(s)
-
-        # number of observations, channels and frequencies
-        nObs, nChan = s.shape
-        nFreq = self.nFreq
-
-        # empty arrays to hold power and phase information
-        powers = np.zeros((nObs, nFreq, nChan), dtype=s.dtype)
-        phases = np.zeros((nObs, nFreq, nChan), dtype=s.dtype)
-
-        for i in range(nChan):
-            for j in range(nFreq):
-                conv = np.convolve(s[:,i], self.wavelets[j], mode='full')
-
-                padDiff = (conv.shape[0] - s.shape[0])
-                padFront = padDiff // 2
-                padBack = padDiff - padFront
-                conv = conv[padFront:-padBack]
-
-                powers[:,j,i] = 2.0*np.abs(conv)**2 / \
-                                    np.sum(np.abs(self.wavelets[j]))**2
-                phases[:,j,i] = np.angle(conv)
 
         powers /= self.sampRate
 

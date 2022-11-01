@@ -487,7 +487,7 @@ class P300Bot(StandardBCIPage):
             self.initCurStimList()
 
         if self.curTrainTrial >= self.nTrainTrial:
-            wx.CallLater(1000.0*self.windowEnd*1.05, self.endTrain)
+            wx.CallLater(int(1000 * self.windowEnd * 1.05), self.endTrain)
             return
 
         curStim = self.curStimList.pop()
@@ -495,14 +495,14 @@ class P300Bot(StandardBCIPage):
         self.src.setMarker(self.stimToMark(curStim))
         self.pieMenu.highlight(curStim, style='jump')
 
-        wx.CallLater(1000.0*self.si, self.trainClearStim)
+        wx.CallLater(int(1000 * self.si), self.trainClearStim)
 
     def trainClearStim(self, event=None):
         self.pieMenu.clearAllHighlights()
 
         self.src.setMarker(0.0)
 
-        wx.CallLater(1000.0*self.isi, self.runTrainEpoch)
+        wx.CallLater(int(1000 * self.isi), self.runTrainEpoch)
 
     def trainClassifier(self):
         if self.trainCap is None:
@@ -753,7 +753,7 @@ class P300Bot(StandardBCIPage):
         self.src.setMarker(self.stimToMark(curStim))
         self.pieMenu.highlight(curStim, style='jump')
 
-        wx.CallLater(1000.0*self.si, self.testClearStim)
+        wx.CallLater(int(1000 * self.si), self.testClearStim)
 
     def testClearStim(self, event=None):
         self.pieMenu.clearAllHighlights()
@@ -761,9 +761,9 @@ class P300Bot(StandardBCIPage):
 
         if len(self.curStimList) == 0:
             self.initCurStimList()
-            wx.CallLater(1000.0*self.windowEnd*1.05, self.testClassify)
+            wx.CallLater(int(1000 * self.windowEnd * 1.05), self.testClassify)
         else:
-            wx.CallLater(1000.0*self.isi, self.runTestEpoch)
+            wx.CallLater(int(1000 * self.isi), self.runTestEpoch)
 
     def testClassify(self):
         cap = self.src.getEEGSecs(time.time() - self.testTime)
@@ -784,7 +784,7 @@ class P300Bot(StandardBCIPage):
         if self.pieMenu.growBar(choice, amount=1.0/self.nTestTrial):
             wx.CallAfter(self.moveRobot, choice)
         else:
-            wx.CallLater(1000.0*self.isi, self.runTestEpoch)
+            wx.CallLater(int(1000 * self.isi), self.runTestEpoch)
 
     def moveRobot(self, choice):
         if self.robotSock is not None:
@@ -797,9 +797,9 @@ class P300Bot(StandardBCIPage):
 
         self.pieMenu.highlight(choice, style='pop')
 
-        wx.CallLater(1000.0*2.0, self.clearPieMenu)
+        wx.CallLater(2000, self.clearPieMenu)
 
         if self.robotKind == 'ER1':
-            wx.CallLater(1000.0*3.0, self.runTestEpoch)
+            wx.CallLater(3000, self.runTestEpoch)
         else:
-            wx.CallLater(1000.0*8.0, self.runTestEpoch)
+            wx.CallLater(8000, self.runTestEpoch)
