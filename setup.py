@@ -49,10 +49,6 @@ cython_modules.append(
         extra_compile_args=extra_compile_args))
 
 # cythonized wx.lib.plot
-#cython_modules.append(
-#    setuptools.Extension('cebl.rt.widgets.wxlibplot',
-#        sources=['cebl/rt/widgets/wxlibplot.pyx'],
-#        extra_compile_args=['-march=native', '-O3']))
 cython_modules.append(
     setuptools.Extension('cebl.rt.widgets.wxlibplot.plotcanvas',
         sources=['cebl/rt/widgets/wxlibplot/plotcanvas.pyx'],
@@ -63,17 +59,17 @@ cython_modules.append(
         sources=['cebl/rt/widgets/wxlibplot/polyobjects.pyx'],
         extra_compile_args=extra_compile_args))
 
-# g.tec g.MOBILab+
-cython_modules.append(
-    setuptools.Extension('cebl.rt.sources.gtec.gmobilab.gmobilab',
-    sources=['cebl/rt/sources/gtec/gmobilab/gmobilab.pyx'],
-    extra_compile_args=extra_compile_args))
-
-# g.tec g.Nautilus
-cython_modules.append(
-    setuptools.Extension('cebl.rt.sources.gtec.gnautilus.gnautilus',
-    sources=['cebl/rt/sources/gtec/gnautilus/gnautilus.pyx'],
-    extra_compile_args=extra_compile_args))
+## # g.tec g.MOBILab+
+## cython_modules.append(
+##     setuptools.Extension('cebl.rt.sources.gtec.gmobilab.gmobilab',
+##     sources=['cebl/rt/sources/gtec/gmobilab/gmobilab.pyx'],
+##     extra_compile_args=extra_compile_args))
+##
+## # g.tec g.Nautilus
+## cython_modules.append(
+##     setuptools.Extension('cebl.rt.sources.gtec.gnautilus.gnautilus',
+##     sources=['cebl/rt/sources/gtec/gnautilus/gnautilus.pyx'],
+##     extra_compile_args=extra_compile_args))
 
 # all extension modules
 ext_modules=c_modules + cythonize(cython_modules, language_level='3')
